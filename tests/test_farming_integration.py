@@ -1,16 +1,14 @@
 """Acceptance checks against the real combined HTTP app and isolated user stores."""
 import hashlib
-from contextlib import closing
 import http.client
 from itertools import combinations
 import json
 from pathlib import Path
-import sqlite3
 import tempfile
 import threading
 import unittest
 
-from dst_helper.farming import FarmingPlanner, PlanConflict, PlanStore, STRESS_KEYS
+from dst_helper.farming import FarmingPlanner, STRESS_KEYS
 from dst_helper.server import create_server, cooking
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -116,11 +114,7 @@ class PlannerIntegrationTests(unittest.TestCase):
         self.assertEqual([t['tile'] for t in answer['tiles']], [[0, 0], [1, 0], [0, 1], [1, 1]])
         self.assertEqual({tuple(t['tile']): t['plant_count'] for t in answer['tiles']}, {(0, 0): 9, (1, 0): 9, (0, 1): 9, (1, 1): 9})
         self.assertTrue(answer['all_crop_family_checks_pass'])
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / 'four_fields.sqlite'
-            store = PlanStore(path, self.planner)
-            store.update(p, 0)
-            self.assertEqual(PlanStore(path, self.planner).snapshot()['state'], p)
+        self.assertEqual(self.planner.validate(json.loads(json.dumps(p))), p)
         for count in (1, 2):
             old = self.planner.defaults()
             old['tile_count'] = count
@@ -141,7 +135,7 @@ class PlannerIntegrationTests(unittest.TestCase):
         p['stages'] = []
         self.assertEqual(self.planner.validate(p)['stages'], [{}, {}, {}, {}])
 
-    def test_invalid_imports_and_positions_are_rejected(self):
+    def test_invalid_plans_and_positions_are_rejected(self):
         for field, value in [('schema_version', 2), ('dataset_version', 'future'), ('scale', True),
                              ('tile_count', 3),
                              ('inventory', {'tomato': -1}), ('available', ['unknown']), ('seasons', ['monsoon']),
@@ -159,21 +153,6 @@ class PlannerIntegrationTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.planner.validate(p)
 
-    def test_plan_round_trip_separate_storage_and_conflicts(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / 'plans.sqlite'
-            store = PlanStore(path, self.planner)
-            p = self.planner.defaults()
-            p.update(available=['tomato'], inventory={'tomato': 7}, seasons=['winter'])
-            self.assertEqual(store.update(p, 0)['version'], 1)
-            other = PlanStore(path, self.planner)
-            with self.assertRaises(PlanConflict):
-                other.update(self.planner.defaults(), 0)
-            self.assertEqual(other.snapshot()['state'], p)
-            p['seasons'] = []
-            other.update(p, 1)
-            self.assertEqual(other.snapshot()['state']['available'], ['tomato'])
-            self.assertEqual(other.snapshot()['state']['inventory'], {'tomato': 7})
 
 
 class CombinedHTTPTests(unittest.TestCase):
@@ -183,7 +162,7 @@ class CombinedHTTPTests(unittest.TestCase):
         cls.snapshots = [cooking.DEFAULT_DATABASE, ROOT / 'DST_Farming_v0_1/data/farming.json', ROOT / 'DST_Farming_v0_1/farming.sqlite']
         cls.hashes = [hashlib.sha256(p.read_bytes()).hexdigest() for p in cls.snapshots]
         cls.settings = Path(cls.temp.name) / 'user_settings.sqlite'
-        cls.server = create_server(port=0, settings_path=cls.settings)
+        cls.server = create_server(port=0)
         cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
         cls.thread.start()
 
@@ -219,30 +198,31 @@ class CombinedHTTPTests(unittest.TestCase):
         status, _, body = self.request('/farming', method='HEAD')
         self.assertEqual((status, body), (200, b''))
 
-    def test_farming_and_cooking_navigation_preserves_rarity(self):
+    def test_farming_and_cooking_are_stateless(self):
         before = json.loads(self.request('/api/rarity')[2])
-        self.assertEqual(self.request('/api/rarity', dict(ingredient_id='tomato', rarity=23, expected_version=before['version']))[0], 200)
+        self.assertEqual(self.request('/api/rarity', dict(ingredient_id='tomato', rarity=23, expected_version=0))[0], 405)
         overview = json.loads(self.request('/api/farming')[2])
+        self.assertNotIn('preferences', overview)
         self.assertTrue(overview['metadata']['planner_enabled'])
         self.assertEqual(len(overview['plants']), 18)
         self.assertTrue(all(p['product_ingredient_id'] == p['plant_id'] for p in overview['plants'] if p['kind'] == 'crop'))
-        status, _, raw = self.request('/api/farming/analyze', overview['defaults'])
+        state = overview['defaults']
+        state['scale'] = 7
+        status, _, raw = self.request('/api/farming/analyze', state)
         self.assertEqual(status, 200)
         self.assertEqual(len(json.loads(raw)['ratios']), 74)
-        state = overview['preferences']['state']
-        self.assertEqual(self.request('/api/farming/preferences', dict(state=state, expected_version=overview['preferences']['version']))[0], 200)
-        self.request('/cooking')
-        self.assertEqual(json.loads(self.request('/api/rarity')[2])['rarities']['tomato'], 23)
+        self.assertEqual(json.loads(self.request('/api/farming')[2])['defaults']['scale'], 1)
+        self.assertEqual(self.request('/api/farming/preferences', dict(state=state, expected_version=0))[0], 405)
+        self.assertEqual(json.loads(self.request('/api/rarity')[2]), before)
         catalog = json.loads(self.request('/api/catalog')[2])
         self.assertEqual(len(catalog['dishes']), 81)
         self.assertTrue(catalog['prediction']['enabled'])
         self.assertTrue(catalog['signature']['enabled'])
-        with closing(sqlite3.connect(self.settings)) as db:
-            self.assertNotIn('farming_working_plan', {r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='table'")})
+        self.assertFalse(self.settings.exists())
 
     def test_request_validation_origin_and_private_files(self):
         state = FarmingPlanner().defaults()
-        for path in ('/api/farming/analyze', '/api/farming/preferences'):
+        for path in ('/api/farming/analyze',):
             self.assertEqual(self.request(path, state, {'Content-Type': 'application/json', 'Origin': 'https://elsewhere.invalid'})[0], 403)
             self.assertEqual(self.request(path, [1, 2])[0], 422)
         state['placements'] = [{'plant_id': []}]
@@ -251,10 +231,13 @@ class CombinedHTTPTests(unittest.TestCase):
             self.assertEqual(self.request(path)[0], 404)
         self.assertEqual(self.request('/api/farming/preferences', method='PUT')[0], 405)
 
-    def test_protect_content_and_cooking_settings_from_plan_path(self):
-        for path in (self.settings, *self.snapshots):
-            with self.subTest(path=path), self.assertRaises(ValueError):
-                create_server(port=0, settings_path=self.settings, farming_settings=path)
+    def test_no_file_transfer_controls_or_routes(self):
+        html = self.request('/farming')[2].decode()
+        for control in ('import-plan', 'export-plan', 'export-reset-plan', 'save-plan', 'reload-plan', 'type="file"'):
+            self.assertNotIn(control, html)
+        for path in ('/api/farming/import', '/api/farming/export', '/api/farming/preferences'):
+            self.assertEqual(self.request(path, {})[0], 405)
+
 
 
 if __name__ == '__main__':

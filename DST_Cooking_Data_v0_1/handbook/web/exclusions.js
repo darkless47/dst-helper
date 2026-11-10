@@ -1,7 +1,15 @@
 'use strict';
 
 const signatureExclusionsUI = (() => {
-  let request = null, ready = false, saving = false;
+  let ready = false, defaults;
+  const KEY = 'dst-helper.cooking.exclusions.v1';
+  const valid = ids => Array.isArray(ids) && new Set(ids).size === ids.length &&
+    ids.every(id => typeof id === 'string' && state.data.dishes.some(d => d.dish_id === id));
+  function initialize() {
+    defaults = [...preferences().dish_ids];
+    accept({ version: 1, dish_ids: browserStorage.read(KEY, defaults, valid) }, false);
+    ready = true;
+  }
   const preferences = () => state.data?.signature?.exclusions;
 
   function sync() {
@@ -19,7 +27,7 @@ const signatureExclusionsUI = (() => {
     const button = el('button', { type: 'button', class: excluded ? 'text-button' : 'secondary',
       text: excluded ? '恢复推荐' : '加入名单', 'aria-label': dish.name_zh + (excluded ? '，恢复推荐' : '，加入不考虑名单'),
       onclick: () => update(dish.dish_id, !excluded) });
-    button.disabled = saving || !ready;
+    button.disabled = !ready;
     return el('div', { class: 'exclusion-dish', 'data-exclusion-dish': dish.dish_id }, [portrait(dish),
       el('div', { class: 'exclusion-dish-name' }, [text('strong', dish.name_zh), text('small', dish.name_en_hint || '英文提示未提供')]), button]);
   }
@@ -33,58 +41,35 @@ const signatureExclusionsUI = (() => {
     $('excluded-dishes').replaceChildren(...(excluded.length ? excluded.map(dish => row(dish, true)) : [text('p', '名单为空，全部料理都可参与推荐。', 'small muted')]));
     $('exclusion-candidates').replaceChildren(...(candidates.length ? candidates.map(dish => row(dish, false)) : [text('p', '没有可加入的匹配料理。', 'small muted')]));
   }
-  async function load() {
-    if (saving) return;
-    request?.abort(); const current = new AbortController(); request = current; ready = false;
-    $('signature-exclusion-status').textContent = '正在读取名单…'; $('retry-signature-exclusions').hidden = true; renderLists();
-    try {
-      const data = await getJSON('/api/signature-exclusions', current.signal);
-      if (request !== current) return;
-      accept(data); ready = true;
-      $('signature-exclusion-status').textContent = '修改后会立即保存。';
-    } catch (error) {
-      if (error.name !== 'AbortError' && request === current) {
-        $('signature-exclusion-status').textContent = '无法读取名单：' + error.message;
-        $('retry-signature-exclusions').hidden = false;
-      }
-    } finally {
-      if (request === current) { request = null; renderLists(); }
-    }
+  function load() {
+    accept({ version: preferences().version + 1, dish_ids: browserStorage.read(KEY, defaults, valid) });
+    ready = true; renderLists();
+    $('signature-exclusion-status').textContent = '修改后立即保存在当前浏览器。';
   }
-  async function update(dishId, excluded) {
-    if (saving || !ready) return;
-    request?.abort(); request = null; saving = true;
-    $('signature-exclusion-status').textContent = '正在保存…'; renderLists();
+  function save(ids) {
     try {
-      const response = await fetch('/api/signature-exclusions', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dish_id: dishId, excluded, expected_version: preferences().version }) });
-      const data = await response.json();
-      if (!response.ok) {
-        if (data.exclusions) accept(data.exclusions);
-        throw new Error(data.error || '保存失败');
-      }
-      accept(data); ready = true;
-      $('signature-exclusion-status').textContent = excluded ? '已加入名单，仅从优选料理中排除。' : '已恢复推荐。';
-    } catch (error) { $('signature-exclusion-status').textContent = error.message + '；可检查名单后重试。'; }
-    finally {
-      saving = false; renderLists();
-      if ($('signature-exclusion-dialog').open) $('signature-exclusion-search').focus({ preventScroll: true });
-    }
+      browserStorage.write(KEY, ids);
+      accept({ version: preferences().version + 1, dish_ids: ids });
+      $('signature-exclusion-status').textContent = '已保存在当前浏览器。';
+    } catch (error) { $('signature-exclusion-status').textContent = error.message; }
+    renderLists();
   }
+  function update(dishId, excluded) {
+    const ids = new Set(browserStorage.read(KEY, preferences().dish_ids, valid));
+    if (excluded) ids.add(dishId); else ids.delete(dishId);
+    save([...ids]);
+  }
+  window.addEventListener('storage', event => {
+    if (state.data && (event.key === KEY || event.key === null)) load();
+  });
   function init() {
     $('manage-signature-exclusions').addEventListener('click', () => {
       $('signature-exclusion-search').value = '';
       $('signature-exclusion-dialog').showModal(); renderLists(); load();
     });
     $('close-signature-exclusions').addEventListener('click', () => $('signature-exclusion-dialog').close());
-    $('signature-exclusion-dialog').addEventListener('close', () => {
-      if (!$('signature-exclusion-dialog').open) {
-        request?.abort(); request = null;
-        if (state.view === 'signature' && !document.querySelector('dialog[open]')) $('manage-signature-exclusions').focus({ preventScroll: true });
-      }
-    });
     $('signature-exclusion-search').addEventListener('input', renderLists);
-    $('retry-signature-exclusions').addEventListener('click', load);
+    $('clear-signature-exclusions').addEventListener('click', () => save([]));
   }
-  return { init, sync, accept };
+  return { init, initialize, sync, accept };
 })();

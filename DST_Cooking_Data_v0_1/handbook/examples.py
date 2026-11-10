@@ -5,6 +5,7 @@ slots enumerate actual states (not mechanical representatives), so substitutable
 ingredients still produce distinct examples. Cost bounds remain valid for signed
 rarities because states are ordered by cost and each pot has exactly four slots.
 """
+from collections import OrderedDict
 from threading import RLock
 
 from .prediction import PredictionDataError
@@ -90,25 +91,29 @@ class DishExamples(SignatureRecipes):
 
 
 class RecipePlanner:
-    """One coherent settings revision per response; discard old revision caches."""
-    def __init__(self, predictor, dishes, settings):
+    """Bounded cache keyed by actual request preferences, never a user revision."""
+    def __init__(self, predictor, dishes, settings, cache_limit=8):
         self.predictor, self.dishes, self.settings = predictor, dishes, settings
-        self._version = None
+        self.cache_limit = cache_limit
+        self._cache = OrderedDict()
         self._lock = RLock()
 
-    def _refresh(self):
-        snapshot = self.settings.snapshot()
-        if snapshot['version'] != self._version:
-            self._signature = SignatureRecipes(self.predictor, self.dishes, snapshot['rarities'])
-            self._examples = DishExamples(self.predictor, self.dishes, snapshot['rarities'])
-            self._version = snapshot['version']
-
-    def recommend(self, ingredient_id, cooker):
+    def _planners(self, rarities):
+        values = self.settings.snapshot()['rarities'] if rarities is None else rarities
+        key = tuple(sorted((k, v) for k, v in values.items() if v != 0))
         with self._lock:
-            self._refresh()
-            return dict(self._signature.recommend(ingredient_id, cooker), rarity_version=self._version)
+            if key not in self._cache:
+                self._cache[key] = (SignatureRecipes(self.predictor, self.dishes, values),
+                                    DishExamples(self.predictor, self.dishes, values))
+                if len(self._cache) > self.cache_limit:
+                    self._cache.popitem(last=False)
+            self._cache.move_to_end(key)
+            return self._cache[key]
 
-    def examples(self, dish_id, cooker):
-        with self._lock:
-            self._refresh()
-            return dict(self._examples.examples(dish_id, cooker), rarity_version=self._version)
+    def recommend(self, ingredient_id, cooker, rarities=None, rarity_version=0):
+        signature, _ = self._planners(rarities)
+        return dict(signature.recommend(ingredient_id, cooker), rarity_version=rarity_version)
+
+    def examples(self, dish_id, cooker, rarities=None, rarity_version=0):
+        _, examples = self._planners(rarities)
+        return dict(examples.examples(dish_id, cooker), rarity_version=rarity_version)

@@ -3,8 +3,9 @@
 (() => {
   const $ = id => document.getElementById(id);
   const seasons = { autumn: '秋', winter: '冬', spring: '春', summer: '夏' };
-  let data, plan, version, result, timer, pending = false, busy = false, blocked = false, seq = 0, limit = 12;
-  let resetting = false, loading = false, importing = false;
+  let data, plan, result, timer, pending = false, busy = false, unsaved = false, seq = 0, limit = 12;
+  let resetting = false, loading = false, storageRequest = 0;
+  const PLAN_KEY = 'dst-helper.farming.plan.v1';
   const resetDialog = $('reset-plan-dialog');
   const RATIO_LAYOUT_KEY = 'dst-helper.farming-ratio-layout';
   let ratioLayout = 'cards';
@@ -58,7 +59,7 @@
     }
     return body;
   }
-  function changed({ controls = false, layout = false } = {}) {
+  function changed({ controls = false, layout = false, save = true } = {}) {
     seq++;
     limit = 12;
     pending = true;
@@ -67,7 +68,7 @@
     $('ratio-results').setAttribute('aria-busy', 'true');
     if (controls) renderControls();
     if (layout) renderGrid();
-    if (!blocked) $('save-status').textContent = '有更改，正在计算并保存…';
+    if (save) savePlan();
     clearTimeout(timer);
     timer = setTimeout(work, 120);
   }
@@ -89,25 +90,14 @@
         renderResults();
         renderReport();
         $('ratio-results').setAttribute('aria-busy', 'false');
-        if (blocked) continue;
-        try {
-          const saved = await api('/api/farming/preferences', { expected_version: version, state: draft });
-          version = saved.version;
-          if (captured === seq) $('save-status').textContent = '已自动保存 · 规划版本 ' + version;
-        } catch (issue) {
-          if (issue.status === 409) blocked = true;
-          $('save-status').textContent = '尚未保存：' + issue.message;
-          error(issue.message + ' 当前草稿仍可导出。');
-        }
       }
     } catch (issue) {
       result = null;
-      $('ratio-results').replaceChildren(text('p', '当前条件未能完成计算，请保存 / 重试。', 'farm-empty'));
+      $('ratio-results').replaceChildren(text('p', '当前条件未能完成计算。', 'farm-empty'), button('重试计算', () => changed({ save: false })));
       $('ratio-count').textContent = '计算失败';
       $('layout-report').replaceChildren(text('p', '布局检查未完成。', 'status-unknown'));
       $('plant-report').replaceChildren();
       error(issue.message);
-      $('save-status').textContent = '尚未保存；可导出当前草稿后重试。';
     } finally {
       busy = false;
       $('ratio-results').setAttribute('aria-busy', 'false');
@@ -289,86 +279,80 @@
       }))
     ]));
   }
-  async function load() {
-    loading = true;
-    updateResetButton();
+  function validSaved(value) {
+    return value && typeof value === 'object' && !Array.isArray(value) &&
+      value.schema_version === data.defaults.schema_version && value.dataset_version === data.defaults.dataset_version &&
+      Object.keys(value).length === Object.keys(data.defaults).length && Object.keys(data.defaults).every(k => Object.hasOwn(value, k));
+  }
+  function savePlan() {
     try {
-      const loaded = await api('/api/farming');
-      data = loaded;
+      browserStorage.write(PLAN_KEY, plan);
+      unsaved = false;
+      $('save-status').textContent = '已自动保存到当前浏览器';
+    } catch (issue) { unsaved = true; $('save-status').textContent = '尚未保存：' + issue.message; }
+  }
+  async function load() {
+    loading = true; updateResetButton();
+    try {
+      data = await api('/api/farming');
       $('source-note').textContent = `灰机维基修订 ${data.metadata.source_revision} · 收到日期 ${data.metadata.received_date} · 基于维基的规划 · 目标版本 ${data.metadata.target_build}（${data.metadata.game_build_verified ? '已核验 ' + data.metadata.game_build_verified : '未核验'}）`;
-      plan = clone(data.preferences.state);
-      version = data.preferences.version;
-      blocked = false;
+      plan = browserStorage.read(PLAN_KEY, data.defaults, validSaved);
+      try { await api('/api/farming/analyze', plan); }
+      catch (issue) {
+        if (issue.status !== 422) throw issue;
+        browserStorage.warn('浏览器保存的规划无效，当前使用默认规划。原数据未被清除；请重置或重新编辑规划。');
+        plan = clone(data.defaults);
+      }
       for (const p of data.plants) { plants.set(p.plant_id, p); if (p.kind === 'crop') crops.set(p.plant_id, p); }
       initControls(); renderGrid();
       $('planner').hidden = false;
-      for (const id of ['save-plan', 'reload-plan', 'export-plan', 'import-plan']) $(id).disabled = false;
-      changed();
-    } catch (issue) { error(issue.message); $('save-status').textContent = '读取失败，请重试。'; $('reload-plan').disabled = false; }
-    finally { loading = false; updateResetButton(); }
+      $('save-status').textContent = '规划仅保存在当前浏览器';
+      changed({ save: false });
+    } catch (issue) {
+      error(issue.message); $('save-status').textContent = '读取失败，请重试。';
+      $('farm-error').append(button('重新读取', load));
+    } finally { loading = false; updateResetButton(); }
   }
-  function updateResetButton() {
-    $('reset-plan').disabled = !plan || resetting || loading || importing;
-  }
-  function exportPlan(snapshot) {
-    const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob), a = node('a', { href: url, download: 'dst-farming-plan.json' });
-    try { (resetDialog.open ? resetDialog : document.body).append(a); a.click(); }
-    finally { a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
-  }
-  async function resetPlan(exportFirst) {
+  function updateResetButton() { $('reset-plan').disabled = !plan || resetting || loading; }
+  function resetPlan() {
     if (resetting || !plan) return;
-    resetting = true;
-    updateResetButton();
-    for (const b of resetDialog.querySelectorAll('button')) b.disabled = true;
-    resetDialog.setAttribute('aria-busy', 'true');
+    resetting = true; updateResetButton();
     $('reset-plan-error').hidden = true;
-    clearTimeout(timer);
     try {
-      // Let any earlier save/import finish before exporting or writing defaults.
-      // The dialog pauses queued autosaves so they cannot restore an old plan.
-      while (busy || loading || importing) await new Promise(resolve => setTimeout(resolve, 20));
-      if (exportFirst) exportPlan(clone(plan));
-      const saved = await api('/api/farming/preferences', { expected_version: version, state: clone(data.defaults) });
-      plan = clone(saved.state);
-      version = saved.version;
-      data.preferences = saved;
-      blocked = false;
-      pending = false;
-      result = null;
-      ratioLayout = 'cards';
-      try { localStorage.removeItem(RATIO_LAYOUT_KEY); } catch { /* Reset remains usable when browser storage is unavailable. */ }
+      const fresh = clone(data.defaults);
+      // Write first; failure keeps the current plan and confirmation intact.
+      browserStorage.write(PLAN_KEY, fresh);
+      plan = fresh; unsaved = false; seq++; clearTimeout(timer);
+      pending = false; result = null; ratioLayout = 'cards';
+      try { localStorage.removeItem(RATIO_LAYOUT_KEY); } catch { /* Plan storage succeeded. */ }
       initControls(); renderGrid(); renderRatioSwitch();
       document.querySelectorAll('#planner details[open]').forEach(d => { d.open = false; });
-      $('ratio-results').replaceChildren();
-      $('layout-report').replaceChildren();
-      $('plant-report').replaceChildren();
-      changed();
-      resetDialog.close();
+      $('ratio-results').replaceChildren(); $('layout-report').replaceChildren(); $('plant-report').replaceChildren();
+      $('save-status').textContent = '已自动保存到当前浏览器';
+      changed({ save: false }); resetDialog.close();
     } catch (issue) {
-      if (issue.status === 409) {
-        blocked = true;
-        $('save-status').textContent = '尚未保存：' + issue.message;
-      }
       $('reset-plan-error').textContent = '重置未完成：' + issue.message;
       $('reset-plan-error').hidden = false;
-    } finally {
-      resetting = false;
-      updateResetButton();
-      for (const b of resetDialog.querySelectorAll('button')) b.disabled = false;
-      resetDialog.setAttribute('aria-busy', 'false');
-      if (pending && !resetDialog.open) work();
-    }
+    } finally { resetting = false; updateResetButton(); }
   }
   $('reset-plan').addEventListener('click', () => {
-    $('reset-plan-error').hidden = true;
-    resetDialog.showModal();
+    $('reset-plan-error').hidden = true; resetDialog.showModal();
   });
-  $('close-reset-plan').addEventListener('click', () => { if (!resetting) resetDialog.close(); });
-  resetDialog.addEventListener('cancel', event => { if (resetting) event.preventDefault(); });
+  $('close-reset-plan').addEventListener('click', () => resetDialog.close());
   resetDialog.addEventListener('close', () => { if (pending && !resetting) work(); });
-  $('confirm-reset-plan').addEventListener('click', () => resetPlan(false));
-  $('export-reset-plan').addEventListener('click', () => resetPlan(true));
+  $('confirm-reset-plan').addEventListener('click', resetPlan);
+  window.addEventListener('storage', async event => {
+    if (!data || !plan || (event.key !== PLAN_KEY && event.key !== null)) return;
+    const captured = seq, request = ++storageRequest;
+    const saved = browserStorage.read(PLAN_KEY, data.defaults, validSaved);
+    try {
+      await api('/api/farming/analyze', saved);
+      if (seq !== captured || request !== storageRequest) return;
+      plan = saved; unsaved = false;
+      initControls(); renderGrid(); changed({ save: false });
+      $('save-status').textContent = '已同步当前浏览器另一页面的规划';
+    } catch (issue) { browserStorage.warn('另一页面的规划未能同步：' + issue.message); }
+  });
   $('all-seeds').addEventListener('click', () => { plan.available = [...crops.keys()]; changed({ controls: true }); });
   $('no-seeds').addEventListener('click', () => { plan.available = []; changed({ controls: true }); });
   $('ratio-scale').addEventListener('change', () => {
@@ -389,29 +373,8 @@
     renderRatioSwitch();
     if (result) renderResults();
   }));
-  $('save-plan').addEventListener('click', () => { if (blocked) { error('服务器有新版本。请先导出当前草稿，再用「读取服务器规划」载入新版本。'); return; } changed(); });
-  $('reload-plan').addEventListener('click', async () => {
-    if (busy) { error('正在处理当前更改，请稍后再读取。'); return; }
-    clearTimeout(timer); pending = false;
-    await load();
-  });
-  $('export-plan').addEventListener('click', () => exportPlan(plan));
-  $('import-plan').addEventListener('change', async event => {
-    importing = true;
-    updateResetButton();
-    try {
-      const file = event.target.files[0];
-      if (!file) return;
-      if (file.size > 65536) throw new Error('规划文件不能超过 64KB。');
-      const imported = JSON.parse(await file.text());
-      await api('/api/farming/analyze', imported);
-      plan = imported;
-      renderControls(); renderGrid(); changed();
-    } catch (issue) { error('导入失败：' + issue.message); }
-    finally { event.target.value = ''; importing = false; updateResetButton(); }
-  });
   window.addEventListener('beforeunload', event => {
-    if (pending || busy || blocked || resetting || $('save-status').textContent.includes('尚未保存')) { event.preventDefault(); event.returnValue = ''; }
+    if (unsaved) { event.preventDefault(); event.returnValue = ''; }
   });
   load();
 })();

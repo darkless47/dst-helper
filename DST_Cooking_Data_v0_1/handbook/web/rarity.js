@@ -1,6 +1,17 @@
 'use strict';
 
 const rarityUI = (() => {
+  const KEY = 'dst-helper.cooking.rarities.v1';
+  let defaults;
+  function valid(values) {
+    return values && typeof values === 'object' && !Array.isArray(values) &&
+      Object.entries(values).every(([id, n]) => state.data.ingredients.some(r => r.ingredient_id === id) &&
+        Number.isInteger(n) && n >= -2147483648 && n <= 2147483647);
+  }
+  function initialize() {
+    defaults = structuredClone(state.data.settings.rarities);
+    refresh(null, false);
+  }
   function apply(snapshot, notify = true) {
     if (!state.data || snapshot.version < (state.data.settings?.version ?? -1)) return;
     const changed = snapshot.version !== state.data.settings?.version;
@@ -11,11 +22,29 @@ const rarityUI = (() => {
     }
   }
 
-  async function refresh(signal, notify = true) {
-    const snapshot = await getJSON('/api/rarity', signal);
+  function refresh(signal, notify = true) {
+    const snapshot = { version: (state.data.settings?.version ?? 0) + 1,
+      rarities: browserStorage.read(KEY, defaults, valid) };
     apply(snapshot, notify);
     return snapshot;
   }
+  async function calculate(path, values, signal) {
+    const response = await fetch(path, { method: 'POST', signal, headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...values, rarities: state.data.settings.rarities, rarity_version: state.data.settings.version }) });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || '计算失败');
+    return data;
+  }
+  function clearAll() {
+    try {
+      browserStorage.write(KEY, {});
+      apply({ version: state.data.settings.version + 1, rarities: {} });
+      if ($('detail-dialog').open && $('rarity-input')) openDetail('ingredient', $('detail-content').dataset.entityId);
+    } catch { /* Storage helper displays why the existing values were retained. */ }
+  }
+  window.addEventListener('storage', event => {
+    if (state.data && (event.key === KEY || event.key === null)) refresh();
+  });
 
   function editor(row) {
     const input = el('input', { type: 'number', step: '1', min: '-2147483648', max: '2147483647',
@@ -39,13 +68,11 @@ const rarityUI = (() => {
       saving = true; save.disabled = true; reset.disabled = true; input.disabled = true;
       status.textContent = '正在保存…';
       try {
-        const response = await fetch('/api/rarity', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ingredient_id: row.ingredient_id, rarity: value, expected_version: state.data.settings.version }) });
-        const data = await response.json();
-        if (!response.ok) {
-          if (data.settings) apply(data.settings);
-          throw new Error(data.error || '保存失败');
-        }
+        const rarities = browserStorage.read(KEY, state.data.settings.rarities, valid);
+        if (value === null) delete rarities[row.ingredient_id];
+        else rarities[row.ingredient_id] = value;
+        browserStorage.write(KEY, rarities);
+        const data = { version: state.data.settings.version + 1, rarities };
         apply(data);
         input.value = data.rarities[row.ingredient_id] ?? '';
         status.textContent = value === null ? '已恢复默认稀有度 0。' : '已保存稀有度 ' + value + '，料理示例与优选排序将使用新值。';
@@ -53,7 +80,7 @@ const rarityUI = (() => {
       finally { saving = false; save.disabled = false; reset.disabled = false; input.disabled = false; }
     }
     return section('稀有度 · 自定义', [form, status,
-      text('p', '值越高越难获取，负数表示优先消耗；未设置按 0 计算，每份重复食材分别计分。设置保存在本机，并由本服务器的 LAN 用户共享。', 'small muted')]);
+      text('p', '值越高越难获取，负数表示优先消耗；未设置按 0 计算，每份重复食材分别计分。设置仅保存在当前浏览器，不会影响其他用户。', 'small muted')]);
   }
 
   function edit(id) {
@@ -63,5 +90,5 @@ const rarityUI = (() => {
       }
     });
   }
-  return { apply, refresh, editor, edit };
+  return { initialize, apply, refresh, calculate, clearAll, editor, edit };
 })();

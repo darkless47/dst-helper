@@ -30,10 +30,9 @@ const examplesUI = (() => {
       target.output.setAttribute('aria-busy', 'false'); request = null; return;
     }
     try {
-      const data = await getJSON('/api/examples?' + new URLSearchParams({ dish: target.dish.dish_id, cooker: target.cooker }), controller.signal);
+      const data = await rarityUI.calculate('/api/examples', { dish: target.dish.dish_id, cooker: target.cooker }, controller.signal);
       if (!active(target) || request !== controller) return;
       if (!data.complete || data.rarity_version < state.data.settings.version) throw new Error('稀有度已更新，请重新查找。');
-      if (data.rarity_version > state.data.settings.version) await rarityUI.refresh(controller.signal, false);
       if (!active(target) || request !== controller) return;
       if (data.rarity_version !== state.data.settings.version) throw new Error('稀有度已再次更新，请重新查找。');
       const rows = data.examples.map((example, index) => {

@@ -82,9 +82,11 @@ unavailable, switching still works for the current session.
 
 The server defaults to loopback with optional LAN binding, serves an explicit static-file allowlist, and opens the
 SQLite content with `mode=ro` and `query_only`. Display preferences use browser localStorage.
-Editable rarity values use a separate `.local/user_settings.sqlite`, shared by everyone on this
-server; `--settings path/to/preferences.sqlite` selects another settings file. The wiki database
-stays unchanged. Inventory and history are not stored. The **出锅预测** view accepts exactly four
+Editable rarities and exclusions use separate browser localStorage keys, isolated between browsers.
+New browsers receive the tracked `data/ingredient_rarities.default.json` and
+`data/signature_exclusions.default.json` values. `--settings <json>` and `--exclusions <json>`
+select alternative read-only default files. Clear-all controls persist empty values; defaults
+do not return on reload. The wiki database stays unchanged. No user preferences are saved by the server. The **出锅预测** view accepts exactly four
 recorded ingredient states, including duplicates, and predicts highest-priority outcomes with
 equal chances among ties. It supports ordinary and portable pot profiles with disclosed
 eligibility assumptions. **优选料理** searches completions containing one selected ingredient:
@@ -111,9 +113,9 @@ In dish and ingredient details, **来源与证据** is collapsed by default. Cli
 to expand the complete source records, original cells, links, hashes, and image provenance.
 
 Use **管理不考虑名单** in **优选料理** to add or restore excluded suggestions. Initially
-蒸树枝、潮湿黏糊、怪物千层饼 are excluded. Changes save immediately in
-`.local/signature_exclusions.json` (beside the selected `--settings` database), shared by
-LAN users. This filter affects only signature recommendations; prediction, cooking
+蒸树枝、潮湿黏糊、怪物千层饼 are excluded. Changes save immediately in this browser.
+**清空全部排除名单** removes every exclusion; **清空全部稀有度** resets ingredient costs to zero.
+These actions are independent and do not reset Farming. This filter affects only signature recommendations; prediction, cooking
 competition/probabilities, ingredient exploration, dish catalog, and dish examples use
 the complete dataset. Removing every entry stays empty across restarts.
 The AST module validates grammar and renders explanations; `handbook/prediction.py` evaluates
@@ -171,18 +173,18 @@ Application layout:
 - `handbook/rules.py`: strict declarative AST validation and Chinese descriptions, independent of UI.
 - `handbook/prediction.py`: four-item prediction, exact tag arithmetic, priority competition, and probabilities.
 - `handbook/signature.py`: complete one-ingredient search with minimum additional rarity and priority-aware feasibility.
-- `handbook/examples.py`: three cheapest distinct dish examples and revision-aware planner caches.
-- `handbook/settings.py`: separate, versioned user rarity preferences; content stays immutable.
-- `handbook/exclusions.py`: JSON-backed signature-only suggestion filter and atomic preference writes.
+- `handbook/examples.py`: three cheapest distinct dish examples and bounded caches keyed by request rarity values.
+- `handbook/settings.py`: read-only JSON rarity defaults and validation of request rarity values.
+- `handbook/exclusions.py`: read-only JSON default exclusions; the browser filters displayed suggestions.
 - `data/prepared_ingredients.json`: explicit 57-state prepared-form selection policy with source-row references.
 - `data/prediction_policy.json`: user-confirmed selection/grouping rules and explicit cooker assumptions.
-- `handbook/server.py`: local/LAN server, read-only content/search APIs, and same-origin preference updates.
+- `handbook/server.py`: local/LAN server, read-only content/search APIs, and same-origin stateless calculations.
 - `handbook/web/`: responsive UI with no external assets or libraries.
 - `tests/test_handbook.py`: independent grammar fixtures, content contracts, and HTTP checks.
 - `tests/test_assets.py`: file containment, image integrity, graceful fallback, and archive coverage.
 - `tests/test_signature.py`: brute-force reference comparisons, special/general classification, witnesses, and HTTP contracts.
-- `tests/test_rarity_examples.py`: independent exhaustive cost references, negative costs, prepared forms, persistence, conflicts, and HTTP writes.
-- `tests/test_signature_exclusions.py`: shared exclusion persistence, conflicts, both-group filtering, and unchanged other modules.
+- `tests/test_rarity_examples.py`: independent exhaustive cost references, negative costs, prepared forms, preference-isolated caches, and stateless HTTP calculations.
+- `tests/test_signature_exclusions.py`: read-only default validation and full cooking competition despite display exclusions.
 
 Run validation from this directory:
 

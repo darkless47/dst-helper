@@ -33,12 +33,31 @@ requested address and port, stop that instance first or choose another port. Omi
 `--host` defaults to local-only access. `python -m dst_helper` is also supported, and
 the earlier `DST_Cooking_Data_v0_1/run_handbook.py` entry point remains available.
 
-The same `--database`, `--assets`, and `--settings` options work with either entry point. Paths to the
+The same `--database`, `--assets`, `--settings`, and `--exclusions` options work with either entry point. Paths to the
 default content and saved images are resolved from the application files, not the
 current working directory.
 
-Ingredient rarity edits are shared by users of this server and stored separately in
-`DST_Cooking_Data_v0_1/.local/user_settings.sqlite`. Unset values count as zero.
+All editable preferences live in browser `localStorage`, independently for each browser
+and site origin (scheme, host, and port). No accounts or server-side user stores are needed.
+Cooking's initial values are human-editable, source-controlled JSON files:
+
+- `DST_Cooking_Data_v0_1/data/ingredient_rarities.default.json`: the current 141 ingredient rarity values.
+- `DST_Cooking_Data_v0_1/data/signature_exclusions.default.json`: the current three excluded dishes.
+
+Restart the server after editing defaults. New browsers receive them once; existing saved
+preferences, including explicitly empty values, remain unchanged. `--settings <json>` and
+`--exclusions <json>` select alternative read-only default files. They no longer point to
+writable SQLite/JSON user stores. Cooking has separate **清空全部稀有度** (all zero) and
+**清空全部排除名单** controls, so either set can be cleared independently.
+
+The browser keys are `dst-helper.cooking.rarities.v1`,
+`dst-helper.cooking.exclusions.v1`, and `dst-helper.farming.plan.v1`. Each stores a
+schema-versioned JSON value. Tabs in the same browser synchronize through storage events.
+Browser storage has no application expiry, but clearing site data, private browsing,
+or browser eviction can remove it. Storage failures show a warning rather than claiming
+to save successfully. Use the same public HTTPS origin consistently to retain preferences.
+Existing `.local/` user files are no longer read or written; personal Farming plans are
+not copied into new visitors' browsers. Curated game data stays read-only.
 **优选料理** defaults to **易获取优先**; dish details show pictured, minimum-rarity example pots.
 
 See [the application README](DST_Cooking_Data_v0_1/README.md) for data, assets,
@@ -54,7 +73,7 @@ Validation reports are dated evidence, not a substitute for running the checks b
 `.gitignore` excludes Python environments/caches, `.local/` state and QA output,
 logs, environment files, generated databases, and the private `wiki-webpage-save/`
 archive. The two packaged content databases are explicit exceptions. Keep personal
-settings and farming plans locally; they are not part of the initial commit.
+settings and farming plans in the browser; the two Cooking defaults are part of the source.
 
 The app loads its 226 catalog pictures and three stat icons from the committed
 `assets/images/` directory. A fresh checkout includes all runtime images and does
@@ -92,7 +111,7 @@ The combination list has **卡片 / 表格** views, with the display preference 
 in the browser. Cards put each crop and its count on a separate row; the table
 shows every matching combination with the same scale, stock and selection behavior.
 Reducing the field count preserves plants: first erase any plants in fields that
-would be removed. Existing one-/two-field plans still import without conversion.
+would be removed.
 
 Crop-name links open the matching ingredient in Cooking, using product ingredient
 IDs. The planner uses `DST_Farming_v0_1/data/farming.json` as its authoritative curated
@@ -103,22 +122,18 @@ wiki-based static calculations; compatibility with reported game build **762172*
 has not been verified. Exact growth timing, water scheduling, and automatic layout
 synthesis are outside this implementation.
 
-The working plan, seed availability, stock counts, filters and layout
-automatically persist in `DST_Cooking_Data_v0_1/.local/farming_plans.sqlite`, separately
-from Cooking preferences and both curated datasets. `--settings` relocates this
-default alongside the Cooking settings; `--farming-settings <path>` overrides only
-the Farming store. Server users share this working plan, with version checks to
-prevent concurrent edits from silently overwriting each other. If another page
-saves first, export the retained draft before loading the server's latest plan.
-Export/import JSON includes schema and dataset versions. Importing a different
-version is rejected without replacing the current plan.
+The working plan, seed availability, stock counts, filters and layout automatically
+persist in this browser, separately from Cooking preferences. Changes save locally before
+calculation requests complete. `/api/farming/analyze` validates a bounded JSON plan and
+returns calculations without saving it. Cooking calculations likewise receive validated
+rarities per request; their bounded cache is keyed by actual preference values, keeping
+results isolated even when two browsers have the same local revision.
 
-**重置全部数据** opens a confirmation dialog. **Reset** restores Farming's default
-plan and clears this browser's Farming display preference. **Export and Reset**
-first downloads the current draft as JSON, then performs the same reset. Close the
-dialog or press Esc to cancel. Reset affects the shared Farming plan; Cooking's
-settings and curated datasets remain separate. Failed or conflicting saves keep
-the current draft available for export instead of replacing it locally.
+**重置全部种植数据** opens a confirmation dialog. **确认重置** restores Farming's default
+plan and clears this browser's Farming display preference. Close the dialog or press Esc
+to cancel. Reset leaves Cooking preferences and other browsers untouched. Failed storage
+writes preserve the existing plan. Farming has no manual save, server reload, file upload,
+import, export, or download workflow; the former server preference-write APIs are removed.
 
 ## Checks
 
@@ -138,7 +153,7 @@ Pop-Location
 ```
 
 Optional real-browser acceptance checks use an installed Windows Edge/Chrome,
-temporary user settings and an isolated headless browser profile, with no Python
+isolated headless browser contexts, with no Python
 dependencies. They require permission for local loopback debugging connections:
 
 ```powershell
@@ -146,4 +161,5 @@ python tests/browser_smoke.py
 ```
 
 The browser checks cover navigation, season/seed constraints, layouts, stock caps,
-mobile sizing and Cooking links; screenshots go to ignored `.local/qa/`.
+mobile sizing, Cooking links, independent browser preferences, persistent clear-all values,
+storage failure recovery, and resets during calculations; screenshots go to ignored `.local/qa/`.

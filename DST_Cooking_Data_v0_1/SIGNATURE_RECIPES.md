@@ -17,7 +17,7 @@ two criteria. Hunger is the default nutrition metric; HP and sanity are also ava
 The named group always stays first, and both groups use the same controls. Source order
 breaks remaining ties. Within the nutrition comparison, NULL/composite values sort after
 known values and remain source text. Changing either ranking control resets the second
-group to five. All rarity values start at zero; edit them in **食材探索** to customize costs.
+group to five. Rarity values initially use the tracked defaults; edit them in **食材探索** or clear them all to zero.
 
 “特别” indicates an explicit recipe reference, not exclusive ownership of a dish by
 one ingredient. Raw/cooked alternatives are recognized through their listed prefab
@@ -28,16 +28,17 @@ label. For example, ordinary-pot honey has three named dishes: 蜜汁火腿、�
 
 Use **管理不考虑名单** at the top of **优选料理**. The dialog shows excluded dishes
 with **恢复推荐**, plus a searchable list of other dishes with **加入名单**. Changes
-save immediately, refresh both recommendation groups, and reset expansion to five.
+save immediately in the current browser and refresh both recommendation groups.
 The complete special group remains first; exclusions apply to it too. Clearing the
 list allows all feasible dishes and remains empty after restart.
 
 On first run the list contains **蒸树枝**, **潮湿黏糊**, and **怪物千层饼**, as requested
 by the user. These are recommendation preferences, not new food-type/game-rule data.
-The initial stable dish IDs are in `data/signature_exclusions.default.json`. The mutable
-server-wide list lives in `.local/signature_exclusions.json`, beside the selected
-`--settings` database. LAN users share it. Back up this JSON separately from the wiki
-snapshot. Defaults seed only a missing file and never overwrite an existing empty list.
+The initial stable dish IDs are in the tracked, human-editable `data/signature_exclusions.default.json`.
+The browser stores custom values under `dst-helper.cooking.exclusions.v1`.
+**清空全部排除名单** persists an empty list. Defaults seed only missing browser data and
+never overwrite an existing empty list. `--exclusions <json>` selects an alternative
+read-only defaults file. Editing defaults affects new browsers after a server restart.
 
 The JSON is deliberately simple:
 
@@ -48,26 +49,23 @@ The JSON is deliberately simple:
 }
 ```
 
-The filter runs **after** the full cooking search, only when returning signature
-recommendations. Excluded recipes still participate in priority competition and ties.
+The filter runs in the browser **after** the full cooking search, only when displaying
+signature recommendations. Excluded recipes still participate in priority competition and ties.
 Hiding a winning dish cannot promote a losing recipe or change any displayed example's
 probability. Dish prediction, ingredient exploration, catalog cards/tables, detail views,
 and dish examples use all original recipes. The source database and rarity settings
 are unchanged by exclusion edits.
 
-`GET /api/signature-exclusions` returns `{version, dish_ids}`; the version is a content
-hash, so manual JSON edits are detected on the next read. `POST` accepts
-`{dish_id, excluded, expected_version}` with a Boolean `excluded`. Signature responses
-include `exclusion_version` and `excluded_dish_ids`. Writes use same-origin JSON requests,
-atomic file replacement, and a server lock. Stale LAN edits return 409 with the latest
-`exclusions`; review and retry the action. Failed writes retain the prior valid file.
-Malformed saved JSON is reported rather than reset. Unknown stored IDs are preserved
-for future snapshots, but API edits must reference known dishes.
+`GET /api/signature-exclusions` returns read-only initial defaults. The former preference
+POST returns 405. Signature calculations return complete groups without exclusions;
+the browser filters these groups using its own list. Browser storage is schema-versioned,
+and malformed saved data shows a warning without overwriting it. Storage failures retain
+the previous list. Only known dish IDs can be added through the UI.
 
-`tests/test_signature_exclusions.py` checks defaults, persistence, empty lists, atomic
-write failures, validation, concurrent conflicts, both-group filtering, and unchanged
-predictor/catalog/ingredient/example results. Browser checks cover search, add/remove,
-pagination refresh, error recovery, keyboard focus, and narrow screens.
+`tests/test_signature_exclusions.py` checks tracked defaults, malformed default files,
+read-only snapshots, and complete cooking competition despite display exclusions.
+`tests/browser_smoke.py` checks add/remove, clear-all persistence, independent browsers,
+unchanged prediction, and storage failure recovery.
 
 ## Actual outcome feasibility
 
@@ -90,14 +88,16 @@ Search covers all remaining triples with repetition. It has no sampling or time 
 To keep this practical, states are interchangeable for search only when their
 contributions to **every captured tag and named-group condition** are identical. The
 current snapshot's 145 states have 68 such profiles. Each profile uses its cheapest state
-at the current settings revision, with no change to the selected exact state. A bit mask evaluates the final slot
+using the requesting browser's rarity values, with no change to the selected exact state. A bit mask evaluates the final slot
 in parallel, and descending priority groups exclude strictly higher matches while
 preserving ties. All prefixes are compared for minimum additional cost; finding one witness
 does not stop optimization. Each displayed example is replayed through `ExactPotPredictor`.
 
-Search caches are in memory, bounded by the finite state/cooker universe, and cleared
-on server restart or a rarity revision change. CPU searches are serialized across clients; browser requests are
-cancelled when the selection changes, and stale results cannot replace a new selection.
+Search caches are in memory and bounded to eight rarity configurations, each with a
+finite state/cooker universe. Keys use actual rarity values, so equal browser revisions
+cannot mix results. Searches for the same configuration are serialized; independent
+configurations have separate locks. Browser requests are cancelled when the selection
+changes, and stale results cannot replace a new selection.
 Failed requests retain the selection and offer a retry.
 
 ## Scope and validation

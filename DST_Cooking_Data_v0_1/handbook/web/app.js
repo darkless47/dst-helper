@@ -196,6 +196,7 @@ function setView(view) {
   $('signature-section').hidden = view !== 'signature' || !state.data;
   $('dish-filters').hidden = view !== 'dishes';
   $('ingredient-filters').hidden = view !== 'ingredients';
+  $('rarity-controls').hidden = view !== 'ingredients';
   $('catalog-layout-switch').hidden = !LAYOUT_KEYS[view];
   $('catalog-layout-switch').setAttribute('aria-label', view === 'ingredients' ? '食材显示方式' : '料理显示方式');
   document.querySelectorAll('[data-view]').forEach(button => {
@@ -304,7 +305,7 @@ function renderEvidence() {
     el('section', { class: 'evidence-panel' }, [text('h2', '尚待确认的内容'), ...data.issues.map(issueNode)]),
     el('section', { class: 'evidence-panel' }, [text('h2', '使用与来源说明'),
       text('p', '此版本提供只读目录、四格维基实验预测与含指定食材的优选料理。优选料理经完整四格结果复核，采用相同锅具和食材范围，不限制库存。优先级、同分概率、混合计数及普通配方双锅具适用性已由用户确认；各食材的锅具适用范围尚未核验。显示偏好保存在浏览器中，内容数据库保持只读。'),
-      text('p', '稀有度由用户自定义，保存在独立的本机设置中，同一服务器的 LAN 用户共享。优选料理默认按其余食材的最低稀有度排序；料理详情提供按总稀有度选出的图片示例。未设置的稀有度按 0 计算。'),
+      text('p', '稀有度由用户自定义，仅保存在当前浏览器，不影响其他用户。优选料理默认按其余食材的最低稀有度排序；料理详情提供按总稀有度选出的图片示例。未设置的稀有度按 0 计算。'),
       text('p', '图片来自用户提供的网页存档，只从本机读取。已匹配 ' + (data.media?.available_catalog_count ?? 0) + ' / ' + (data.media?.indexed_catalog_count ?? 0) + ' 张目录图片；HP、饥饿与理智图标同样保留来源和哈希。存档缺失或图片不匹配时显示文字。'),
       text('p', '文本许可说明来自既有研究，尚未重新审计。游戏美术权利另行确认；此应用不会从互联网下载图片，也不会发布本地素材。'),
       text('p', '数据库 schema v' + m.schema_version + '；内容更新使用显式 SQLite 迁移与可重复导入。'),
@@ -394,7 +395,7 @@ async function openDetail(kind, id) {
   dialog.scrollTop = 0;
   try {
     const d = await getJSON('/api/detail?' + new URLSearchParams({ kind, id }), request.signal);
-    if (kind === 'ingredient' && d.rarity_version !== state.data.settings.version) await rarityUI.refresh(request.signal);
+    if (kind === 'ingredient') d.rarity = state.data.settings.rarities[d.ingredient_id] ?? 0;
     if (state.request === request) renderDetail(kind, d);
   } catch (error) {
     if (error.name !== 'AbortError' && state.request === request) {
@@ -409,6 +410,8 @@ async function load() {
   $('results').replaceChildren(text('div', '正在读取本地维基快照…', 'loading'));
   try {
     state.data = await getJSON('/api/catalog');
+    rarityUI.initialize();
+    signatureExclusionsUI.initialize();
     const d = state.data;
     $('dish-count').textContent = d.dishes.length;
     $('ingredient-count').textContent = d.ingredients.length;
@@ -452,4 +455,5 @@ document.addEventListener('keydown', event => {
 predictionUI.init();
 signatureUI.init();
 signatureExclusionsUI.init();
+$('clear-rarities').addEventListener('click', rarityUI.clearAll);
 load();

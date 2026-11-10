@@ -1,10 +1,7 @@
 """Host adapter for the supplied wiki planner; curated JSON remains authoritative."""
-from contextlib import closing
 from copy import deepcopy
 import json
 from pathlib import Path
-import sqlite3
-from threading import RLock
 
 from DST_Farming_v0_1.scripts import planner_core as core
 
@@ -12,10 +9,6 @@ DATA_ROOT = Path(__file__).resolve().parents[1] / 'DST_Farming_v0_1'
 STRESS_KEYS = ('nutrients', 'moisture', 'debris', 'season', 'family', 'overcrowding', 'tending')
 CARE_KEYS = ('water', 'tending', 'soil', 'debris', 'seeds', 'history')
 FLAGS = ('specific_seed', 'never_rotted', 'not_forced_ripened')
-
-
-class PlanConflict(Exception):
-    pass
 
 
 class FarmingPlanner:
@@ -35,7 +28,7 @@ class FarmingPlanner:
 
     def validate(self, value):
         if type(value) is not dict or set(value) != set(self.defaults()):
-            raise ValueError('规划字段不完整，请使用本应用导出的规划。')
+            raise ValueError('规划字段不完整，请重置当前浏览器的规划。')
         if type(value['schema_version']) is not int or value['schema_version'] != 1:
             raise ValueError('不支持此规划格式版本。')
         if value['dataset_version'] != self.data['metadata']['dataset_version']:
@@ -115,38 +108,3 @@ class FarmingPlanner:
         matches = required is not None and all(actual[k] == required.get(k, 0) for k in self.plants)
         return dict(eligible=list(eligible), ratios=answers, layout=layout, layout_matches_selected=matches,
                     stress=core.stress_bounds(state['stages'], **{k: state[k] for k in FLAGS}))
-
-
-class PlanStore:
-    """A versioned working plan in a dedicated writable file, never a content DB."""
-    def __init__(self, path, planner):
-        self.path = Path(path).resolve()
-        self.planner = planner
-        self.lock = RLock()
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        with closing(sqlite3.connect(self.path, timeout=10)) as db, db:
-            tables = {r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
-            if tables and tables != {'farming_working_plan'}:
-                raise ValueError('Farming preferences must use a dedicated plan database.')
-            db.execute('CREATE TABLE IF NOT EXISTS farming_working_plan (id INTEGER PRIMARY KEY CHECK(id=1), revision INTEGER NOT NULL, state_json TEXT NOT NULL)')
-            db.execute('INSERT OR IGNORE INTO farming_working_plan VALUES(1,0,?)', (json.dumps(planner.defaults(), ensure_ascii=False),))
-        self.snapshot()
-
-    def snapshot(self):
-        with self.lock, closing(sqlite3.connect(self.path, timeout=10)) as db:
-            version, raw = db.execute('SELECT revision,state_json FROM farming_working_plan WHERE id=1').fetchone()
-            return dict(version=version, state=self.planner.validate(json.loads(raw)))
-
-    def update(self, state, expected_version):
-        state = self.planner.validate(state)
-        if type(expected_version) is not int or expected_version < 0:
-            raise ValueError('缺少有效的规划版本。')
-        with self.lock, closing(sqlite3.connect(self.path, timeout=10)) as db, db:
-            db.execute('BEGIN IMMEDIATE')
-            version, raw = db.execute('SELECT revision,state_json FROM farming_working_plan WHERE id=1').fetchone()
-            if version != expected_version:
-                raise PlanConflict('其他页面已保存新规划。当前草稿已保留，可导出或读取服务器规划。')
-            if json.loads(raw) != state:
-                version += 1
-                db.execute('UPDATE farming_working_plan SET revision=?,state_json=? WHERE id=1', (version, json.dumps(state, ensure_ascii=False)))
-            return dict(version=version, state=state)

@@ -1,71 +1,44 @@
-"""Independent exhaustive cost references, preference persistence, and HTTP writes."""
+"""Independent exhaustive cost references, stateless preference isolation, and HTTP calculations."""
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import http.client
 from itertools import combinations_with_replacement
 import json
 from pathlib import Path
-import shutil
 import tempfile
 import threading
 import unittest
-from urllib.parse import urlencode
 
 from handbook.catalog import Catalog, DEFAULT_DATABASE
 from handbook.examples import DishExamples, RecipePlanner
 from handbook.prediction import ExactPotPredictor, PredictionInputError
 from handbook.preparation import PREPARED_IDS, PREPARATION_POLICY, required_prepared_prefabs
 from handbook.server import create_server
-from handbook.settings import SettingsConflict, UserSettings
+from handbook.settings import DEFAULT_SETTINGS, CookingDefaults, validate_rarities
 from handbook.signature import SignatureRecipes
 from test_signature import synthetic_snapshot
 
 
 class SettingsTests(unittest.TestCase):
-    def test_content_copies_cannot_be_opened_as_settings(self):
-        with tempfile.TemporaryDirectory() as folder:
-            path = Path(folder) / 'content-copy.sqlite'
-            shutil.copyfile(DEFAULT_DATABASE, path)
-            before = hashlib.sha256(path.read_bytes()).hexdigest()
-            with self.assertRaises(ValueError):
-                UserSettings(path, ['raw'])
-            self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), before)
+    def test_defaults_are_read_only_and_signed_values_are_supported(self):
+        before = DEFAULT_SETTINGS.read_bytes()
+        store = CookingDefaults(DEFAULT_SETTINGS, {r['ingredient_id'] for r in Catalog().overview()['ingredients']})
+        values = store.snapshot()['rarities']
+        self.assertEqual(values['twigs'], -1)
+        self.assertEqual(values['butter'], 80)
+        values.clear()
+        self.assertTrue(store.snapshot()['rarities'])
+        self.assertEqual(DEFAULT_SETTINGS.read_bytes(), before)
 
-    def test_persistence_defaults_signed_values_and_state_identity(self):
-        with tempfile.TemporaryDirectory() as folder:
-            path = Path(folder) / 'settings.sqlite'
-            store = UserSettings(path, ['raw', 'cooked'])
-            self.assertEqual(store.snapshot(), dict(version=0, rarities={}))
-            self.assertEqual(store.update('raw', -7, 0)['rarities'], {'raw': -7})
-            restored = UserSettings(path, ['raw', 'cooked'])
-            result = restored.update('cooked', 12, 1)
-            self.assertEqual(result['rarities'], {'raw': -7, 'cooked': 12})
-            self.assertEqual(restored.update('raw', None, 2)['rarities'], {'cooked': 12})
-            self.assertEqual(restored.update('raw', None, 3)['version'], 3)
-            self.assertEqual(restored.update('raw', 0, 3)['rarities']['raw'], 0)
-            # Replacing the content universe does not delete unknown stored preferences.
-            UserSettings(path, ['cooked']).snapshot()
-            self.assertIn('raw', UserSettings(path, ['raw', 'cooked']).snapshot()['rarities'])
-
-    def test_invalid_values_and_concurrent_edit_conflicts(self):
-        with tempfile.TemporaryDirectory() as folder:
-            store = UserSettings(Path(folder) / 'settings.sqlite', ['raw'])
-            for value in [True, False, 1.5, '3', [], {}, 2147483648, -2147483649]:
-                with self.subTest(value=value), self.assertRaises(PredictionInputError):
-                    store.update('raw', value, 0)
+    def test_invalid_request_rarities(self):
+        for value in [True, False, 1.5, '3', [], {}, 2147483648, -2147483649]:
+            with self.subTest(value=value), self.assertRaises(PredictionInputError):
+                validate_rarities({'raw': value}, {'raw'})
+        for value in [None, [], {'missing': 1}]:
             with self.assertRaises(PredictionInputError):
-                store.update('missing', 1, 0)
-            with self.assertRaises(PredictionInputError):
-                store.update('raw', 1, True)
-            def edit(value):
-                try:
-                    store.update('raw', value, 0)
-                    return True
-                except SettingsConflict:
-                    return False
-            with ThreadPoolExecutor(max_workers=2) as pool:
-                self.assertEqual(sorted(pool.map(edit, [3, -3])), [False, True])
-            self.assertEqual(store.snapshot()['version'], 1)
+                validate_rarities(value, {'raw'})
+        self.assertEqual(validate_rarities({'raw': -7}, {'raw'}), {'raw': -7})
+        self.assertEqual(validate_rarities({}, {'raw'}), {})
 
 
 class CostOptimalityTests(unittest.TestCase):
@@ -140,29 +113,35 @@ class CostOptimalityTests(unittest.TestCase):
             self.assertEqual(row['name_zh'], rows[row['ingredient_id']]['name_zh'])
             self.assertEqual(row['source_row'], rows[row['ingredient_id']]['source_row'])
 
-    def test_settings_changes_invalidate_cached_minimum_examples_and_signature_witnesses(self):
+    def test_request_preferences_isolate_cached_examples_and_signature_witnesses(self):
         snapshot = synthetic_snapshot()
         predictor = ExactPotPredictor(snapshot)
-        with tempfile.TemporaryDirectory() as folder:
-            store = UserSettings(Path(folder) / 'settings.sqlite', predictor.ingredients)
-            planner = RecipePlanner(predictor, snapshot['dishes'], store)
-            before = planner.examples('fallback', 'crock_pot')
-            old_signature = planner.recommend('raw', 'crock_pot')
-            store.update('filler', -20, 0)
-            after = planner.examples('fallback', 'crock_pot')
-            new_signature = planner.recommend('raw', 'crock_pot')
-            self.assertEqual(before['rarity_version'], 0)
-            self.assertEqual(after['rarity_version'], 1)
-            self.assertLess(after['examples'][0]['total_rarity'], before['examples'][0]['total_rarity'])
-            self.assertEqual(after['examples'][0]['ingredients'], ['filler'] * 4)
-            self.assertNotEqual(old_signature['rarity_version'], new_signature['rarity_version'])
+        class Defaults:
+            def snapshot(self):
+                return dict(rarities={})
+        planner = RecipePlanner(predictor, snapshot['dishes'], Defaults(), cache_limit=2)
+        before = planner.examples('fallback', 'crock_pot', {}, 1)
+        old_signature = planner.recommend('raw', 'crock_pot', {}, 1)
+        after = planner.examples('fallback', 'crock_pot', {'filler': -20}, 1)
+        new_signature = planner.recommend('raw', 'crock_pot', {'filler': -20}, 1)
+        self.assertEqual(before['rarity_version'], after['rarity_version'])
+        self.assertLess(after['examples'][0]['total_rarity'], before['examples'][0]['total_rarity'])
+        self.assertEqual(after['examples'][0]['ingredients'], ['filler'] * 4)
+        self.assertNotEqual(old_signature['other'], new_signature['other'])
+        self.assertEqual(planner.examples('fallback', 'crock_pot', {}, 1), before)
+        def calculate(n):
+            return planner.examples('fallback', 'crock_pot', {'filler': -n}, 1)['examples'][0]['total_rarity']
+        with ThreadPoolExecutor(max_workers=3) as pool:
+            self.assertEqual(list(pool.map(calculate, [10, 20, 30])), [-40, -80, -120])
+        self.assertLessEqual(len(planner._cache), 2)
+
 
 
 class RarityHTTPTests(unittest.TestCase):
     def setUp(self):
         self.before = hashlib.sha256(DEFAULT_DATABASE.read_bytes()).hexdigest()
         self.folder = tempfile.TemporaryDirectory()
-        self.server = create_server(0, settings_path=Path(self.folder.name) / 'preferences.sqlite')
+        self.server = create_server(0)
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
 
@@ -181,44 +160,39 @@ class RarityHTTPTests(unittest.TestCase):
         finally:
             conn.close()
 
-    def test_rarity_writes_are_separate_persistent_and_exposed_in_catalog_detail_and_examples(self):
-        self.assertEqual(self.request('/api/rarity')[1], dict(version=0, rarities={}))
-        status, result = self.request('/api/rarity', 'POST', dict(ingredient_id='butter', rarity=30, expected_version=0))
-        self.assertEqual(status, 200)
-        self.assertEqual(result['rarities'], {'butter': 30})
-        _, catalog = self.request('/api/catalog')
-        self.assertEqual(next(r['rarity'] for r in catalog['ingredients'] if r['ingredient_id'] == 'butter'), 30)
-        _, detail = self.request('/api/detail?kind=ingredient&id=butter')
-        self.assertEqual(detail['rarity'], 30)
-        status, examples = self.request('/api/examples?' + urlencode(dict(dish='huiji:华夫饼', cooker='crock_pot')))
+    def test_request_preferences_do_not_change_defaults_or_other_clients(self):
+        before = self.request('/api/rarity')[1]
+        payload = dict(dish='huiji:华夫饼', cooker='crock_pot', rarities={'butter': 30}, rarity_version=1)
+        status, examples = self.request('/api/examples', 'POST', payload)
         self.assertEqual(status, 200)
         self.assertEqual(examples['rarity_version'], 1)
         self.assertEqual(len(examples['examples']), 3)
         self.assertTrue(all(e['total_rarity'] == 30 for e in examples['examples']))
-        _, result = self.request('/api/signature?ingredient=meat&cooker=crock_pot')
+        other = self.request('/api/examples', 'POST', dict(payload, rarities={}))[1]
+        self.assertTrue(all(e['total_rarity'] == 0 for e in other['examples']))
+        self.assertEqual(self.request('/api/examples', 'POST', payload)[1], examples)
+        self.assertEqual(self.request('/api/rarity')[1], before)
+        self.assertEqual(list(Path(self.folder.name).iterdir()), [])
+        _, result = self.request('/api/signature', 'POST', dict(ingredient='meat', cooker='crock_pot', rarities={'butter': 30}, rarity_version=1))
         waffles = next(r for r in result['other'] if r['dish_id'] == 'huiji:华夫饼')
         self.assertEqual(waffles['additional_rarity'], 30)
-        self.assertEqual(self.request('/api/rarity', 'POST', dict(ingredient_id='butter', rarity=None, expected_version=1))[1]['rarities'], {})
 
-    def test_validation_conflicts_cross_origin_writes_and_content_paths(self):
-        payload = dict(ingredient_id='meat', rarity=1, expected_version=0)
-        self.assertEqual(self.request('/api/rarity', 'POST', payload, {'Content-Type': 'application/json', 'Origin': 'https://unrelated.example'})[0], 403)
-        self.assertEqual(self.request('/api/rarity', 'POST', payload, {'Content-Type': 'application/json', 'Origin': 'http://['})[0], 403)
-        for bad in [dict(payload, rarity=1.5), dict(payload, rarity=True), dict(payload, rarity='2'),
-                    dict(payload, ingredient_id='missing'), dict(payload, extra=True), {}]:
-            self.assertEqual(self.request('/api/rarity', 'POST', bad)[0], 422)
-        self.assertEqual(self.request('/api/rarity', 'POST', payload, {'Content-Type': 'text/plain'})[0], 422)
-        self.assertEqual(self.request('/api/rarity', 'POST', payload)[0], 200)
-        status, conflict = self.request('/api/rarity', 'POST', payload)
-        self.assertEqual(status, 409)
-        self.assertEqual(conflict['settings']['version'], 1)
-        self.assertEqual(self.request('/api/catalog', 'POST', payload)[0], 405)
+    def test_validation_origin_guards_and_removed_write_endpoints(self):
+        payload = dict(ingredient='meat', cooker='crock_pot', rarities={}, rarity_version=1)
+        for origin in ['https://unrelated.example', 'http://[']:
+            self.assertEqual(self.request('/api/signature', 'POST', payload, {'Content-Type': 'application/json', 'Origin': origin})[0], 403)
+        for bad in [dict(payload, rarities={'meat': True}), dict(payload, rarities={'missing': 2}),
+                    dict(payload, rarity_version=True), dict(payload, rarity_version=-1), dict(payload, extra=True),
+                    dict(payload, ingredient=[]), dict(payload, cooker=[]), [], {}]:
+            self.assertEqual(self.request('/api/signature', 'POST', bad)[0], 422)
+        self.assertEqual(self.request('/api/signature', 'POST', payload, {'Content-Type': 'text/plain'})[0], 422)
+        for path in ['/api/rarity', '/api/signature-exclusions', '/api/catalog']:
+            self.assertEqual(self.request(path, 'POST', payload)[0], 405)
         self.assertEqual(self.request('/.local/user_settings.sqlite')[0], 404)
         self.assertEqual(self.request('/api/examples?dish=missing&cooker=crock_pot')[0], 404)
         for query in ['', 'dish=x', 'dish=x&cooker=bad', 'dish=x&dish=y&cooker=crock_pot', 'dish=x&cooker=crock_pot&extra=y']:
             self.assertEqual(self.request('/api/examples?' + query)[0], 422)
-        with self.assertRaises(ValueError):
-            create_server(0, settings_path=DEFAULT_DATABASE)
+
 
 
 if __name__ == '__main__':

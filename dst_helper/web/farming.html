@@ -6,6 +6,7 @@
   <title>种植规划 · 荒野手记</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/helper.css">
+  <script src="/browser-storage.js" defer></script>
   <script src="/farming.js" defer></script>
 </head>
 <body>
@@ -23,8 +24,8 @@
       <main id="main" tabindex="-1">
         <section class="hero"><div><p class="eyebrow">FROM SEED TO HARVEST / FARMING</p><h1>为下一次丰收，留好位置。</h1><p class="intro">选择季节与可用种子，寻找养分配平的作物组合。水分、照料、间距与初始土壤养分仍需管理。</p></div><div class="stamp" aria-hidden="true"><span>荒野生存</span><strong>种植<br>手记</strong><span>GARDEN PLANNER</span></div></section>
         <p class="source-note" id="source-note">灰机维基修订 203373 · 收到日期 2026-11-09 · 基于维基的规划 · 目标版本 762172（未核验）</p>
-        <div class="plan-file-bar"><span id="save-status" role="status" aria-live="polite">正在读取规划…</span><div class="farm-actions"><button id="save-plan" type="button" class="secondary" disabled>保存 / 重试</button><button id="reload-plan" type="button" class="secondary" disabled>读取服务器规划</button><button id="export-plan" type="button" class="secondary" disabled>导出规划</button><label class="secondary file-label">导入规划<input id="import-plan" type="file" accept=".json,application/json" disabled></label><button id="reset-plan" type="button" class="secondary danger-button" disabled>重置全部数据</button></div></div>
-        <p class="small muted">修改自动保存在本机服务器；LAN 用户共享同一份工作规划。导出文件可备份当前草稿。</p>
+        <div class="plan-file-bar"><span id="save-status" role="status" aria-live="polite">正在读取规划…</span><div class="farm-actions"><button id="reset-plan" type="button" class="secondary danger-button" disabled>重置全部种植数据</button></div></div>
+        <p class="small muted">修改自动保存在当前浏览器，不影响其他用户。清除网站数据或使用无痕模式可能导致规划丢失。</p>
         <div id="farm-error" class="error-box" role="alert" hidden></div>
         <div id="planner" hidden>
           <section class="farm-panel" aria-labelledby="season-title">
@@ -73,10 +74,10 @@
   </div>
   <dialog id="reset-plan-dialog" class="reset-dialog" aria-labelledby="reset-plan-title" aria-describedby="reset-plan-description">
     <div class="reset-dialog-heading"><h2 id="reset-plan-title">重置全部种植数据？</h2><button id="close-reset-plan" type="button" class="icon-button" aria-label="取消重置" autofocus>×</button></div>
-    <p id="reset-plan-description">季节、可用种子、库存、倍数、选中配比、田地布局，以及当前浏览器的显示偏好，都将恢复默认。此服务器的 LAN 用户共享同一份种植规划。</p>
-    <p class="small muted">Reset 直接重置；Export and Reset 先下载当前规划 JSON，再重置。按 Esc 或关闭此窗口可取消。</p>
+    <p id="reset-plan-description">季节、可用种子、库存、倍数、选中配比、田地布局，以及当前浏览器的显示偏好，都将恢复默认。仅重置当前浏览器的种植规划，不影响烹饪偏好或其他用户。</p>
+    <p class="small muted">此操作无法撤销。按 Esc 或关闭此窗口可取消。</p>
     <p id="reset-plan-error" class="status-fail" role="alert" hidden></p>
-    <div class="farm-actions reset-actions"><button id="confirm-reset-plan" type="button" class="secondary danger-button">Reset</button><button id="export-reset-plan" type="button" class="secondary">Export and Reset</button></div>
+    <div class="farm-actions reset-actions"><button id="confirm-reset-plan" type="button" class="secondary danger-button">确认重置</button></div>
   </dialog>
 </body>
 </html>

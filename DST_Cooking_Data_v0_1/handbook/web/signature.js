@@ -75,7 +75,8 @@ const signatureUI = (() => {
       return;
     }
     if (!result) { output.replaceChildren(text('p', '正在查找含有「' + ingredient(selected).name_zh + '」的四格配方…', 'prediction-empty')); return; }
-    const special = sorted(result.special), other = sorted(result.other);
+    const excluded = new Set(state.data.signature.exclusions.dish_ids);
+    const special = sorted(result.special.filter(r => !excluded.has(r.dish_id))), other = sorted(result.other.filter(r => !excluded.has(r.dish_id)));
     const [, label] = nutrition[$('signature-sort').value];
     const ordering = $('signature-ranking').value === 'accessible' ? '按其余三格最低稀有度排序，同分再按基础' + label + '排序。' : '按基础' + label + '排序，同分再按其余三格最低稀有度排序。';
     const first = el('section', { id: 'signature-special', class: 'signature-group' }, [
@@ -106,13 +107,11 @@ const signatureUI = (() => {
     const current = new AbortController(); request = current; lastAttempt = key; error = null;
     renderResults();
     try {
-      const data = await getJSON('/api/signature?' + new URLSearchParams({ ingredient: selected, cooker }), current.signal);
+      const data = await rarityUI.calculate('/api/signature', { ingredient: selected, cooker }, current.signal);
       if (data.complete !== true) throw new Error('搜索尚未完成，请重试。');
       if (data.rarity_version < state.data.settings.version) throw new Error('稀有度已更新，请重新查找。');
-      if (data.rarity_version > state.data.settings.version) await rarityUI.refresh(current.signal, false);
       if (data.rarity_version !== state.data.settings.version) throw new Error('稀有度已再次更新，请重新查找。');
       if (request === current) {
-        signatureExclusionsUI.accept({ version: data.exclusion_version, dish_ids: data.excluded_dish_ids }, false);
         result = data;
       }
     } catch (failure) {
@@ -154,6 +153,6 @@ const signatureUI = (() => {
     $('signature-ranking').addEventListener('change', () => { shown = 5; renderResults(); });
   }
   function rarityChanged() { resetResult(); if (state.view === 'signature') render(); }
-  function exclusionsChanged() { resetResult(); if (state.view === 'signature') render(); }
+  function exclusionsChanged() { if (state.view === 'signature') renderResults(); }
   return { init, render, openIngredient, rarityChanged, exclusionsChanged };
 })();

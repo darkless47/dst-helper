@@ -1,4 +1,4 @@
-"""Read-only wiki content and separate editable preferences; opt-in LAN binding."""
+"""Read-only wiki content and stateless calculations; preferences live in browsers."""
 import argparse
 from functools import partial
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -11,8 +11,8 @@ from .catalog import Catalog, DEFAULT_DATABASE
 from .assets import DEFAULT_ASSET_ROOT, LocalAssets
 from .prediction import ExactPotPredictor, PredictionDataError, PredictionInputError
 from .examples import RecipePlanner
-from .settings import DEFAULT_SETTINGS, SettingsConflict, UserSettings
-from .exclusions import ExclusionConflict, SignatureExclusions
+from .settings import DEFAULT_SETTINGS, CookingDefaults, validate_rarities
+from .exclusions import DEFAULTS as DEFAULT_EXCLUSIONS, DefaultExclusions
 
 WEB = Path(__file__).with_name('web')
 STATIC = {'/': ('index.html', 'text/html'),
@@ -23,6 +23,7 @@ STATIC['/signature.js'] = ('signature.js', 'text/javascript')
 STATIC['/rarity.js'] = ('rarity.js', 'text/javascript')
 STATIC['/examples.js'] = ('examples.js', 'text/javascript')
 STATIC['/exclusions.js'] = ('exclusions.js', 'text/javascript')
+STATIC['/browser-storage.js'] = ('browser-storage.js', 'text/javascript')
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -95,7 +96,7 @@ class Handler(BaseHTTPRequestHandler):
                 if set(query) != {'ingredient', 'cooker'} or any(len(values) != 1 for values in query.values()):
                     raise PredictionInputError('请选择一种食材和一个锅具。')
                 result = self.signature.recommend(query['ingredient'][0], query['cooker'][0])
-                self.respond(200, self.exclusions.filter(result), head=head)
+                self.respond(200, result, head=head)
             elif url.path == '/api/examples':
                 if not self.signature:
                     self.respond(503, {'error': self.prediction_error}, head=head)
@@ -136,41 +137,50 @@ class Handler(BaseHTTPRequestHandler):
     def do_HEAD(self):
         self.do_GET(head=True)
 
-    def do_POST(self):
-        if self.path not in ('/api/rarity', '/api/signature-exclusions'):
-            self.respond(405, {'error': '维基目录只提供只读访问'})
-            return
+    def read_json(self, max_size=16384):
         origin = self.headers.get('Origin')
         try:
-            allowed_origin = not origin or (urlsplit(origin).scheme in ('http', 'https') and urlsplit(origin).netloc == self.headers.get('Host'))
+            allowed = not origin or (urlsplit(origin).scheme in ('http', 'https') and urlsplit(origin).netloc == self.headers.get('Host'))
         except ValueError:
-            allowed_origin = False
-        if not allowed_origin or self.headers.get('Sec-Fetch-Site') == 'cross-site':
-            self.respond(403, {'error': '请从本手册页面保存设置。'})
+            allowed = False
+        if not allowed or self.headers.get('Sec-Fetch-Site') == 'cross-site':
+            self.respond(403, {'error': '请从助手页面使用计算功能。'})
+            return None
+        length = int(self.headers.get('Content-Length', '0'))
+        if (self.headers.get_content_type() != 'application/json' or not 0 < length <= max_size
+                or self.headers.get('Transfer-Encoding')):
+            raise PredictionInputError('请发送大小有效的 JSON 计算请求。')
+        value = json.loads(self.rfile.read(length).decode('utf-8'))
+        if type(value) is not dict:
+            raise PredictionInputError('计算请求须为 JSON 对象。')
+        return value
+
+    def do_POST(self):
+        if self.path not in ('/api/signature', '/api/examples'):
+            self.respond(405, {'error': '偏好仅保存在当前浏览器。'})
             return
         try:
-            if self.headers.get_content_type() != 'application/json':
-                raise PredictionInputError('请使用 JSON 保存设置。')
-            length = int(self.headers.get('Content-Length', '0'))
-            if not 0 < length <= 4096 or self.headers.get('Transfer-Encoding'):
-                raise PredictionInputError('设置请求大小无效。')
-            payload = json.loads(self.rfile.read(length).decode('utf-8'))
-            if self.path == '/api/rarity':
-                if not isinstance(payload, dict) or set(payload) != {'ingredient_id', 'rarity', 'expected_version'}:
-                    raise PredictionInputError('请提供食材、整数稀有度和设置版本。')
-                self.respond(200, self.settings.update(**payload))
-            else:
-                if not isinstance(payload, dict) or set(payload) != {'dish_id', 'excluded', 'expected_version'}:
-                    raise PredictionInputError('请提供料理、排除状态和名单版本。')
-                self.respond(200, self.exclusions.update(**payload))
-        except ExclusionConflict as error:
-            self.respond(409, dict(error=str(error), exclusions=self.exclusions.snapshot()))
-        except SettingsConflict as error:
-            self.respond(409, dict(error=str(error), settings=self.settings.snapshot()))
-        except (PredictionInputError, ValueError, UnicodeError) as error:
+            payload = self.read_json()
+            if payload is None:
+                return
+            subject = 'ingredient' if self.path == '/api/signature' else 'dish'
+            if set(payload) != {subject, 'cooker', 'rarities', 'rarity_version'}:
+                raise PredictionInputError('请提供条目、锅具、稀有度和浏览器设置版本。')
+            if (type(payload[subject]) is not str or type(payload['cooker']) is not str
+                    or type(payload['rarity_version']) is not int or not 0 <= payload['rarity_version'] <= 9007199254740991):
+                raise PredictionInputError('计算参数无效。')
+            rarities = validate_rarities(payload['rarities'], self.settings.ingredient_ids)
+            if not self.signature:
+                self.respond(503, {'error': self.prediction_error})
+                return
+            calculate = self.signature.recommend if subject == 'ingredient' else self.signature.examples
+            self.respond(200, calculate(payload[subject], payload['cooker'], rarities, payload['rarity_version']))
+        except KeyError:
+            self.respond(404, {'error': '未找到该条目'})
+        except PredictionDataError as error:
+            self.respond(503, {'error': str(error)})
+        except (ValueError, UnicodeError, RecursionError) as error:
             self.respond(422, {'error': str(error)})
-        except (OSError, sqlite3.Error):
-            self.respond(500, {'error': '无法保存设置，请检查设置文件是否可写。'})
 
     def reject_write(self):
         self.respond(405, {'error': '此操作不受支持'})
@@ -184,15 +194,9 @@ def create_server(port=8765, database=DEFAULT_DATABASE, assets_root=DEFAULT_ASSE
     bind_host = '127.0.0.1' if host.casefold() == 'localhost' else host
     catalog = Catalog(database)
     overview = catalog.overview()  # Fail before announcing a usable local URL.
-    settings_path = Path(settings_path).resolve()
-    if settings_path == catalog.database or (settings_path.exists() and settings_path.samefile(catalog.database)):
-        raise ValueError('User settings must be separate from the content snapshot.')
-    settings = UserSettings(settings_path, (row['ingredient_id'] for row in overview['ingredients']))
-    exclusions_path = Path(exclusions_path).resolve() if exclusions_path is not None else settings_path.with_name('signature_exclusions.json')
-    for protected in (catalog.database, settings_path):
-        if exclusions_path == protected or (exclusions_path.exists() and exclusions_path.samefile(protected)):
-            raise ValueError('Signature exclusions must use a separate JSON file.')
-    exclusions = SignatureExclusions(exclusions_path, (row['dish_id'] for row in overview['dishes']))
+    settings = CookingDefaults(settings_path, (row['ingredient_id'] for row in overview['ingredients']))
+    exclusions = DefaultExclusions(exclusions_path or DEFAULT_EXCLUSIONS,
+                                   {row['dish_id'] for row in overview['dishes']})
     media = LocalAssets(catalog.asset_records(), assets_root)
     predictor, signature, prediction_error = None, None, None
     try:
@@ -212,13 +216,14 @@ def main():
                         help='localhost for local-only access, or your private IPv4 address for LAN sharing (default: 127.0.0.1)')
     parser.add_argument('--database', type=Path, default=DEFAULT_DATABASE)
     parser.add_argument('--settings', type=Path, default=DEFAULT_SETTINGS,
-                        help='Separate user-settings SQLite database (default: package .local/user_settings.sqlite)')
+                        help='Read-only ingredient rarity defaults JSON')
+    parser.add_argument('--exclusions', type=Path, default=DEFAULT_EXCLUSIONS, help='Read-only excluded-dish defaults JSON')
     parser.add_argument('--assets', type=Path, default=DEFAULT_ASSET_ROOT,
                         help='Image directory (default: assets/images); saved-page archive roots also supported')
     args = parser.parse_args()
-    with create_server(args.port, args.database, args.assets, host=args.host, settings_path=args.settings) as server:
+    with create_server(args.port, args.database, args.assets, host=args.host, settings_path=args.settings, exclusions_path=args.exclusions) as server:
         print(f'Unofficial DST handbook: http://{args.host}:{server.server_port}', flush=True)
-        print('Read-only wiki snapshot; rarity settings shared by server users. Press Ctrl+C to stop.', flush=True)
+        print('Read-only wiki snapshot; preferences stored in each browser. Press Ctrl+C to stop.', flush=True)
         try:
             server.serve_forever()
         except KeyboardInterrupt:

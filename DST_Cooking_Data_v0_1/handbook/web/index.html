@@ -7,6 +7,7 @@
   <title>荒野食记 · DST 烹饪手册</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/app.css">
+  <script src="/browser-storage.js" defer></script>
   <script src="/prediction.js" defer></script>
   <script src="/signature.js" defer></script>
   <script src="/rarity.js" defer></script>
@@ -65,6 +66,7 @@
           </div>
           <p class="catalog-note" id="catalog-note">数值来自维基基础表格，未经游戏验证；成品类型与食用对象尚未确认，不代表角色实际食用收益。</p>
           <p id="table-hint" class="table-hint" hidden>点击料理名称查阅完整手记。表格可横向滚动，数值为基础表值；英文名称仅为暂译提示。</p>
+          <div id="rarity-controls" class="signature-exclusion-toolbar" hidden><p class="small muted">自定义稀有度仅保存在当前浏览器；清空后全部按 0 计算。</p><button type="button" id="clear-rarities" class="secondary">清空全部稀有度</button></div>
           <div id="results" class="card-grid" aria-busy="true"></div>
           <div class="empty-state" id="empty" hidden><span aria-hidden="true">∅</span><h3>没有符合条件的条目</h3><p>试试其他名称，或清除筛选条件。</p><button class="secondary reset" type="button">重置筛选</button></div>
         </section>
@@ -103,8 +105,8 @@
   <dialog id="detail-dialog" aria-labelledby="detail-title"><div class="dialog-bar"><span class="eyebrow">CATALOG / 条目手记</span><button id="close-detail" class="icon-button" aria-label="关闭条目详情">×</button></div><div id="detail-content"></div></dialog>
   <dialog id="signature-exclusion-dialog" aria-labelledby="signature-exclusion-title">
     <div class="dialog-bar"><span class="eyebrow">SIGNATURE / 推荐偏好</span><button type="button" id="close-signature-exclusions" class="icon-button" aria-label="关闭不考虑名单">×</button></div>
-    <div class="exclusion-content"><h2 id="signature-exclusion-title">不考虑名单</h2><p class="small muted">这些料理不会出现在优选料理的任何分组中。出锅预测、料理目录、料理示例和食材探索照常使用完整资料。修改后自动保存，同一服务器的 LAN 用户共享。</p>
-      <p id="signature-exclusion-status" class="small" role="status" aria-live="polite"></p><button type="button" id="retry-signature-exclusions" class="secondary" hidden>重新读取名单</button>
+    <div class="exclusion-content"><h2 id="signature-exclusion-title">不考虑名单</h2><p class="small muted">这些料理不会出现在优选料理的任何分组中。出锅预测、料理目录、料理示例和食材探索照常使用完整资料。修改后自动保存在当前浏览器，不影响其他用户。清空名单后，全部料理都可参与推荐。</p>
+      <p id="signature-exclusion-status" class="small" role="status" aria-live="polite"></p><button type="button" id="clear-signature-exclusions" class="secondary">清空全部排除名单</button>
       <section aria-labelledby="excluded-title"><div class="section-heading"><h3 id="excluded-title">已排除的料理</h3><span id="excluded-count" class="small muted"></span></div><div id="excluded-dishes" class="exclusion-list"></div></section>
       <section aria-labelledby="exclusion-add-title"><h3 id="exclusion-add-title">添加料理</h3><label class="search-field"><span aria-hidden="true">⌕</span><input type="search" id="signature-exclusion-search" placeholder="搜索料理名称、英文提示或 ID" aria-label="搜索要排除的料理" autocomplete="off"></label><div id="exclusion-candidates" class="exclusion-list exclusion-candidates"></div></section>
     </div>

@@ -1,7 +1,7 @@
 """Optional real-browser acceptance check. Uses installed Chrome/Edge and stdlib.
 
 Run: python tests/browser_smoke.py
-Uses temporary settings and an isolated headless browser profile.
+Uses isolated browser profiles; no shared user preferences are written.
 """
 import base64
 import json
@@ -81,10 +81,10 @@ class DevTools:
             if self.js(expression):
                 return
             time.sleep(.1)
-        raise AssertionError('Timed out: ' + expression)
+        raise AssertionError('Timed out: ' + expression + '\nPage: ' + str(self.js("document.querySelector('#signature-results')?.innerText || document.querySelector('#farm-error')?.innerText")) + '\nErrors: ' + str(self.errors))
 
     def settled(self):
-        self.wait("document.getElementById('save-status')?.textContent.startsWith('已自动保存') && document.getElementById('ratio-results')?.getAttribute('aria-busy') === 'false'")
+        self.wait("document.getElementById('planner')?.hidden === false && document.getElementById('ratio-results')?.getAttribute('aria-busy') === 'false'")
         if not self.js("document.getElementById('farm-error').hidden"):
             raise AssertionError(self.js("document.getElementById('farm-error').textContent"))
 
@@ -95,7 +95,7 @@ def run():
     if browser is None:
         raise SystemExit('No installed Chrome/Edge found; browser checks skipped.')
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
-        server = create_server(port=0, settings_path=Path(tmp) / 'settings.sqlite')
+        server = create_server(port=0)
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
         process = subprocess.Popen([str(browser), '--headless=new', '--no-first-run', '--no-default-browser-check', '--disable-extensions', '--remote-debugging-port=0', '--remote-debugging-address=127.0.0.1', '--user-data-dir=' + str(Path(tmp) / 'browser'), 'about:blank'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -221,84 +221,136 @@ def run():
             (out / 'farming-care-reminders.png').write_bytes(base64.b64decode(client.call('Page.captureScreenshot')['data']))
             print('PASS: section 05 has exactly four static care reminders and no recording controls')
 
-            client.js("(async()=>{const d=await(await fetch('/api/farming')).json();d.preferences.state.scale=5;await fetch('/api/farming/preferences',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({state:d.preferences.state,expected_version:d.preferences.version})});})()")
+            assert client.js("document.querySelectorAll('#import-plan,#export-plan,#reload-plan,#save-plan,#export-reset-plan,input[type=file]').length") == 0
             client.js("{const s=document.getElementById('ratio-scale');s.value='7';s.dispatchEvent(new Event('change'));}")
-            client.wait("document.getElementById('save-status').textContent.includes('尚未保存')")
+            client.settled()
+            client.js('window.__beforeReload = true')
+            client.call('Page.reload')
+            client.wait("!window.__beforeReload && document.readyState === 'complete'")
+            client.settled()
             assert client.js("document.getElementById('ratio-scale').value") == '7'
-            client.js("document.getElementById('reload-plan').click()")
-            client.settled()
-            assert client.js("document.getElementById('ratio-scale').value") == '5'
-            print('PASS: concurrent save conflict retains the draft, explicit reload gets server state')
+            print('PASS: browser plan survives reload; all file-transfer and server-save controls removed')
 
-            client.js("(async()=>{const d=await(await fetch('/api/farming')).json();d.preferences.state.scale=9;d.preferences.state.care={water:true};d.preferences.state.stages=[{tending:true},{},{},{}];d.preferences.state.specific_seed=true;const transfer=new DataTransfer();transfer.items.add(new File([JSON.stringify(d.preferences.state)],'plan.json',{type:'application/json'}));const input=document.getElementById('import-plan');input.files=transfer.files;input.dispatchEvent(new Event('change'));})()")
-            client.wait("document.getElementById('ratio-scale').value==='9'")
-            client.settled()
-            assert client.js("document.querySelectorAll('#care-panel input,#care-panel select,#care-panel details').length") == 0
-            client.js("(async()=>{const d=await(await fetch('/api/farming')).json();d.preferences.state.dataset_version='future';const transfer=new DataTransfer();transfer.items.add(new File([JSON.stringify(d.preferences.state)],'plan.json',{type:'application/json'}));const input=document.getElementById('import-plan');input.files=transfer.files;input.dispatchEvent(new Event('change'));})()")
-            client.wait("document.getElementById('farm-error').textContent.includes('导入失败')")
-            assert client.js("document.getElementById('ratio-scale').value") == '9'
-            print('PASS: plan import restores state and rejects incompatible data without replacing the draft')
+            # A separate browser context models a second user on the same server.
+            with urlopen(f'http://127.0.0.1:{port}/json/version') as response:
+                browser_socket = json.load(response)['webSocketDebuggerUrl']
+            control = DevTools(browser_socket)
+            context = control.call('Target.createBrowserContext')['browserContextId']
+            second = None
+            try:
+                target = control.call('Target.createTarget', dict(url='about:blank', browserContextId=context))['targetId']
+                with urlopen(f'http://127.0.0.1:{port}/json/list') as response:
+                    targets = json.load(response)
+                second = DevTools(next(t['webSocketDebuggerUrl'] for t in targets if t['id'] == target))
+                second.call('Runtime.enable'); second.call('Page.enable')
+                second.call('Page.navigate', dict(url=base + '/farming'))
+                second.settled()
+                assert second.js("document.getElementById('ratio-scale').value") == '1'
+                second.js("{const s=document.getElementById('ratio-scale');s.value='3';s.dispatchEvent(new Event('change'));}")
+                second.settled()
+                assert client.js("document.getElementById('ratio-scale').value") == '7'
+                second.call('Page.navigate', dict(url=base + '/cooking'))
+                second.wait("typeof state !== 'undefined' && state.data?.settings && document.getElementById('results').getAttribute('aria-busy') === 'false'")
+                assert second.js('state.data.settings.rarities.butter') == 80
+                assert len(second.js('state.data.signature.exclusions.dish_ids')) == 3
 
-            downloads = Path(tmp) / 'downloads'
-            downloads.mkdir()
-            client.call('Browser.setDownloadBehavior', dict(behavior='allow', downloadPath=str(downloads)))
-            client.js("{const s=document.querySelector('#crop-tomato input[type=number]');s.value='15';s.dispatchEvent(new Event('change'));}document.querySelector('#crop-carrot input[type=checkbox]').click()")
-            client.settled()
-            before_reset = client.js("(async()=> (await(await fetch('/api/farming')).json()).preferences.state)()")
-            client.js("document.getElementById('reset-plan').click()")
-            assert client.js("document.getElementById('reset-plan-dialog').open")
-            assert client.js("Array.from(document.querySelectorAll('.reset-actions button')).map(b=>b.textContent)") == ['Reset', 'Export and Reset']
-            assert client.js("document.activeElement.id") == 'close-reset-plan'
-            assert client.js('document.documentElement.scrollWidth <= window.innerWidth')
-            (out / 'farming-reset-dialog.png').write_bytes(base64.b64decode(client.call('Page.captureScreenshot')['data']))
-            client.js("document.getElementById('close-reset-plan').click()")
-            assert not client.js("document.getElementById('reset-plan-dialog').open")
-            assert client.js("(async()=> (await(await fetch('/api/farming')).json()).preferences.state)()") == before_reset
-            assert not list(downloads.iterdir())
+                client.call('Page.navigate', dict(url=base + '/cooking'))
+                client.wait("typeof state !== 'undefined' && state.data?.settings && document.getElementById('results').getAttribute('aria-busy') === 'false'")
+                assert client.js('state.data.settings.rarities.butter') == 80
+                client.js("openIngredientDetail('butter')")
+                client.wait("document.getElementById('rarity-input')?.value === '80'")
+                client.js("document.getElementById('rarity-input').value='-9';document.querySelector('.rarity-editor').requestSubmit()")
+                client.wait('state.data.settings.rarities.butter === -9')
+                client.js("document.getElementById('close-detail').click();setView('signature');document.getElementById('manage-signature-exclusions').click()")
+                client.js("document.getElementById('clear-signature-exclusions').click()")
+                assert client.js('state.data.signature.exclusions.dish_ids.length') == 0
+                client.js("document.getElementById('close-signature-exclusions').click()")
+                assert second.js('state.data.settings.rarities.butter') == 80
+                assert len(second.js('state.data.signature.exclusions.dish_ids')) == 3
+                client.js('window.__beforeReload = true')
+                client.call('Page.reload')
+                client.wait("!window.__beforeReload && document.readyState === 'complete'")
+                client.wait("typeof state !== 'undefined' && state.data?.settings && document.getElementById('results').getAttribute('aria-busy') === 'false'")
+                assert client.js('state.data.settings.rarities.butter') == -9
+                assert client.js('state.data.signature.exclusions.dish_ids.length') == 0
+                print('PASS: two independent browsers have isolated plans, rarities and exclusions; Cooking edits persist')
 
-            # A failed save must leave the plan and table preference intact.
-            client.js("window.__realFetch=window.fetch;window.__failReset=true;window.fetch=async(...args)=>{if(args[0]==='/api/farming/preferences' && window.__failReset){window.__failReset=false;return new Response(JSON.stringify({error:'Simulated save failure'}),{status:500,headers:{'Content-Type':'application/json'}});}return window.__realFetch(...args);};document.getElementById('reset-plan').click();document.getElementById('confirm-reset-plan').click()")
-            client.wait("!document.getElementById('reset-plan-error').hidden && !document.getElementById('confirm-reset-plan').disabled")
-            assert client.js("document.getElementById('reset-plan-dialog').open")
-            assert client.js("document.getElementById('ratio-scale').value") == '9'
-            assert client.js("localStorage.getItem('dst-helper.farming-ratio-layout')") == 'table'
-            assert client.js("(async()=> (await(await fetch('/api/farming')).json()).preferences.state)()") == before_reset
-            assert not list(downloads.iterdir())
-            client.js("window.fetch=window.__realFetch;document.getElementById('export-reset-plan').click()")
-            client.wait("!document.getElementById('reset-plan-dialog').open")
-            client.settled()
-            export_file = downloads / 'dst-farming-plan.json'
-            deadline = time.monotonic() + 5
-            while (not export_file.exists() or list(downloads.glob('*.crdownload'))) and time.monotonic() < deadline:
-                time.sleep(.1)
-            self_export = json.loads(export_file.read_text(encoding='utf-8'))
-            assert self_export == before_reset, 'Export must contain the pre-reset draft'
-            assert client.js("(async()=>{const d=await(await fetch('/api/farming')).json();return JSON.stringify(d.preferences.state)===JSON.stringify(d.defaults);})()")
-            assert client.js("localStorage.getItem('dst-helper.farming-ratio-layout')") is None
-            assert client.js("document.getElementById('ratio-scale').value") == '1'
-            assert client.js("document.getElementById('tile-count').value") == '2'
-            assert client.js("document.querySelectorAll('.plant-slot.planted').length") == 0
-            assert client.js("document.querySelector('[data-ratio-layout=cards]').getAttribute('aria-pressed')") == 'true'
-            assert client.js("document.getElementById('ratio-count').textContent.startsWith('74 ')")
-            print('PASS: reset confirmation cancellation, failed-save recovery and actual pre-reset JSON download')
+                # Filter full calculation results locally; excluded winners still compete.
+                client.js("setView('signature');signatureUI.openIngredient('twigs')")
+                client.wait("document.getElementById('signature-results').getAttribute('aria-busy') === 'false' && Boolean(document.querySelector('#signature-results [data-dish-id]'))", timeout=30)
+                assert client.js("Boolean(document.querySelector('[data-dish-id=\"huiji:蒸树枝\"]'))")
+                client.js("document.getElementById('manage-signature-exclusions').click();document.getElementById('signature-exclusion-search').value='蒸树枝';document.getElementById('signature-exclusion-search').dispatchEvent(new Event('input'));document.querySelector('#exclusion-candidates [data-exclusion-dish=\"huiji:蒸树枝\"] button').click();document.getElementById('close-signature-exclusions').click()")
+                assert not client.js("Boolean(document.querySelector('[data-dish-id=\"huiji:蒸树枝\"]'))")
+                assert client.js("(async()=>{const r=await(await fetch('/api/predict?cooker=crock_pot&ingredient=twigs&ingredient=twigs&ingredient=twigs&ingredient=twigs')).json();return r.outcomes.some(d=>d.dish_id==='huiji:蒸树枝');})()")
+                client.js("setView('ingredients');document.getElementById('clear-rarities').click()")
+                assert client.js('Object.keys(state.data.settings.rarities).length') == 0
+                assert client.js('state.data.signature.exclusions.dish_ids.length') == 1
+                client.js('window.__beforeReload = true')
+                client.call('Page.reload')
+                client.wait("!window.__beforeReload && document.readyState === 'complete'")
+                client.wait("typeof state !== 'undefined' && state.data?.settings && document.getElementById('results').getAttribute('aria-busy') === 'false'")
+                assert client.js('Object.keys(state.data.settings.rarities).length') == 0
+                assert client.js('state.data.signature.exclusions.dish_ids.length') == 1
+                print('PASS: exclusions filter only displayed recommendations; clear-all rarity remains empty after reload')
+                cooking_before = client.js("[localStorage.getItem('dst-helper.cooking.rarities.v1'),localStorage.getItem('dst-helper.cooking.exclusions.v1')]")
+                client.call('Page.navigate', dict(url=base + '/farming')); client.settled()
+                before_reset = client.js("localStorage.getItem('dst-helper.farming.plan.v1')")
+                client.js("document.getElementById('reset-plan').click();document.getElementById('close-reset-plan').click()")
+                assert client.js("localStorage.getItem('dst-helper.farming.plan.v1')") == before_reset
 
-            # Hold an existing autosave response open while Reset is confirmed.
-            client.js("window.__delaySave=true;window.__saveWaiting=false;window.fetch=async(...args)=>{const response=await window.__realFetch(...args);if(args[0]==='/api/farming/preferences' && window.__delaySave){window.__delaySave=false;window.__saveWaiting=true;await new Promise(r=>setTimeout(r,400));}return response;};{const s=document.getElementById('ratio-scale');s.value='11';s.dispatchEvent(new Event('change'));}")
-            client.wait('window.__saveWaiting===true')
-            client.js("document.getElementById('reset-plan').click();document.getElementById('confirm-reset-plan').click()")
-            client.wait("!document.getElementById('reset-plan-dialog').open")
-            client.settled()
-            client.js('window.fetch=window.__realFetch')
-            assert client.js("(async()=>{const d=await(await fetch('/api/farming')).json();return JSON.stringify(d.preferences.state)===JSON.stringify(d.defaults);})()")
-            assert len(list(downloads.iterdir())) == 1, 'Reset must not export a second file'
+                # Quota/security errors must retain the current plan and surface a warning.
+                client.js("window.__setItem=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw new DOMException('Quota exceeded','QuotaExceededError');};document.getElementById('reset-plan').click();document.getElementById('confirm-reset-plan').click()")
+                client.wait("!document.getElementById('reset-plan-error').hidden")
+                assert client.js("document.getElementById('reset-plan-dialog').open")
+                assert client.js("localStorage.getItem('dst-helper.farming.plan.v1')") == before_reset
+                assert client.js("document.getElementById('ratio-scale').value") == '7'
+                client.js("Storage.prototype.setItem=window.__setItem;document.getElementById('confirm-reset-plan').click()")
+                client.settled()
+                assert not client.js("document.getElementById('reset-plan-dialog').open")
+                assert client.js("document.getElementById('ratio-scale').value") == '1'
+                assert client.js("document.querySelectorAll('.plant-slot.planted').length") == 0
+                assert client.js("localStorage.getItem('dst-helper.farming-ratio-layout')") is None
+                assert client.js("[localStorage.getItem('dst-helper.cooking.rarities.v1'),localStorage.getItem('dst-helper.cooking.exclusions.v1')]") == cooking_before
+                print('PASS: reset cancellation, storage failure recovery, and Farming reset leaves Cooking untouched')
 
-            # Opening the confirmation also pauses an autosave still in the queue.
-            client.js("{const s=document.getElementById('ratio-scale');s.value='12';s.dispatchEvent(new Event('change'));}document.getElementById('reset-plan').click();document.getElementById('confirm-reset-plan').click()")
-            client.wait("!document.getElementById('reset-plan-dialog').open")
-            client.settled()
-            assert client.js("(async()=>{const d=await(await fetch('/api/farming')).json();return JSON.stringify(d.preferences.state)===JSON.stringify(d.defaults);})()")
-            assert len(list(downloads.iterdir())) == 1
-            print('PASS: Reset without export clears all saved Farming state and cannot race pending or in-flight autosaves')
+                # Delay a calculation, then reset: an older response cannot restore the plan.
+                client.js("window.__fetch=window.fetch;window.__waiting=false;window.__delay=true;window.fetch=async(...args)=>{const response=await window.__fetch(...args);if(args[0]==='/api/farming/analyze' && window.__delay){window.__delay=false;window.__waiting=true;await new Promise(r=>setTimeout(r,500));}return response;};{const s=document.getElementById('ratio-scale');s.value='11';s.dispatchEvent(new Event('change'));}")
+                client.wait('window.__waiting')
+                client.js("document.getElementById('reset-plan').click();document.getElementById('confirm-reset-plan').click()")
+                client.settled()
+                assert client.js("JSON.parse(localStorage.getItem('dst-helper.farming.plan.v1')).value.scale") == 1
+                assert client.js("document.getElementById('ratio-scale').value") == '1'
+                client.js('window.fetch=window.__fetch')
+                print('PASS: reset cannot race an in-flight calculation')
+                # Failed computation must not prevent immediate browser autosave.
+                client.js("window.fetch=async(...args)=>{if(args[0]==='/api/farming/analyze')throw new Error('Simulated offline calculation');return window.__fetch(...args);};{const s=document.getElementById('ratio-scale');s.value='15';s.dispatchEvent(new Event('change'));}")
+                client.wait("document.getElementById('ratio-count').textContent === '计算失败'")
+                assert client.js("JSON.parse(localStorage.getItem('dst-helper.farming.plan.v1')).value.scale") == 15
+                assert client.js("document.getElementById('save-status').textContent.startsWith('已自动保存')")
+                client.js("window.fetch=window.__fetch;document.querySelector('#ratio-results button').click()")
+                client.settled()
+                print('PASS: calculation failures do not prevent browser autosave; retry recovers')
+
+                # Clearing Cooking preferences must fail visibly when storage is blocked.
+                second.js("window.__setItem=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw new DOMException('Blocked','SecurityError');};setView('ingredients');document.getElementById('clear-rarities').click();setView('signature');document.getElementById('manage-signature-exclusions').click();document.getElementById('clear-signature-exclusions').click()")
+                assert second.js('state.data.settings.rarities.butter') == 80
+                assert len(second.js('state.data.signature.exclusions.dish_ids')) == 3
+                assert second.js("Boolean(document.getElementById('browser-storage-warning'))")
+                second.js('Storage.prototype.setItem=window.__setItem')
+                second.call('Page.navigate', dict(url=base + '/farming')); second.settled()
+                second.js("localStorage.setItem('dst-helper.farming.plan.v1','{broken');window.__beforeReload=true")
+                second.call('Page.reload'); second.wait("!window.__beforeReload && document.readyState === 'complete'"); second.settled()
+                assert second.js("localStorage.getItem('dst-helper.farming.plan.v1')") == '{broken'
+                assert second.js("document.getElementById('ratio-scale').value") == '1'
+                assert second.js("Boolean(document.getElementById('browser-storage-warning'))")
+                second.js("document.getElementById('reset-plan').click();document.getElementById('confirm-reset-plan').click()"); second.settled()
+                assert second.js("JSON.parse(localStorage.getItem('dst-helper.farming.plan.v1')).schema_version") == 1
+                print('PASS: blocked Cooking storage retains values; corrupt Farming storage is preserved until reset')
+                assert not second.errors, second.errors
+            finally:
+                if second: second.socket.close()
+                control.call('Target.disposeBrowserContext', dict(browserContextId=context))
+                control.socket.close()
             assert not client.errors, client.errors
             print('PASS: cooking ingredient deep link and return preserve farming plan; no JavaScript exceptions')
         finally:

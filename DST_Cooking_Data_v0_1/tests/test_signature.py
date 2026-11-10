@@ -124,7 +124,7 @@ class SignatureHTTPTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.folder = tempfile.TemporaryDirectory()
-        cls.server = create_server(0, settings_path=Path(cls.folder.name) / 'settings.sqlite')
+        cls.server = create_server(0)
         cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
         cls.thread.start()
 

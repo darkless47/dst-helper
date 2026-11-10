@@ -4,30 +4,28 @@ In **食材探索**, each state has a **稀有度** column and a detail editor. 
 value to focus the editor. Use **保存稀有度**, or **恢复默认 0** to remove the override.
 Blank also removes it. The supported range is signed 32-bit integers, including negatives;
 fractions, booleans, and numeric strings in the API are rejected. Unset means zero.
-No rarity guesses are supplied. Each exact state has its own preference, including both
+Initial values come from the human-editable `data/ingredient_rarities.default.json`. Each exact state has its own preference, including both
 nutrition-brick rows. Repeated copies contribute separately, so `[A,A,B,C]` costs
 `2*rarity(A)+rarity(B)+rarity(C)`. Negative costs prefer consuming that state.
 
 ## Persistence and sharing
 
-Preferences are stored in `.local/user_settings.sqlite`, separate from the immutable
-`dst_cooking.sqlite`. This is a server-wide preference store: LAN visitors share these
-values. They survive restarts and replacement of the content snapshot, keyed by stable
-state IDs. Preferences for temporarily absent IDs stay stored. Back up this settings file
-separately; it is ignored by Git and package hashes. Use `--settings <path>` to choose a
-different file. A content database cannot also be the settings database.
+Preferences are stored in browser localStorage under `dst-helper.cooking.rarities.v1`,
+separate from Farming and Cooking exclusions. New browsers receive the source-controlled
+`data/ingredient_rarities.default.json`, seeded with the existing 141 custom values.
+`--settings <json>` selects an alternative read-only defaults file. It no longer points
+to SQLite. The server does not read or write the former `.local/` preference stores.
 
-`migrations/settings/001_rarity.sql` initializes the separate schema (user_version 1),
-with `ingredient_preferences(ingredient_id, rarity)` and a monotonic settings revision.
-Writes are transactional and parameterized. An expected revision prevents a stale LAN
-editor from silently replacing another edit: HTTP 409 returns the latest settings, keeps
-the typed input, and asks the user to check and save again. Failed writes retain input.
-Content writes remain rejected; the rarity POST requires JSON and rejects
-cross-origin browser requests. This is still a local/LAN prototype without user accounts.
+**清空全部稀有度** saves an explicit empty object, making every ingredient cost zero.
+It stays empty after reload; missing storage alone receives defaults. Edits are written
+locally and storage errors retain the input and show a warning. There is no application
+expiry, but clearing site data, private browsing, and browser eviction can remove data.
+Same-origin tabs synchronize changes; independent browsers never share preferences.
 
-The signature-only **不考虑名单** uses a separate `signature_exclusions.json` beside this
-settings database. Its edits do not modify rarity values or dish-detail examples; see
-`SIGNATURE_RECIPES.md`.
+Cooking calculations accept bounded, same-origin JSON requests containing validated
+rarities, not preference writes. Cache keys use actual rarity values rather than local
+revision counters. **不考虑名单** uses its own browser key and tracked JSON defaults;
+see `SIGNATURE_RECIPES.md`. Clearing either set leaves the other and Farming untouched.
 
 ## Dish detail examples
 
@@ -76,34 +74,39 @@ allows exact cost bounds, including negative costs. At most three last-slot cand
 prefix can enter a global top three. There is no sampling or time cutoff. Every returned
 pot is replayed through `ExactPotPredictor` and fails closed if its outcome disagrees.
 
-Responses use one coherent settings revision. The planner discards both signature and
-example caches on a revision change. Saving an edit refreshes local lists and invalidates
-in-flight example/signature requests; delayed results cannot overwrite a newer selection.
-Other LAN clients read fresh settings on subsequent detail/search requests or page reload.
-Already displayed results are not pushed live to other browsers.
+Each response echoes the requesting page's local revision. A bounded cache keeps at most
+eight configurations, keyed by normalized rarity values. Independent browsers can reuse
+a configuration without sharing editable state. Saving an edit refreshes local lists and
+invalidates in-flight requests; delayed results cannot overwrite a newer selection.
+Other tabs in this browser synchronize through storage events.
 
 ## API and validation
 
 ```text
-GET /api/rarity
-POST /api/rarity
-  {"ingredient_id":"butter","rarity":20,"expected_version":0}
-GET /api/examples?dish=huiji:华夫饼&cooker=crock_pot
+GET /api/rarity                         # read-only initial defaults
+POST /api/examples
+  {"dish":"huiji:华夫饼","cooker":"crock_pot","rarities":{"butter":20},"rarity_version":1}
+POST /api/signature
+  {"ingredient":"meat","cooker":"crock_pot","rarities":{},"rarity_version":1}
 ```
 
-`rarity:null` removes an override. POST returns `{version, rarities}`; conflicts return
-409 with `settings`, invalid input 422, unrelated/unsupported write routes 405.
+Calculation POSTs require same-origin JSON bodies of at most 16 KB and validate every
+rarity ID and signed integer. Empty `rarities` means all zero, not server defaults.
+`POST /api/rarity` and `POST /api/signature-exclusions` return 405; no preference-write
+API remains. GET search endpoints use defaults for compatibility. Exclusions are applied
+by the browser to full search results, preserving priority competition and probabilities.
+
 Examples return `complete`, `rarity_version`, `available`, `fewer_than_requested`, and
 `examples[{ingredients,total_rarity,probability}]`. Unknown dishes return 404, malformed
-queries 422, unsupported model data 503. Catalog ingredient rows include effective
-`rarity`; ingredient detail includes `rarity` and `rarity_version`.
+requests 422, unsupported model data 503. Catalog and detail GET responses carry initial
+rarity defaults; the UI overlays browser preferences before display.
 
 `tests/test_rarity_examples.py` independently enumerates all four-state combinations
 and remaining triples in a synthetic universe, checking minimum costs and top-three
 distinctness with zero, positive, negative, and extreme signed rarities, equivalent
 states, prepared-only requirements, ties, shadowing, and cooker changes. It also checks
-persistence, reset, LAN conflicts, revision invalidation, input validation, and immutable
-content. `scripts/validate_examples.py` replays all snapshot examples for 324 dish/cooker/
+request isolation, equal browser revisions with different preferences, bounded cache
+eviction, input validation, and immutable content. `scripts/validate_examples.py` replays all snapshot examples for 324 dish/cooker/
 rarity-scenario queries; its report is `EXAMPLES_VALIDATION_REPORT.json`.
 
 The existing experimental wiki evidence level, assumed ingredient universe, draft
