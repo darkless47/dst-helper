@@ -1,0 +1,21 @@
+{
+  "dataset": "DST Farming Handoff v0.1.0",
+  "validation_date": "2026-11-09",
+  "tests_passed": 30,
+  "sqlite_integrity": "ok",
+  "foreign_key_violations": [],
+  "counts": {
+    "farming_plants": 18,
+    "farming_seasons": 72,
+    "farming_mechanics": 16,
+    "farming_assets": 49,
+    "farming_row_evidence": 18,
+    "farming_review_issues": 7
+  },
+  "database_vs_json": "all 18 plant fact records and 72 seasonal records match",
+  "reference_comparison": "14 crop nutrient/season records and all 16 season-filter result sets match",
+  "example_layouts": "both pass per-tile nutrient and per-plant family checks; giant outcome still conditional",
+  "game_build_verification": false,
+  "planner_enabled": true,
+  "source_revision": "203373"
+}

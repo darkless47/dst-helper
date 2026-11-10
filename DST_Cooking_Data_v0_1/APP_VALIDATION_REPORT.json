@@ -1,0 +1,260 @@
+{
+  "checked_date": "2026-11-09",
+  "scope": "Signature-only JSON exclusion management, editable shared ingredient rarity, minimum-cost dish examples, signature ranking, catalog layouts, experimental prediction, and provenance",
+  "runtime": "Python 3.13 on Windows; standard-library-only application",
+  "source_derived_predicate_cases_passed": 18,
+  "application_unittest_cases_passed": 56,
+  "signature_recipes": {
+    "report": "SIGNATURE_VALIDATION_REPORT.json",
+    "complete_state_cooker_queries_checked": 290,
+    "example_pots_replayed": 16029,
+    "mechanical_profiles": 68,
+    "checks": [
+      "Complete result sets match a brute-force completion reference over a synthetic universe",
+      "General tag requirements do not earn the special tag; shadowed own-predicate matches are excluded",
+      "Every displayed example contains the selected ingredient state and survives exact cooker/priority competition",
+      "All named recipes are shown, including an eight-result UI fixture; other group starts at five",
+      "One shared hunger/HP/sanity control sorts each group independently, preserving group priority and placing NULL values last",
+      "Five-at-a-time expansion, collapse, cooker changes, and entry from exact ingredient-state details",
+      "Example-pot handoff preserves all four state IDs and cooker; stale responses and failed requests are handled",
+      "Desktop and phone UI have no horizontal page overflow",
+      "Every witness minimizes the additional three-slot rarity; accessible-first default and nutrition-first alternative preserve special grouping",
+      "User-managed exclusions filter both groups only after exact competition; restoring a dish reloads cached raw recommendations with current preferences"
+    ],
+    "inventory_mode": "Unlimited, with repeated ingredients allowed; same universe as exact-pot predictor",
+    "evidence_level": "Exact-model/source-policy regression, not independent in-game outcomes"
+  },
+  "lan_sharing": {
+    "workspace_entry_point": "python dst_helper",
+    "local_command": "python dst_helper --host localhost --port 8765",
+    "lan_command": "python dst_helper --host 192.168.1.50 --port 8765",
+    "localhost_binding": "127.0.0.1",
+    "launcher_smoke_checks": [
+      "Directory launcher and python -m dst_helper accept server arguments",
+      "Localhost mode serves page, catalog, and images on an ephemeral port and refuses connection through 192.168.1.50 on that port",
+      "LAN mode serves page, catalog, and images on 192.168.1.50 using an ephemeral port",
+      "Temporary test processes stopped without disrupting existing port-8765 listeners"
+    ],
+    "configured_url": "http://192.168.1.50:8765",
+    "default_host": "127.0.0.1",
+    "lan_host_option": "--host 192.168.1.50",
+    "checks": [
+      "11 catalog, grammar, and HTTP contract tests pass after host-option change",
+      "Page and catalog respond at the LAN address with 81 dishes and 145 states",
+      "Image PNG and a complete prediction request succeed through the LAN address",
+      "Background LAN listener coexists with the existing localhost listener",
+      "Administrator-approved inbound rule verified for Python executable, TCP 8765, 192.168.1.50, 192.168.1.0/24, Private profile, wireless interfaces"
+    ],
+    "firewall_rule_display_name": "DST Handbook LAN (TCP 8765)",
+    "another_lan_device_tested": false
+  },
+  "prediction": {
+    "mode": "experimental_wiki",
+    "fixture_cases_passed": 13,
+    "fixture_evidence": "Manually derived from wiki predicates and user-confirmed policy; not independent in-game outcomes",
+    "supported_cookers": [
+      "crock_pot",
+      "portable"
+    ],
+    "ingredient_universe": "145 recorded ingredient states, including duplicates; per-cooker eligibility remains an explicit assumption",
+    "eligibility_verified": false,
+    "ordinary_recipes_both_pots_user_confirmed": true,
+    "mechanics_checked": [
+      "Exactly four known state IDs; duplicates consume separate slots",
+      "State-specific tag sums and prefab-based named counts",
+      "User-confirmed mixing of explicitly listed ingredient forms",
+      "Exact decimal arithmetic for strict/inclusive comparisons",
+      "Highest priority only, including negative priorities; exact 1/N uniform ties",
+      "Ordinary-pot exclusion of 11 portable-only wiki recipe hints",
+      "Unsupported rule data or extra probability weights disable prediction while leaving catalog available",
+      "Invalid prediction requests return 422; prediction does not write content or history"
+    ]
+  },
+  "recipe_capture_audit": {
+    "report": "RECIPE_CAPTURE_AUDIT.json",
+    "source_revision": "193291",
+    "recipe_conditions_checked": 81,
+    "priorities_checked": 81,
+    "ingredient_tag_cells_checked": 2175,
+    "discrepancies": 0,
+    "grouped_quantity_interpretations_pending": 0,
+    "grouped_quantity_recipes_user_confirmed": 10,
+    "selection_policy": "User-confirmed maximum priority and uniform ties; stored priority column is distinct from nullable probability weight",
+    "verification_level": "Source transcription with explicit encoding assumptions; no game outcome verification"
+  },
+  "application_contracts": [
+    "Independent nested AST description fixture and rejection of unsupported grammar/tags",
+    "SQLite mode=ro enforces no writes even when query_only is disabled",
+    "Content database SHA-256 unchanged by application and HTTP access",
+    "NULL stats, NULL weights, readiness metadata, and separate nutrition-brick states preserved",
+    "All 226 catalog records have row evidence; all 81 draft ASTs can be described",
+    "UTF-8 HTTP responses, blocked file paths and content writes, parameterized entity lookups",
+    "All 226 catalog PNGs match existing content hashes; both nutrition-brick states have distinct artwork",
+    "Three stat icons indexed reproducibly from the original hash-matched HTML with individual provenance",
+    "Missing, modified, non-PNG, unhashed, and outside-archive files are not served",
+    "Only frozen verified PNG bytes are served through explicit allowlisted URLs; no source scripts or directory listings",
+    "Only explicit rarity and signature-exclusion POSTs write separate preferences; content copies cannot be initialized as preferences"
+  ],
+  "browser": {
+    "checked_date": "2026-11-09",
+    "engine": "Installed Chrome, headless",
+    "desktop_viewport": [
+      1440,
+      1050
+    ],
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "tablet_viewport": [
+      768,
+      1024
+    ],
+    "checks_passed": [
+      "Consistent Home/Cooking/Farming module navigation, persistent selected Cooking entry across all five subsections, reload/deep-link entry, and 390px/320px layouts",
+      "Collapsed source/evidence section in both detail types, keyboard expansion, preserved records, and mobile layout",
+      "Compact dish detail More sections, renamed recipe heading, and accessible warning popover on desktop/mobile",
+      "Signature exclusion defaults, searchable add/remove in both groups, empty-list reload, prediction/catalog isolation, LAN conflicts, retry, keyboard focus, and desktop/mobile manager",
+      "Two actual intervening LAN rarity writes during each search/refresh cannot display obsolete signature costs or dish examples; retry recovers",
+      "Signed rarity editing, blank/reset behavior, input preservation, reload persistence, and LAN conflict recovery",
+      "Three minimum-rarity pictured dish examples with hover/focus names, ingredient exploration navigation, and prediction handoff",
+      "Cooker-aware examples, fewer-than-three disclosure, revised-cost invalidation, cancellation, and error retry",
+      "Accessible-first default moves practical alternatives ahead of configured rare ingredients; nutrition-first remains available",
+      "Consistent mobile example rows and desktop/mobile rarity ranking without page overflow",
+      "Ingredient cards/table: 145 rows, 18 columns, all 2175 tag values, independent persistence, filters/sort, keyboard details, and mobile sticky scrolling",
+      "Signature recipe special/general grouping, full special group, shared nutrition sorting, and top-five expansion",
+      "Ingredient-detail entry, cooker-aware example-pot handoff, retry/cancellation, and mobile signature layout",
+      "Four-slot ingredient selection, duplicate items, replacement, removal, and partial-pot guard",
+      "Example produces Meatballs at 100%; mixed raw/cooked potatoes produce Mashed Potatoes",
+      "Three-way tie shows 33.33% and exact 1/3 for all outcomes",
+      "Changing cooker removes stale results and changes portable-only availability",
+      "Outcome cards open existing provenance detail views",
+      "Failed prediction requests are retryable; aborted old responses cannot overwrite edited pots",
+      "Keyboard focus is retained when selecting ingredients; mobile predictions scroll the outcome into view",
+      "Cards/table toggle shares search, filters, sort order, result count, and detail access",
+      "Dense table has 81 rows and 8 columns with food pictures and stat icons",
+      "Composite values remain source text with explicit pending status in the table",
+      "Table empty state, keyboard Enter detail access, Escape close, and focus return",
+      "Dish layout restored after section navigation and page reload via separate browser localStorage",
+      "Layout switching still works when browser storage writes are blocked",
+      "Mobile table scrolls horizontally within the page with pinned dish names",
+      "All 81 dish pictures and 145 ingredient-state pictures load in the browser",
+      "HP, hunger, and sanity icons load on cards and detail views",
+      "Text fallback for image-load failure and unavailable media",
+      "Chinese search and empty results",
+      "Portable-only wiki hint filter returns 11 entries",
+      "Composite stats retain source text and explanation",
+      "Unknown weight displayed without conversion to 1",
+      "Ingredient tag filtering",
+      "Both nutrition-brick states and shared-prefab detail links",
+      "Source and limitations view",
+      "Phone and tablet catalog and phone dialog without horizontal overflow",
+      "No JavaScript exceptions",
+      "No external resource requests during tested flows"
+    ]
+  },
+  "content_schema_version": 1,
+  "content_database_sha256": "f273606a7db5fa76443a60c5cad64401418166b8823d3e0298edb6c409f22855",
+  "content_modified": false,
+  "readiness_flags_promoted": false,
+  "solver_implemented": true,
+  "solver_mode": "experimental_wiki",
+  "independent_game_verification": false,
+  "target_build_compatibility_verified": false,
+  "deferred": [
+    "Reviewed solver readiness pending full ingredient/cooker eligibility, current-build verification, and independent in-game outcome fixtures",
+    "General multi-slot progressive search, inventory-constrained search, and optimal-cost recipe search",
+    "Confirmed food types, character effects, special effects, favorite foods, and state mechanics",
+    "Farming"
+  ],
+  "ingredient_layout": {
+    "checked_date": "2026-11-09",
+    "states_checked": 145,
+    "columns": 18,
+    "tag_cells_checked": 2175,
+    "checks": [
+      "All displayed tag values match the read-only catalog, including decimals and zeroes for captured blank cells",
+      "Cards/table share search, tag threshold filters, name sorting, counts, and empty states",
+      "Each nutrition-brick state retains its exact state ID, prefab, artwork, and detail access",
+      "Keyboard Enter opens details; Escape closes and restores focus",
+      "Dish and ingredient layout preferences persist independently across navigation and reload",
+      "Switching works when browser storage writes are blocked",
+      "Desktop and phone tables scroll within their container with sticky headers and ingredient names; no page overflow",
+      "Signed rarity column opens the state-specific editor; rarity sorting uses effective zero defaults"
+    ]
+  },
+  "rarity_and_examples": {
+    "report": "EXAMPLES_VALIDATION_REPORT.json",
+    "settings_database": ".local/user_settings.sqlite (separate from read-only wiki content; --settings override)",
+    "sharing": "Server-wide, including LAN visitors; no user accounts",
+    "unset_rarity": 0,
+    "accepted_values": "Signed 32-bit integers or null to remove override",
+    "default_signature_ranking": "Minimum rarity of the other three slots, then selected nutrition descending",
+    "alternative_signature_ranking": "Nutrition descending, then minimum additional rarity",
+    "complete_dish_cooker_scenario_queries": 324,
+    "dish_example_pots_replayed": 888,
+    "prepared_states_explicitly_indexed": 57,
+    "checks": [
+      "Independent brute-force reference verifies minimum additional costs and top-three distinct unordered pots with zero, positive, negative, and extreme signed costs",
+      "Mechanically equivalent states use cheapest representatives for single witnesses; actual state enumeration preserves distinct examples",
+      "Prepared states excluded unless a positive named group has no listed raw alternative",
+      "All examples survive priority/cooker competition and show exact-model outcome probability",
+      "Rarity edits persist, reset to zero, remain state-specific, and never modify the source database",
+      "Stale concurrent edits return 409 with current settings; failed saves keep input; invalid/cross-origin writes rejected",
+      "Both caches invalidate by settings revision and responses carry a coherent rarity_version",
+      "料理示例 sits immediately after 配方条件; all four small picture buttons support tooltips, exact ingredient-detail navigation, and pot handoff",
+      "Fewer than three combinations are disclosed, including unique raw recipes and shadowed outcomes",
+      "Desktop/mobile browser flows cover editing, reload, conflict recovery, retry, cancellation, ranking changes, pictures, and no overflow"
+    ],
+    "independent_in_game_verification": false
+  },
+  "signature_exclusions": {
+    "default_dish_ids": [
+      "huiji:蒸树枝",
+      "huiji:潮湿黏糊",
+      "huiji:怪物千层饼"
+    ],
+    "mutable_file": ".local/signature_exclusions.json (beside selected --settings file)",
+    "scope": "Signature recommendation output only, after complete cooking competition",
+    "checks": [
+      "Default exclusions apply to both special and general groups before display sorting, counts, and five-at-a-time expansion",
+      "Searchable management dialog supports add/restore, immediate save, empty list, reload/restart persistence, and shared LAN preferences",
+      "JSON writes replace atomically; failed replacement preserves prior bytes; malformed JSON is not reset",
+      "Content-hash version detects manual edits and stale concurrent LAN changes; conflicts are reviewable and retryable",
+      "Prediction results for all three default dishes are identical before/after edits; hidden winners still suppress lower priorities and participate in ties",
+      "All 81 catalog dishes, 145 ingredient states, rarity preferences, and dish examples remain unchanged",
+      "Desktop/mobile browser flows verify both-group filtering, visible result refresh, error retry, Escape/focus return, and no overflow"
+    ]
+  },
+  "dish_detail_layout": {
+    "checked_date": "2026-11-09",
+    "checks": [
+      "Table records retain five primary fields and collapse five secondary metadata fields in a More disclosure by default",
+      "Recipe conditions heading shortened; parser status, solver readiness, and review AST remain accessible under More",
+      "Nutrition caveat lives in a warning popover beside the wiki status badge, closed by default",
+      "Keyboard Enter opens disclosures; Escape or outside pointer dismisses the bubble without closing dish details",
+      "Desktop and 390px phone layouts stay within the viewport; new dish details reset to collapsed state",
+      "Original NULL weight, false readiness metadata, recipe text, example placement, and ingredient detail behavior preserved",
+      "Entire source/evidence section starts collapsed in dish and ingredient details; heading click or keyboard Enter exposes all records and nested evidence; mobile stays within viewport"
+    ],
+    "backend_changed": false,
+    "source_metadata_changed": false
+  },
+  "main_navigation": {
+    "checked_date": "2026-11-09",
+    "primary_routes": [
+      "/",
+      "/cooking",
+      "/farming"
+    ],
+    "checks": [
+      "Home, Cooking, and Farming share the same three main navigation entries",
+      "Cooking stays visible and selected while all five cooking subsections remain in a separate secondary group",
+      "Cooking selection survives subsection changes, module round trips, reload, and farming ingredient deep links",
+      "1440px desktop and 390px/320px mobile navigation remain visible without horizontal overflow",
+      "Real combined-server Chrome check uses isolated settings, stops its test server, and reports no JavaScript exceptions",
+      "On Cooking pages, Farming follows all five cooking subsections in DOM and visual order on desktop and mobile, retaining its main-entry styling"
+    ],
+    "backend_changed": false
+  }
+}

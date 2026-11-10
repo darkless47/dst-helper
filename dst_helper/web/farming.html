@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="饥荒联机版种植规划：季节、种子、养分配比与田地布局。">
+  <title>种植规划 · 荒野手记</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/helper.css">
+  <script src="/farming.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到内容</a>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">荒</span><span>荒野手记<small>DON'T STARVE TOGETHER</small></span></a>
+      <div class="edition">非官方 · 本地生存助手</div>
+      <nav aria-label="助手导航"><a class="nav-button" href="/"><span>00</span>助手首页</a><a class="nav-button" href="/cooking"><span>01</span>烹饪助手 Cooking</a><a class="nav-button active" href="/farming" aria-current="page"><span>02</span>种植规划 Farming</a></nav>
+      <div class="field-note"><span class="eyebrow">GARDEN NOTES / 种植手记</span><p>先选种，算配比，<br>再把农田摆好。</p><p class="muted small">配平养分之后，<br>也别忘了照料。</p></div>
+      <div class="local-status"><i aria-hidden="true"></i>养分配平 · 维基规划</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar"><span>饥荒联机版 <span class="slash">/</span> 种植规划</span><a href="/cooking">去烹饪助手 ↗</a></header>
+      <main id="main" tabindex="-1">
+        <section class="hero"><div><p class="eyebrow">FROM SEED TO HARVEST / FARMING</p><h1>为下一次丰收，留好位置。</h1><p class="intro">选择季节与可用种子，寻找养分配平的作物组合。水分、照料、间距与初始土壤养分仍需管理。</p></div><div class="stamp" aria-hidden="true"><span>荒野生存</span><strong>种植<br>手记</strong><span>GARDEN PLANNER</span></div></section>
+        <p class="source-note" id="source-note">灰机维基修订 203373 · 收到日期 2026-11-09 · 基于维基的规划 · 目标版本 762172（未核验）</p>
+        <div class="plan-file-bar"><span id="save-status" role="status" aria-live="polite">正在读取规划…</span><div class="farm-actions"><button id="save-plan" type="button" class="secondary" disabled>保存 / 重试</button><button id="reload-plan" type="button" class="secondary" disabled>读取服务器规划</button><button id="export-plan" type="button" class="secondary" disabled>导出规划</button><label class="secondary file-label">导入规划<input id="import-plan" type="file" accept=".json,application/json" disabled></label><button id="reset-plan" type="button" class="secondary danger-button" disabled>重置全部数据</button></div></div>
+        <p class="small muted">修改自动保存在本机服务器；LAN 用户共享同一份工作规划。导出文件可备份当前草稿。</p>
+        <div id="farm-error" class="error-box" role="alert" hidden></div>
+        <div id="planner" hidden>
+          <section class="farm-panel" aria-labelledby="season-title">
+            <div class="section-heading"><h2 id="season-title">01 / 选择季节</h2><span class="eyebrow">SEASONS</span></div>
+            <div id="season-presets" class="farm-actions" aria-label="快捷季节选择"></div>
+            <fieldset class="season-checks"><legend class="sr-only">适宜季节交集</legend><div id="season-checkboxes" class="farm-actions"></div></fieldset>
+            <p class="small muted">作物必须适宜每个已选季节；不选季节时显示全部作物。清除季节筛选只改变季节。</p>
+          </section>
+          <section class="farm-panel" aria-labelledby="seed-title">
+            <div class="section-heading"><h2 id="seed-title">02 / 手头有哪些种子？</h2><span id="crop-count" class="small"></span></div>
+            <div class="farm-actions"><button id="all-seeds" type="button" class="secondary">全选可用种子</button><button id="no-seeds" type="button" class="secondary">清空可用种子</button></div>
+            <p class="small muted">库存留空 = 不限制；0 = 没有种子。切换季节会保留隐藏作物的勾选与库存。养分按每个生长阶段计，正数添加、负数消耗。</p>
+            <div class="farm-table-scroll"><table class="farm-table"><caption class="sr-only">可用作物、适宜季节、每阶段养分变化与种子库存</caption><thead><tr><th scope="col">可用</th><th scope="col">作物 / 烹饪资料</th><th scope="col">秋</th><th scope="col">冬</th><th scope="col">春</th><th scope="col">夏</th><th scope="col">催长剂</th><th scope="col">堆肥</th><th scope="col">粪肥</th><th scope="col">种子库存</th></tr></thead><tbody id="crop-rows"></tbody></table></div>
+            <details class="farm-details"><summary>耗水记录与杂草提示</summary><div id="crop-water" class="small"></div><p class="small">随机种子的季节出现概率不等于适宜季节。杂草只用于布局中的危害检查，不参与配比推荐。</p><div id="weed-notes" class="small"></div></details>
+          </section>
+          <section class="farm-panel" aria-labelledby="ratio-title">
+            <div class="section-heading"><h2 id="ratio-title">03 / 养分配平组合</h2><div class="catalog-display"><span id="ratio-count" role="status" aria-live="polite"></span><div id="ratio-layout-switch" class="layout-switch" role="group" aria-label="配平组合显示方式"><button type="button" data-ratio-layout="cards" aria-pressed="true">卡片</button><button type="button" data-ratio-layout="table" aria-pressed="false">表格</button></div></div></div>
+            <div class="farm-actions"><label>种植倍数 <input id="ratio-scale" class="farm-number" type="number" min="1" max="1000000" step="1" value="1"></label><span class="small muted">所有组合按同一整数倍缩放，并检查库存上限。</span></div>
+            <p class="small muted">搜索范围：2–3 种不同作物，最简系数为 1 或 2。面积是每块田按 9 个位置估算的下界；全局数量 ≥4 仍需检查实际家族距离。</p>
+            <div id="ratio-results" class="ratio-grid"></div><button id="more-ratios" type="button" class="secondary" hidden>显示更多组合</button>
+          </section>
+          <section class="farm-panel" id="layout-panel" aria-labelledby="layout-title">
+            <div class="section-heading"><h2 id="layout-title">04 / 摆一摆田地</h2><span class="eyebrow">LAYOUT ASSIST</span></div>
+            <p class="small muted">每块田宽 4 游戏单位；九宫格中心为 2/3、2、10/3。各田紧邻，不留游戏距离间隔；家族半径 ≤4，含自己至少 4 株即通过（计入恰好位于半径边界的同类）。此图仅作放置指引。</p>
+            <div class="farm-actions"><label>田地 <select id="tile-count"><option value="1">一块田</option><option value="2">两块田</option><option value="4">四块田</option></select></label><label>种植画笔 <select id="crop-brush" aria-label="种植画笔"></select></label><button id="clear-layout" type="button" class="secondary">清空布局</button></div>
+            <p class="small muted">四块田按左上 1、右上 2、左下 3、右下 4 排列。用画笔点击格子；键盘 Tab 移动、空格或 Enter 放置。选择「擦除」清空单格。减少田地前请先清空将被移除的田。修改植物位置会将养护和生长记录恢复为未知。</p>
+            <div id="layout-examples" class="farm-actions"></div><p class="small muted">载入示例会替换布局、倍数、配比与季节，保留可用种子和库存；养护与生长记录恢复未知。</p>
+            <div id="tile-grids" class="tile-grids"></div>
+            <div id="layout-report" aria-live="polite"></div>
+            <details class="farm-details"><summary>逐株检查：家族、季节与杂草</summary><div id="plant-report" class="farm-table-scroll"></div></details>
+          </section>
+          <section class="farm-panel" aria-labelledby="care-title">
+            <div class="section-heading"><h2 id="care-title">05 / 记得照料它们</h2><span class="eyebrow">REMAINING CARE</span></div>
+            <p class="small muted">配比或布局通过不能保证巨大作物。以下项目由你确认；未记录保持未知，也不会自动填入生长阶段记录。</p><div id="care-checks" class="care-grid"></div>
+            <details class="farm-details"><summary>可选：四阶段压力记录与巨大资格</summary><p class="small muted">按同一株（或经历完全一致的一批）作物记录四次生长转换。七类压力每阶段各计 0 或 1 分；巨大资格需总压力 ≤1，且满足种子与历史条件。此表不从布局推断照料已完成。</p><div id="history-flags" class="care-grid"></div><div id="stress-table" class="farm-table-scroll"></div><p id="stress-output" role="status" aria-live="polite"></p></details>
+          </section>
+        </div>
+        <footer><span>荒野手记 · 非官方粉丝项目，与 Klei 无隶属关系。</span><span>灰机维基 · 静态规划，非精确生长时序模拟</span></footer>
+      </main>
+    </div>
+  </div>
+  <dialog id="reset-plan-dialog" class="reset-dialog" aria-labelledby="reset-plan-title" aria-describedby="reset-plan-description">
+    <div class="reset-dialog-heading"><h2 id="reset-plan-title">重置全部种植数据？</h2><button id="close-reset-plan" type="button" class="icon-button" aria-label="取消重置" autofocus>×</button></div>
+    <p id="reset-plan-description">季节、可用种子、库存、倍数、选中配比、田地布局、养护与生长记录，以及当前浏览器的显示偏好，都将恢复默认。此服务器的 LAN 用户共享同一份种植规划。</p>
+    <p class="small muted">Reset 直接重置；Export and Reset 先下载当前规划 JSON，再重置。按 Esc 或关闭此窗口可取消。</p>
+    <p id="reset-plan-error" class="status-fail" role="alert" hidden></p>
+    <div class="farm-actions reset-actions"><button id="confirm-reset-plan" type="button" class="secondary danger-button">Reset</button><button id="export-reset-plan" type="button" class="secondary">Export and Reset</button></div>
+  </dialog>
+</body>
+</html>

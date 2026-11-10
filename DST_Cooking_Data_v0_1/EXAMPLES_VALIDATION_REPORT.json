@@ -1,0 +1,69 @@
+{
+  "checked_date": "2026-11-09",
+  "source_revision": "193291",
+  "dishes": 81,
+  "scenarios": [
+    "default_zero",
+    "signed_custom"
+  ],
+  "complete_queries_checked": 324,
+  "example_pots_replayed": 888,
+  "processed_states_excluded": 57,
+  "fewer_than_three": [
+    {
+      "scenario": "default_zero",
+      "dish": "怪物千层饼",
+      "cooker": "portable",
+      "count": 0
+    },
+    {
+      "scenario": "default_zero",
+      "dish": "恐怖国王饼",
+      "cooker": "portable",
+      "count": 1
+    },
+    {
+      "scenario": "default_zero",
+      "dish": "蘑菇蛋糕",
+      "cooker": "crock_pot",
+      "count": 1
+    },
+    {
+      "scenario": "default_zero",
+      "dish": "蘑菇蛋糕",
+      "cooker": "portable",
+      "count": 1
+    },
+    {
+      "scenario": "signed_custom",
+      "dish": "怪物千层饼",
+      "cooker": "portable",
+      "count": 0
+    },
+    {
+      "scenario": "signed_custom",
+      "dish": "恐怖国王饼",
+      "cooker": "portable",
+      "count": 1
+    },
+    {
+      "scenario": "signed_custom",
+      "dish": "蘑菇蛋糕",
+      "cooker": "crock_pot",
+      "count": 1
+    },
+    {
+      "scenario": "signed_custom",
+      "dish": "蘑菇蛋糕",
+      "cooker": "portable",
+      "count": 1
+    }
+  ],
+  "cold_query_max_seconds": 1.993,
+  "elapsed_seconds": 11.005,
+  "optimality_evidence": "Independent exhaustive synthetic tests with zero, positive, negative and extreme signed costs; full snapshot witness replay",
+  "evidence_level": "Experimental exact-model/source-policy checks, not independent game outcomes",
+  "content_database_sha256": "f273606a7db5fa76443a60c5cad64401418166b8823d3e0298edb6c409f22855",
+  "content_modified": false,
+  "readiness_flags_promoted": false
+}

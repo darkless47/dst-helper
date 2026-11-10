@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="非官方饥荒联机版烹饪手册：本地只读料理目录、食材标签与维基快照证据。">
+  <title>荒野食记 · DST 烹饪手册</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/app.css">
+  <script src="/prediction.js" defer></script>
+  <script src="/signature.js" defer></script>
+  <script src="/rarity.js" defer></script>
+  <script src="/examples.js" defer></script>
+  <script src="/exclusions.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到内容</a>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="荒野食记首页"><span class="brand-mark" aria-hidden="true">食</span><span>荒野食记<small>DST COOKING HANDBOOK</small></span></a>
+      <div class="edition">非官方 · 本地手册</div>
+      <nav class="cooking-module-nav" aria-label="助手导航">
+        <a class="nav-button" href="/"><span>00</span>助手首页</a>
+        <a class="nav-button active" href="/cooking" aria-current="page"><span>01</span>烹饪助手 Cooking</a>
+        <nav class="cooking-subnav" aria-label="烹饪助手导航">
+          <button class="nav-button active" data-view="dishes" aria-current="page"><span>01</span>料理目录<b id="dish-count">—</b></button>
+          <button class="nav-button" data-view="ingredients"><span>02</span>食材探索<b id="ingredient-count">—</b></button>
+          <button class="nav-button" data-view="signature"><span>03</span>优选料理</button>
+          <button class="nav-button" data-view="prediction"><span>04</span>出锅预测</button>
+          <button class="nav-button" data-view="evidence"><span>05</span>数据与边界</button>
+        </nav>
+        <a class="nav-button" href="/farming"><span>02</span>种植规划 Farming</a>
+      </nav>
+      <div class="field-note"><span class="eyebrow">FIELD NOTE / 阅读须知</span><p>一份维基快照，<br>一册待核实的荒野食谱。</p><p class="muted small">先看来源，再做判断。<br>四格预测为维基实验功能。</p></div>
+      <div class="local-status"><i aria-hidden="true"></i>维基快照只读 · 设置保存在本机</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar"><span>饥荒联机版 <span class="slash">/</span> 烹饪资料库</span><span class="snapshot-label" id="snapshot-label">正在读取本地快照</span></header>
+      <main id="main" tabindex="-1">
+        <section class="hero">
+          <div><p class="eyebrow" id="section-kicker">THE WILDERNESS TABLE / 01</p><h1 id="page-title">在荒野，好好吃饭。</h1><p class="intro" id="page-description">查阅料理的表格数值、食材标签与原始证据。每一条资料，都有来处。</p></div>
+          <div class="stamp" aria-hidden="true"><span>荒野生存</span><strong>烹饪<br>手记</strong><span>WIKI SNAPSHOT</span></div>
+        </section>
+        <section class="trust-strip" aria-label="版本与核验状态">
+          <div><span>目标游戏版本</span><strong id="target-build">—</strong><small>用户报告的安装版本</small></div>
+          <div><span>资料证据等级</span><strong>单一维基快照</strong><small id="revision">尚未核验游戏版本兼容性</small></div>
+          <div><span>出锅预测</span><strong class="amber" id="prediction-status">维基预测 · 实验</strong><small>最高优先级 · 同分等概率</small></div>
+        </section>
+        <section id="catalog-section" aria-label="目录">
+          <div class="section-heading"><h2 id="catalog-title">料理索引</h2><div class="catalog-display"><span id="result-count" role="status" aria-live="polite">读取中…</span><div id="catalog-layout-switch" class="layout-switch" role="group" aria-label="料理显示方式"><button type="button" data-layout="cards" aria-pressed="true">卡片</button><button type="button" data-layout="table" aria-pressed="false">表格</button></div></div></div>
+          <div class="toolbar">
+            <label class="search-field"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="搜索中文名称、英文提示或 ID" aria-label="搜索目录" autocomplete="off"><kbd aria-hidden="true">/</kbd></label>
+            <label class="select-field">排序<select id="sort"><option value="source">维基原始顺序</option><option value="name">中文名称</option><option value="rarity">稀有度 · 从低到高</option><option value="hunger">饥饿值 · 从高到低</option><option value="health">生命值 · 从高到低</option><option value="sanity">理智值 · 从高到低</option><option value="priority">优先级 · 从高到低</option><option value="cook">烹饪时间 · 从短到长</option></select></label>
+          </div>
+          <div class="filters" id="dish-filters">
+            <label>锅具提示<select id="cooker"><option value="all">全部条目</option><option value="portable">维基称便携锅专属</option><option value="both">烹饪锅 / 便携烹饪锅</option></select></label>
+            <label>表格数值<select id="stat-filter"><option value="all">不限</option><option value="health">基础生命值 &gt; 0</option><option value="hunger">基础饥饿值 ≥ 75</option><option value="sanity">基础理智值 &gt; 0</option><option value="composite">含待拆解复合数值</option></select></label>
+            <button class="text-button reset" type="button">重置筛选 ↺</button>
+          </div>
+          <div class="filters" id="ingredient-filters" hidden>
+            <label>食材标签<select id="tag-filter"><option value="all">全部标签</option></select></label>
+            <label>标签值至少<select id="tag-min"><option value="0">非零</option><option value="0.5">0.5</option><option value="1">1</option><option value="2">2</option></select></label>
+            <button class="text-button reset" type="button">重置筛选 ↺</button>
+          </div>
+          <p class="catalog-note" id="catalog-note">数值来自维基基础表格，未经游戏验证；成品类型与食用对象尚未确认，不代表角色实际食用收益。</p>
+          <p id="table-hint" class="table-hint" hidden>点击料理名称查阅完整手记。表格可横向滚动，数值为基础表值；英文名称仅为暂译提示。</p>
+          <div id="results" class="card-grid" aria-busy="true"></div>
+          <div class="empty-state" id="empty" hidden><span aria-hidden="true">∅</span><h3>没有符合条件的条目</h3><p>试试其他名称，或清除筛选条件。</p><button class="secondary reset" type="button">重置筛选</button></div>
+        </section>
+        <section id="signature-section" hidden aria-label="食材优选料理">
+          <div class="signature-exclusion-toolbar"><p id="signature-exclusion-summary" class="small muted">不考虑名单仅影响优选料理推荐。</p><button type="button" class="secondary" id="manage-signature-exclusions">管理不考虑名单</button></div>
+          <div class="signature-controls">
+            <div class="signature-choose"><h2>发现一件食材，从这里开始。</h2><label class="search-field"><span aria-hidden="true">⌕</span><input id="signature-search" type="search" placeholder="搜索中文名称、英文提示或 ID" aria-label="搜索优选料理的食材" autocomplete="off"></label><div id="signature-picker" class="signature-picker" role="group" aria-label="选择优选料理食材"></div></div>
+            <div class="signature-settings"><div id="signature-selected"><p class="muted">选择食材，看看它的拿手料理。</p></div><div class="signature-options"><label>使用锅具<select id="signature-cooker" aria-label="优选料理锅具"></select></label><label>排序方式<select id="signature-ranking"><option value="accessible">易获取优先</option><option value="nutrition">营养优先</option></select></label><label>两组统一营养指标<select id="signature-sort"><option value="hunger">饥饿值 · 从高到低</option><option value="health">生命值 · 从高到低</option><option value="sanity">理智值 · 从高到低</option></select></label></div><p class="small muted">配方点名的料理优先展示。易获取优先按其余三格的最低总稀有度排序，同分再按营养值；营养优先则先看营养值，同分再看稀有度。可在食材探索中编辑稀有度，未设置为 0。</p></div>
+          </div>
+          <p class="catalog-note">基于当前维基预测规则，不限制库存、允许重复食材。概率仅对应示例组合；营养排序使用基础表值，不代表角色实际食用收益。复合值待拆解，排在数值末尾。</p>
+          <div id="signature-results" aria-live="polite" aria-busy="false"><p class="prediction-empty">选择一种食材，发现它的优选料理。</p></div>
+        </section>
+        <section id="prediction-section" hidden aria-label="四格出锅预测">
+          <div class="prediction-notice"><span class="type-chip portable">维基预测 · 实验</span><p>优先级、同分概率与混合计数已确认。暂以维基食材表为可选范围，食材适用范围与目标游戏版本仍待核验。</p><details><summary>查看使用范围</summary><div id="prediction-assumptions"></div></details></div>
+          <div class="prediction-workbench">
+            <div class="pot-builder">
+              <div class="section-heading"><h2>这锅放什么？</h2><button class="text-button" id="clear-pot" type="button">清空食材 ↺</button></div>
+              <label class="pot-cooker">使用锅具<select id="prediction-cooker" aria-label="预测使用的锅具"></select></label>
+              <div class="pot-slots" id="pot-slots" role="group" aria-label="四个食材槽位"></div>
+              <div class="pot-actions"><span id="pot-count" role="status" aria-live="polite">还差 4 件食材</span><button type="button" id="predict-pot" class="primary" disabled>开始预测</button></div>
+              <button type="button" id="example-pot" class="text-button">试试示例：小肉 + 3 个浆果</button>
+              <div class="picker-heading"><h3>选择食材</h3><span class="muted small" id="picker-count"></span></div>
+              <label class="search-field"><span aria-hidden="true">⌕</span><input id="prediction-search" type="search" placeholder="搜索食材名称、英文提示或 ID" aria-label="搜索预测食材" autocomplete="off"></label>
+              <p id="picker-instruction" class="muted small">点击食材填入当前槽位；可重复选择。</p>
+              <div id="ingredient-picker" class="ingredient-picker" aria-label="预测食材列表"></div>
+            </div>
+            <section class="prediction-panel" aria-labelledby="prediction-result-title"><div class="section-heading"><h2 id="prediction-result-title">出锅结果</h2><span class="eyebrow">EXACT POT</span></div><div id="prediction-output" aria-live="polite"><p class="prediction-empty">选满四件食材后，查看这锅的料理与概率。</p></div></section>
+          </div>
+        </section>
+        <section id="evidence-section" hidden aria-label="数据来源与限制"></section>
+        <div class="error-box" id="error" role="alert" hidden><h2>暂时无法读取资料</h2><p id="error-message"></p><button id="retry" class="secondary">重新读取</button></div>
+        <footer><span>荒野食记 · 非官方粉丝项目，与 Klei 无隶属关系。</span><span>来源：灰机维基 · 未经游戏内验证</span></footer>
+      </main>
+    </div>
+  </div>
+  <dialog id="detail-dialog" aria-labelledby="detail-title"><div class="dialog-bar"><span class="eyebrow">CATALOG / 条目手记</span><button id="close-detail" class="icon-button" aria-label="关闭条目详情">×</button></div><div id="detail-content"></div></dialog>
+  <dialog id="signature-exclusion-dialog" aria-labelledby="signature-exclusion-title">
+    <div class="dialog-bar"><span class="eyebrow">SIGNATURE / 推荐偏好</span><button type="button" id="close-signature-exclusions" class="icon-button" aria-label="关闭不考虑名单">×</button></div>
+    <div class="exclusion-content"><h2 id="signature-exclusion-title">不考虑名单</h2><p class="small muted">这些料理不会出现在优选料理的任何分组中。出锅预测、料理目录、料理示例和食材探索照常使用完整资料。修改后自动保存，同一服务器的 LAN 用户共享。</p>
+      <p id="signature-exclusion-status" class="small" role="status" aria-live="polite"></p><button type="button" id="retry-signature-exclusions" class="secondary" hidden>重新读取名单</button>
+      <section aria-labelledby="excluded-title"><div class="section-heading"><h3 id="excluded-title">已排除的料理</h3><span id="excluded-count" class="small muted"></span></div><div id="excluded-dishes" class="exclusion-list"></div></section>
+      <section aria-labelledby="exclusion-add-title"><h3 id="exclusion-add-title">添加料理</h3><label class="search-field"><span aria-hidden="true">⌕</span><input type="search" id="signature-exclusion-search" placeholder="搜索料理名称、英文提示或 ID" aria-label="搜索要排除的料理" autocomplete="off"></label><div id="exclusion-candidates" class="exclusion-list exclusion-candidates"></div></section>
+    </div>
+  </dialog>
+</body>
+</html>

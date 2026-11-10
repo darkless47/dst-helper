@@ -1,0 +1,18 @@
+{
+  "evidence_level": "Manually derived from saved wiki predicates and user-confirmed selection/grouping policy; not independently in-game verified",
+  "cases": [
+    {"name": "fractional meat remains positive", "ingredients": ["smallmeat", "berries", "berries", "berries"], "cooker": "crock_pot", "priority": -1, "outcomes": ["huiji:肉丸"]},
+    {"name": "higher priority beats own-predicate meatballs match", "ingredients": ["meat", "meat", "honey", "berries"], "cooker": "crock_pot", "priority": 2, "outcomes": ["huiji:蜜汁火腿"]},
+    {"name": "fractional meat selects honey nuggets", "ingredients": ["smallmeat", "honey", "berries", "berries"], "cooker": "crock_pot", "priority": 2, "outcomes": ["huiji:蜜汁卤肉"]},
+    {"name": "mixed raw/cooked potatoes", "ingredients": ["potato", "potato_cooked", "garlic", "ice"], "cooker": "crock_pot", "priority": 20, "outcomes": ["huiji:奶油土豆泥"]},
+    {"name": "two raw potatoes", "ingredients": ["potato", "potato", "garlic", "ice"], "cooker": "crock_pot", "priority": 20, "outcomes": ["huiji:奶油土豆泥"]},
+    {"name": "two cooked potatoes", "ingredients": ["potato_cooked", "potato_cooked", "garlic", "ice"], "cooker": "crock_pot", "priority": 20, "outcomes": ["huiji:奶油土豆泥"]},
+    {"name": "ordinary pot excludes portable cold soup", "ingredients": ["asparagus", "asparagus_cooked", "ice", "ice"], "cooker": "crock_pot", "priority": 0, "outcomes": ["huiji:蔬菜杂烩"]},
+    {"name": "portable pot includes mixed-asparagus cold soup", "ingredients": ["asparagus", "asparagus_cooked", "ice", "ice"], "cooker": "portable", "priority": 30, "outcomes": ["huiji:芦笋冷汤"]},
+    {"name": "two-way highest-priority tie", "ingredients": ["pomegranate", "pomegranate", "pomegranate", "pomegranate"], "cooker": "crock_pot", "priority": 0, "outcomes": ["huiji:果酱", "huiji:水果圣代"]},
+    {"name": "three-way tie and discarded lower matches", "ingredients": ["corn", "honey", "twigs", "fishmeat_small"], "cooker": "crock_pot", "priority": 10, "outcomes": ["huiji:鱼肉玉米卷", "huiji:炸鱼排", "huiji:粉末蛋糕"]},
+    {"name": "mixed kelp meets exact total two", "ingredients": ["kelp", "kelp_cooked", "fishmeat", "ice"], "cooker": "crock_pot", "priority": 20, "outcomes": ["huiji:加州卷"]},
+    {"name": "three kelp violates exact total two", "ingredients": ["kelp", "kelp", "kelp_cooked", "fishmeat"], "cooker": "crock_pot", "priority": -1, "outcomes": ["huiji:肉丸"]},
+    {"name": "negative-priority unrestricted fallback", "ingredients": ["nightmarefuel", "nightmarefuel", "nightmarefuel", "nightmarefuel"], "cooker": "crock_pot", "priority": -10, "outcomes": ["huiji:潮湿黏糊"]}
+  ]
+}

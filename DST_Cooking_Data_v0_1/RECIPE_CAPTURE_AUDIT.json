@@ -1,0 +1,1366 @@
+{
+  "audit_date": "2026-11-08",
+  "source_revision": "193291",
+  "source_html_sha256": "3072e6cc0e7be112a7cfc91f1c02cdd2078960543be1d9accc35dd5d4fe0effa",
+  "content_database_sha256": "f273606a7db5fa76443a60c5cad64401418166b8823d3e0298edb6c409f22855",
+  "ingredient_states_checked": 145,
+  "ingredient_tag_cells_checked": 2175,
+  "recipe_conditions_checked": 81,
+  "priorities_checked": 81,
+  "discrepancies": [],
+  "priority_range": [
+    -10,
+    100
+  ],
+  "per_recipe_weight_null_count": 81,
+  "wiki_selection_prose": [
+    "从满足烹饪要求的食谱中选出优先级最高的食谱。",
+    "若有多个优先级最高的食谱，则在这些食谱中等概率地选中一个食谱。"
+  ],
+  "user_confirmation": {
+    "date": "2026-11-08",
+    "policy": "maximum priority; uniform among tied maxima",
+    "mixed_listed_forms_share_count": true
+  },
+  "abstract_selection_examples": [
+    {
+      "matching_priorities": [
+        10,
+        10,
+        5
+      ],
+      "probabilities": [
+        "1/2",
+        "1/2",
+        "0"
+      ]
+    },
+    {
+      "matching_priorities": [
+        30,
+        10,
+        -1
+      ],
+      "probabilities": [
+        "1",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "matching_priorities": [
+        -1,
+        -4,
+        -10
+      ],
+      "probabilities": [
+        "1",
+        "0",
+        "0"
+      ]
+    }
+  ],
+  "grouped_quantity_review_count": 0,
+  "grouped_quantity_recipes_count": 10,
+  "interpretation_limit": "Shared icon groups are counted by summed explicitly listed prefabs, as confirmed by the user. The source transcription audit itself is not independent in-game verification.",
+  "solver_ready_flags_changed": false,
+  "in_game_verification": false,
+  "recipes": [
+    {
+      "source_row": 1,
+      "dish_id": "huiji:培根煎蛋",
+      "name_zh": "培根煎蛋",
+      "source_tag_conditions": "肉度 > 1，蛋度 > 1\n蔬菜度 = 0",
+      "source_named_conditions": "",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 2,
+      "dish_id": "huiji:蝴蝶松饼",
+      "name_zh": "蝴蝶松饼",
+      "source_tag_conditions": "蔬菜度 ≥ 0.5\n肉度 = 0",
+      "source_named_conditions": "[Butterfly Wings.png]/[Moon Moth Wings.png] ≥ 1",
+      "priority": 1,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 3,
+      "dish_id": "huiji:火龙果派",
+      "name_zh": "火龙果派",
+      "source_tag_conditions": "肉度 = 0",
+      "source_named_conditions": "[Dragon Fruit.png]/[Prepared Dragon Fruit.png] ≥ 1",
+      "priority": 1,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 4,
+      "dish_id": "huiji:鱼肉玉米卷",
+      "name_zh": "鱼肉玉米卷",
+      "source_tag_conditions": "鱼度 > 0",
+      "source_named_conditions": "[Corn.png]/[Corn Cod.png]/[Popcorn.png]/[Popperfish.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 5,
+      "dish_id": "huiji:炸鱼排",
+      "name_zh": "炸鱼排",
+      "source_tag_conditions": "鱼度 > 0，0 < 不可食用度 ≤ 1",
+      "source_named_conditions": "[Twigs.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 6,
+      "dish_id": "huiji:果酱",
+      "name_zh": "果酱",
+      "source_tag_conditions": "水果度 > 0\n肉度 = 0，蔬菜度 = 0，不可食用度 = 0",
+      "source_named_conditions": "",
+      "priority": 0,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 7,
+      "dish_id": "huiji:蛙腿三明治",
+      "name_zh": "蛙腿三明治",
+      "source_tag_conditions": "蔬菜度 ≥ 0.5",
+      "source_named_conditions": "[Frog Legs.png]/[Cooked Frog Legs.png] ≥ 1",
+      "priority": 1,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 8,
+      "dish_id": "huiji:水果圣代",
+      "name_zh": "水果圣代",
+      "source_tag_conditions": "水果度 ≥ 3\n肉度 = 0，蔬菜度 = 0",
+      "source_named_conditions": "",
+      "priority": 0,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 9,
+      "dish_id": "huiji:蜜汁火腿",
+      "name_zh": "蜜汁火腿",
+      "source_tag_conditions": "肉度 > 1.5\n不可食用度 = 0",
+      "source_named_conditions": "[Honey.png] ≥ 1",
+      "priority": 2,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 10,
+      "dish_id": "huiji:蜜汁卤肉",
+      "name_zh": "蜜汁卤肉",
+      "source_tag_conditions": "0 < 肉度 ≤ 1.5\n不可食用度 = 0",
+      "source_named_conditions": "[Honey.png] ≥ 1",
+      "priority": 2,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 11,
+      "dish_id": "huiji:肉串",
+      "name_zh": "肉串",
+      "source_tag_conditions": "肉度 > 0，怪物度 ≤ 1，不可食用度 ≤ 1",
+      "source_named_conditions": "[Twigs.png] ≥ 1",
+      "priority": 5,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 12,
+      "dish_id": "huiji:曼德拉草汤",
+      "name_zh": "曼德拉草汤",
+      "source_tag_conditions": "",
+      "source_named_conditions": "[Mandrake.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 13,
+      "dish_id": "huiji:肉丸",
+      "name_zh": "肉丸",
+      "source_tag_conditions": "肉度 > 0\n不可食用度 = 0",
+      "source_named_conditions": "",
+      "priority": -1,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 14,
+      "dish_id": "huiji:肉汤",
+      "name_zh": "肉汤",
+      "source_tag_conditions": "肉度 ≥ 3\n不可食用度 = 0",
+      "source_named_conditions": "",
+      "priority": 0,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 15,
+      "dish_id": "huiji:怪物千层饼",
+      "name_zh": "怪物千层饼",
+      "source_tag_conditions": "怪物度 ≥ 2\n不可食用度 = 0",
+      "source_named_conditions": "",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 16,
+      "dish_id": "huiji:波兰水饺",
+      "name_zh": "波兰水饺",
+      "source_tag_conditions": "肉度 > 0，蔬菜度 ≥ 0.5，蛋度 > 0\n不可食用度 = 0",
+      "source_named_conditions": "",
+      "priority": 5,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 17,
+      "dish_id": "huiji:粉末蛋糕",
+      "name_zh": "粉末蛋糕",
+      "source_tag_conditions": "",
+      "source_named_conditions": "[Corn.png]/[Corn Cod.png]/[Popcorn.png]/[Popperfish.png] ≥ 1\n[Honey.png] ≥ 1\n[Twigs.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 18,
+      "dish_id": "huiji:南瓜饼干",
+      "name_zh": "南瓜饼干",
+      "source_tag_conditions": "甜味剂度 ≥ 2",
+      "source_named_conditions": "[Pumpkin.png]/[Hot Pumpkin.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 19,
+      "dish_id": "huiji:蔬菜杂烩",
+      "name_zh": "蔬菜杂烩",
+      "source_tag_conditions": "蔬菜度 ≥ 0.5\n肉度 = 0，不可食用度 = 0",
+      "source_named_conditions": "",
+      "priority": 0,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 20,
+      "dish_id": "huiji:酿茄子",
+      "name_zh": "酿茄子",
+      "source_tag_conditions": "蔬菜度 > 1",
+      "source_named_conditions": "[Eggplant.png]/[Braised Eggplant.png] ≥ 1",
+      "priority": 1,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 21,
+      "dish_id": "huiji:太妃糖",
+      "name_zh": "太妃糖",
+      "source_tag_conditions": "甜味剂度 ≥ 3\n肉度 = 0",
+      "source_named_conditions": "",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 22,
+      "dish_id": "huiji:火鸡正餐",
+      "name_zh": "火鸡正餐",
+      "source_tag_conditions": "肉度 > 1，水果度 > 0 / 蔬菜度 ≥ 0.5",
+      "source_named_conditions": "[Drumstick.png] ≥ 2",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 23,
+      "dish_id": "huiji:鳗鱼料理",
+      "name_zh": "鳗鱼料理",
+      "source_tag_conditions": "",
+      "source_named_conditions": "[Live Eel.png]/[Eel.png]/[Cooked Eel.png] ≥ 1\n[Lichen.png]/[Kelp Fronds.png]/[Cooked Kelp Fronds.png]/[Dried Kelp Fronds.png] ≥ 1",
+      "priority": 20,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 24,
+      "dish_id": "huiji:华夫饼",
+      "name_zh": "华夫饼",
+      "source_tag_conditions": "蛋度 > 0",
+      "source_named_conditions": "[Butter.png] ≥ 1\n[Berries.png]/[Roasted Berries.png]/[Juicy Berries.png]/[Roasted Juicy Berries.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 25,
+      "dish_id": "huiji:西瓜冰棍",
+      "name_zh": "西瓜冰棍",
+      "source_tag_conditions": "冰度 > 0\n肉度 = 0，蔬菜度 = 0，蛋度 = 0",
+      "source_named_conditions": "[Watermelon.png] ≥ 1\n[Twigs.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 26,
+      "dish_id": "huiji:什锦干果",
+      "name_zh": "什锦干果",
+      "source_tag_conditions": "水果度 ≥ 1，种子度 ≥ 1\n肉度 = 0，蔬菜度 = 0，蛋度 = 0，乳制品度 = 0",
+      "source_named_conditions": "[Birchnut.png]/[Roasted Birchnut.png] ≥ 1\n[Berries.png]/[Roasted Berries.png]/[Juicy Berries.png]/[Roasted Juicy Berries.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 27,
+      "dish_id": "huiji:冰淇淋",
+      "name_zh": "冰淇淋",
+      "source_tag_conditions": "甜味剂度 > 0，乳制品度 > 0，冰度 > 0\n肉度 = 0，蔬菜度 = 0，蛋度 = 0，不可食用度 = 0",
+      "source_named_conditions": "",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 28,
+      "dish_id": "huiji:鳄梨酱",
+      "name_zh": "鳄梨酱",
+      "source_tag_conditions": "水果度 = 0",
+      "source_named_conditions": "[Moleworm.png] ≥ 1\n[Cactus Flesh.png]/[Ripe Stone Fruit.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 29,
+      "dish_id": "huiji:花沙拉",
+      "name_zh": "花沙拉",
+      "source_tag_conditions": "蔬菜度 ≥ 2\n肉度 = 0，水果度 = 0，蛋度 = 0\n甜味剂度 = 0，不可食用度 = 0",
+      "source_named_conditions": "[Cactus Flower.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 30,
+      "dish_id": "huiji:辣椒炖肉",
+      "name_zh": "辣椒炖肉",
+      "source_tag_conditions": "肉度 ≥ 1.5，蔬菜度 ≥ 1.5",
+      "source_named_conditions": "",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 31,
+      "dish_id": "huiji:海鲜浓汤",
+      "name_zh": "海鲜浓汤",
+      "source_tag_conditions": "鱼度 > 2",
+      "source_named_conditions": "",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 32,
+      "dish_id": "huiji:酸橘汁腌鱼",
+      "name_zh": "酸橘汁腌鱼",
+      "source_tag_conditions": "鱼度 ≥ 2，冰度 > 0\n蛋度 = 0，不可食用度 = 0",
+      "source_named_conditions": "",
+      "priority": 20,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 33,
+      "dish_id": "huiji:加州卷",
+      "name_zh": "加州卷",
+      "source_tag_conditions": "鱼度 ≥ 1",
+      "source_named_conditions": "[Kelp Fronds.png]/[Cooked Kelp Fronds.png]/[Dried Kelp Fronds.png] = 2",
+      "priority": 20,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": true,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 34,
+      "dish_id": "huiji:海鲜牛排",
+      "name_zh": "海鲜牛排",
+      "source_tag_conditions": "肉度 ≥ 2.5，鱼度 ≥ 1.5，冰度 = 0",
+      "source_named_conditions": "",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 35,
+      "dish_id": "huiji:彩虹糖豆",
+      "name_zh": "彩虹糖豆",
+      "source_tag_conditions": "怪物度 = 0，不可食用度 = 0",
+      "source_named_conditions": "[Royal Jelly.png] ≥ 1",
+      "priority": 12,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 36,
+      "dish_id": "huiji:香蕉冻",
+      "name_zh": "香蕉冻",
+      "source_tag_conditions": "冰度 >0\n肉度 = 0，鱼度 = 0",
+      "source_named_conditions": "[Cave Banana.png]/[Cooked Cave Banana.png] ≥ 1\n[Twigs.png] ≥ 1",
+      "priority": 20,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 37,
+      "dish_id": "huiji:芦笋汤",
+      "name_zh": "芦笋汤",
+      "source_tag_conditions": "蔬菜度 > 2\n肉度 = 0，不可食用度 = 0",
+      "source_named_conditions": "[Asparagus.png]/[Roasted Asparagus.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 38,
+      "dish_id": "huiji:爆炒填馅辣椒",
+      "name_zh": "爆炒填馅辣椒",
+      "source_tag_conditions": "0 < 肉度 ≤ 1.5\n不可食用度 = 0",
+      "source_named_conditions": "[Pepper.png]/[Roasted Pepper.png] ≥ 1",
+      "priority": 20,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 39,
+      "dish_id": "huiji:生鲜萨尔萨酱",
+      "name_zh": "生鲜萨尔萨酱",
+      "source_tag_conditions": "肉度 = 0，蛋度 = 0，不可食用度 = 0",
+      "source_named_conditions": "[Toma Root.png]/[Roasted Toma Root.png] ≥ 1\n[Onion.png]/[Roasted Onion.png] ≥ 1",
+      "priority": 20,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 40,
+      "dish_id": "huiji:奶油土豆泥",
+      "name_zh": "奶油土豆泥",
+      "source_tag_conditions": "肉度 = 0，不可食用度 = 0",
+      "source_named_conditions": "[Potato.png]/[Roasted Potato.png] ≥ 2\n[Garlic.png]/[Roast Garlic.png] ≥ 1",
+      "priority": 20,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": true,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 41,
+      "dish_id": "huiji:花式回旋块茎",
+      "name_zh": "花式回旋块茎",
+      "source_tag_conditions": "怪物度 ≤ 1，不可食用度 ≤ 2\n肉度 = 0",
+      "source_named_conditions": "[Potato.png]/[Roasted Potato.png] ≥ 1\n[Twigs.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 42,
+      "dish_id": "huiji:蔬菜鸡尾酒",
+      "name_zh": "蔬菜鸡尾酒",
+      "source_tag_conditions": "蔬菜度 > 2，冰度 ≥ 1\n肉度 = 0，蛋度 = 0，不可食用度 = 0",
+      "source_named_conditions": "[Asparagus.png]/[Roasted Asparagus.png]/[Toma Root.png]/[Roasted Toma Root.png] ≥ 1",
+      "priority": 15,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 43,
+      "dish_id": "huiji:怪物鞑靼",
+      "name_zh": "怪物鞑靼",
+      "source_tag_conditions": "怪物度 ≥ 2\n不可食用度 = 0",
+      "source_named_conditions": "只能由沃利使用[Portable Crock Pot Build.png]烹饪",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 44,
+      "dish_id": "huiji:鲜果可丽饼",
+      "name_zh": "鲜果可丽饼",
+      "source_tag_conditions": "水果度 ≥ 1.5",
+      "source_named_conditions": "[Butter.png] ≥ 1\n[Honey.png] ≥ 1\n只能由沃利使用[Portable Crock Pot Build.png]烹饪",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 45,
+      "dish_id": "huiji:芦笋冷汤",
+      "name_zh": "芦笋冷汤",
+      "source_tag_conditions": "冰度 ≥ 2",
+      "source_named_conditions": "[Asparagus.png]/[Roasted Asparagus.png] ≥ 2\n只能由沃利使用[Portable Crock Pot Build.png]烹饪",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": true,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 46,
+      "dish_id": "huiji:骨头汤",
+      "name_zh": "骨头汤",
+      "source_tag_conditions": "0 < 不可食用度 < 3",
+      "source_named_conditions": "[Bone Shards.png] = 2\n[Onion.png]/[Roasted Onion.png] ≥ 1\n只能由沃利使用[Portable Crock Pot Build.png]烹饪",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 47,
+      "dish_id": "huiji:蓝带鱼排",
+      "name_zh": "蓝带鱼排",
+      "source_tag_conditions": "鱼度 ≥ 1\n不可食用度 = 0",
+      "source_named_conditions": "[Frog Legs.png]/[Cooked Frog Legs.png] ≥ 2\n只能由沃利使用[Portable Crock Pot Build.png]烹饪",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": true,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 48,
+      "dish_id": "huiji:发光浆果慕斯",
+      "name_zh": "发光浆果慕斯",
+      "source_tag_conditions": "水果度 ≥ 2\n肉度 = 0，不可食用度 = 0",
+      "source_named_conditions": "[Glow Berry.png] ≥ 1/[Lesser Glow Berry.png] ≥ 2\n只能由沃利使用[Portable Crock Pot Build.png]烹饪",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 49,
+      "dish_id": "huiji:恐怖国王饼",
+      "name_zh": "恐怖国王饼",
+      "source_tag_conditions": "",
+      "source_named_conditions": "[Nightmare Fuel.png] = 2\n[Potato.png]/[Roasted Potato.png] = 1\n[Onion.png]/[Roasted Onion.png] = 1\n只能由沃利使用[Portable Crock Pot Build.png]烹饪",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": true,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 50,
+      "dish_id": "huiji:辣龙椒沙拉",
+      "name_zh": "辣龙椒沙拉",
+      "source_tag_conditions": "肉度 = 0，蛋度 = 0，不可食用度 = 0",
+      "source_named_conditions": "[Pepper.png]/[Roasted Pepper.png] ≥ 1\n[Dragon Fruit.png]/[Prepared Dragon Fruit.png] ≥ 1\n只能由沃利使用[Portable Crock Pot Build.png]烹饪",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 51,
+      "dish_id": "huiji:海鲜杂烩",
+      "name_zh": "海鲜杂烩",
+      "source_tag_conditions": "鱼度 > 0\n不可食用度 = 0",
+      "source_named_conditions": "[Onion.png]/[Roasted Onion.png] ≥ 1\n[Toma Root.png]/[Roasted Toma Root.png] ≥ 1\n只能由沃利使用[Portable Crock Pot Build.png]烹饪",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 52,
+      "dish_id": "huiji:伏特羊肉冻",
+      "name_zh": "伏特羊肉冻",
+      "source_tag_conditions": "甜味剂度 ≥ 2\n肉度 = 0",
+      "source_named_conditions": "[Volt Goat Horn.png] ≥ 1\n只能由沃利使用[Portable Crock Pot Build.png]烹饪",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 53,
+      "dish_id": "huiji:蓬松土豆蛋奶酥",
+      "name_zh": "蓬松土豆蛋奶酥",
+      "source_tag_conditions": "蛋度 ≥ 1\n肉度 = 0，不可食用度 = 0",
+      "source_named_conditions": "[Potato.png]/[Roasted Potato.png] ≥ 2\n只能由沃利使用[Portable Crock Pot Build.png]烹饪",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": true,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 54,
+      "dish_id": "huiji:龙虾正餐",
+      "name_zh": "龙虾正餐",
+      "source_tag_conditions": "肉度 ≥ 1，鱼度 ≥ 1\n冰度 = 0",
+      "source_named_conditions": "[Wobster Land.png] ≥ 1\n[Butter.png] ≥ 1",
+      "priority": 25,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 55,
+      "dish_id": "huiji:龙虾汤",
+      "name_zh": "龙虾汤",
+      "source_tag_conditions": "冰度 > 0",
+      "source_named_conditions": "[Wobster Land.png] ≥ 1",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 56,
+      "dish_id": "huiji:酿鱼头",
+      "name_zh": "酿鱼头",
+      "source_tag_conditions": "鱼度 ≥ 1.25",
+      "source_named_conditions": "[Barnacles.png]/[Cooked Barnacles.png] ≥ 1",
+      "priority": 26,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 57,
+      "dish_id": "huiji:藤壶皮塔饼",
+      "name_zh": "藤壶皮塔饼",
+      "source_tag_conditions": "蔬菜度 ≥ 0.5",
+      "source_named_conditions": "[Barnacles.png]/[Cooked Barnacles.png] ≥ 1",
+      "priority": 25,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 58,
+      "dish_id": "huiji:藤壶中细面",
+      "name_zh": "藤壶中细面",
+      "source_tag_conditions": "蔬菜度 ≥ 2",
+      "source_named_conditions": "[Barnacles.png]/[Cooked Barnacles.png] ≥ 2",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": true,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 59,
+      "dish_id": "huiji:藤壶握寿司",
+      "name_zh": "藤壶握寿司",
+      "source_tag_conditions": "蛋度 ≥ 1",
+      "source_named_conditions": "[Barnacles.png]/[Cooked Barnacles.png] ≥ 1\n[Kelp Fronds.png]/[Cooked Kelp Fronds.png] ≥ 1",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 60,
+      "dish_id": "huiji:叶肉糕",
+      "name_zh": "叶肉糕",
+      "source_tag_conditions": "",
+      "source_named_conditions": "[Leafy Meat.png]/[Cooked Leafy Meat.png] ≥ 2",
+      "priority": 25,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": true,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 61,
+      "dish_id": "huiji:牛肉绿叶菜",
+      "name_zh": "牛肉绿叶菜",
+      "source_tag_conditions": "蔬菜度 ≥ 3",
+      "source_named_conditions": "[Leafy Meat.png]/[Cooked Leafy Meat.png] ≥ 1",
+      "priority": 25,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 62,
+      "dish_id": "huiji:素食堡",
+      "name_zh": "素食堡",
+      "source_tag_conditions": "蔬菜度 ≥ 2",
+      "source_named_conditions": "[Leafy Meat.png]/[Cooked Leafy Meat.png] ≥ 1\n[Onion.png]/[Roasted Onion.png] ≥ 1",
+      "priority": 26,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 63,
+      "dish_id": "huiji:果冻沙拉",
+      "name_zh": "果冻沙拉",
+      "source_tag_conditions": "甜味剂度 ≥ 2",
+      "source_named_conditions": "[Leafy Meat.png]/[Cooked Leafy Meat.png] ≥ 2",
+      "priority": 50,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": true,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 64,
+      "dish_id": "huiji:琥珀美食",
+      "name_zh": "琥珀美食",
+      "source_tag_conditions": "",
+      "source_named_conditions": "[Collected Dust.png] ≥ 1",
+      "priority": 100,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 65,
+      "dish_id": "huiji:牛奶帽",
+      "name_zh": "牛奶帽",
+      "source_tag_conditions": "乳制品度 ≥ 1",
+      "source_named_conditions": "[Naked Nostrils.png] ≥ 1\n[Kelp Fronds.png] ≥ 1",
+      "priority": 55,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 66,
+      "dish_id": "huiji:蘑菇蛋糕",
+      "name_zh": "蘑菇蛋糕",
+      "source_tag_conditions": "",
+      "source_named_conditions": "[Red Cap.png] = 1\n[Green Cap.png] = 1\n[Blue Cap.png] = 1\n[Moon Shroom.png] = 1",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 67,
+      "dish_id": "huiji:舒缓茶",
+      "name_zh": "舒缓茶",
+      "source_tag_conditions": "甜味剂度 > 0，冰度 > 0\n肉度 = 0，怪物度 = 0，鱼度 = 0，蔬菜度 = 0\n蛋度 = 0，乳制品度 = 0，不可食用度 = 0，油脂度 = 0",
+      "source_named_conditions": "[Forget-Me-Lots.png]/[Dried Forget-Me-Lots.png] ≥ 1",
+      "priority": 1,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 68,
+      "dish_id": "huiji:无花果烤串",
+      "name_zh": "无花果烤串",
+      "source_tag_conditions": "肉度 ≥ 1，怪物度 ≤ 1",
+      "source_named_conditions": "[Fig.png]/[Cooked Fig.png] ≥ 1\n[Twigs.png] ≥ 1",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 69,
+      "dish_id": "huiji:无花果蛙腿三明治",
+      "name_zh": "无花果蛙腿三明治",
+      "source_tag_conditions": "",
+      "source_named_conditions": "[Fig.png]/[Cooked Fig.png] ≥ 1\n[Frog Legs.png]/[Cooked Frog Legs.png] ≥ 1",
+      "priority": 1,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 70,
+      "dish_id": "huiji:无花果意面",
+      "name_zh": "无花果意面",
+      "source_tag_conditions": "蔬菜度 ≥ 2\n肉度 = 0",
+      "source_named_conditions": "[Fig.png]/[Cooked Fig.png] ≥ 1",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 71,
+      "dish_id": "huiji:无花果酿象鼻",
+      "name_zh": "无花果酿象鼻",
+      "source_tag_conditions": "",
+      "source_named_conditions": "[Fig.png]/[Cooked Fig.png] ≥ 1\n[Koalefant Trunk.png]/[Winter Koalefant Trunk.png]/[Koalefant Trunk Steak.png] ≥ 1",
+      "priority": 40,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 72,
+      "dish_id": "huiji:冰香蕉冻唇蜜",
+      "name_zh": "冰香蕉冻唇蜜",
+      "source_tag_conditions": "冰度 ≥ 1\n肉度 = 0，鱼度 = 0",
+      "source_named_conditions": "[Cave Banana.png]/[Cooked Cave Banana.png] ≥ 1",
+      "priority": 2,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 73,
+      "dish_id": "huiji:炖兔子",
+      "name_zh": "炖兔子",
+      "source_tag_conditions": "0 < 肉度 < 1，冰度 ≥ 2\n不可食用度 = 0",
+      "source_named_conditions": "",
+      "priority": 1,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 74,
+      "dish_id": "huiji:香蕉奶昔",
+      "name_zh": "香蕉奶昔",
+      "source_tag_conditions": "肉度 = 0，怪物度 = 0，鱼度 = 0",
+      "source_named_conditions": "[Cave Banana.png]/[Cooked Cave Banana.png] ≥ 2",
+      "priority": 1,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": true,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 75,
+      "dish_id": "huiji:普通煎蛋",
+      "name_zh": "普通煎蛋",
+      "source_tag_conditions": "蛋度 ≥ 3",
+      "source_named_conditions": "",
+      "priority": 0,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 76,
+      "dish_id": "huiji:早餐锅",
+      "name_zh": "早餐锅",
+      "source_tag_conditions": "蔬菜度 ≥ 1，蛋度 ≥ 1\n肉度 = 0，乳制品度 = 0",
+      "source_named_conditions": "",
+      "priority": 1,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 77,
+      "dish_id": "huiji:苏格兰高鸟蛋",
+      "name_zh": "苏格兰高鸟蛋",
+      "source_tag_conditions": "蔬菜度 ≥ 1",
+      "source_named_conditions": "[Tallbird Egg.png] ≥ 1",
+      "priority": 10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 78,
+      "dish_id": "huiji:蒸树枝",
+      "name_zh": "蒸树枝",
+      "source_tag_conditions": "不可食用度 > 0\n肉度 = 0，怪物度 = 0，鱼度 = 0，蛋度 = 0\n乳制品度 = 0，魔法度 = 0，油脂度 =0",
+      "source_named_conditions": "",
+      "priority": -5,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 79,
+      "dish_id": "huiji:皮弗娄牛零食",
+      "name_zh": "皮弗娄牛零食",
+      "source_tag_conditions": "种子度 > 0\n肉度 = 0，怪物度 = 0，鱼度 = 0，蛋度 = 0\n乳制品度 = 0，魔法度 = 0，油脂度 = 0",
+      "source_named_conditions": "[Forget-Me-Lots.png]/[Dried Forget-Me-Lots.png] ≥ 1",
+      "priority": -4,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 80,
+      "dish_id": "huiji:酿夜帽",
+      "name_zh": "酿夜帽",
+      "source_tag_conditions": "",
+      "source_named_conditions": "[Moon Shroom.png] ≥ 2\n[Monster Meat.png] ≥ 1",
+      "priority": 30,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    },
+    {
+      "source_row": 81,
+      "dish_id": "huiji:潮湿黏糊",
+      "name_zh": "潮湿黏糊",
+      "source_tag_conditions": "",
+      "source_named_conditions": "",
+      "priority": -10,
+      "checks": {
+        "name": true,
+        "conditions": true,
+        "priority": true,
+        "cooker_hint": true
+      },
+      "has_quantity_sensitive_groups": false,
+      "grouped_quantity_semantics_needs_confirmation": false
+    }
+  ]
+}

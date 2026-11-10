@@ -1,0 +1,16 @@
+PRAGMA foreign_keys=ON;
+PRAGMA user_version=1;
+CREATE TABLE schema_migrations(version INTEGER PRIMARY KEY, description TEXT NOT NULL);
+INSERT INTO schema_migrations VALUES(1,'Huiji snapshot ingestion schema; supersedes planning schema v0.1');
+CREATE TABLE dataset_metadata(key TEXT PRIMARY KEY,value_json TEXT NOT NULL CHECK(json_valid(value_json)));
+CREATE TABLE sources(source_id INTEGER PRIMARY KEY,source_url TEXT NOT NULL,revision_id TEXT,received_date TEXT NOT NULL,source_kind TEXT NOT NULL,sha256 TEXT NOT NULL,game_build_verified TEXT,notes TEXT);
+CREATE TABLE assets(asset_id TEXT PRIMARY KEY,source_id INTEGER NOT NULL REFERENCES sources,source_local_reference TEXT NOT NULL,original_candidates_json TEXT NOT NULL CHECK(json_valid(original_candidates_json)),sha256 TEXT,rights_status TEXT NOT NULL DEFAULT 'unconfirmed',redistributable INTEGER NOT NULL DEFAULT 0 CHECK(redistributable IN(0,1)));
+CREATE TABLE ingredients(ingredient_id TEXT PRIMARY KEY,prefab_id TEXT NOT NULL,name_zh TEXT NOT NULL,name_en_hint TEXT,source_url TEXT NOT NULL,source_row INTEGER NOT NULL,source_id INTEGER NOT NULL REFERENCES sources,icon_asset_id TEXT REFERENCES assets,verification_status TEXT NOT NULL,UNIQUE(source_id,source_row));
+CREATE TABLE ingredient_tags(ingredient_id TEXT NOT NULL REFERENCES ingredients,tag TEXT NOT NULL,value REAL NOT NULL,source_id INTEGER NOT NULL REFERENCES sources,PRIMARY KEY(ingredient_id,tag));
+CREATE TABLE dishes(dish_id TEXT PRIMARY KEY,game_prefab_id TEXT,name_zh TEXT NOT NULL,name_en_hint TEXT,base_health REAL,base_hunger REAL,base_sanity REAL,health_source_text TEXT NOT NULL,hunger_source_text TEXT NOT NULL,sanity_source_text TEXT NOT NULL,perish_game_days REAL,perish_source_text TEXT NOT NULL,food_type TEXT,source_url TEXT NOT NULL,source_row INTEGER NOT NULL,source_id INTEGER NOT NULL REFERENCES sources,icon_asset_id TEXT REFERENCES assets,verification_status TEXT NOT NULL);
+CREATE TABLE recipe_rules(dish_id TEXT PRIMARY KEY REFERENCES dishes,priority INTEGER NOT NULL,cook_seconds REAL NOT NULL,weight REAL CHECK(weight IS NULL OR weight>0),cooker_scope_hint TEXT NOT NULL,conditions_json TEXT CHECK(conditions_json IS NULL OR json_valid(conditions_json)),parse_status TEXT NOT NULL,solver_ready INTEGER NOT NULL DEFAULT 0 CHECK(solver_ready IN(0,1)),source_id INTEGER NOT NULL REFERENCES sources);
+CREATE TABLE source_rows(entity_kind TEXT NOT NULL,entity_id TEXT NOT NULL,source_id INTEGER NOT NULL REFERENCES sources,row_index INTEGER NOT NULL,cells_json TEXT NOT NULL CHECK(json_valid(cells_json)),PRIMARY KEY(entity_kind,entity_id));
+CREATE TABLE review_issues(issue_id INTEGER PRIMARY KEY,entity_kind TEXT NOT NULL,entity_id TEXT,field_name TEXT,issue_code TEXT NOT NULL,details TEXT NOT NULL);
+CREATE INDEX idx_ingredient_prefab ON ingredients(prefab_id);
+CREATE INDEX idx_dish_stats ON dishes(base_health,base_hunger,base_sanity);
+CREATE INDEX idx_recipe_priority ON recipe_rules(priority DESC);

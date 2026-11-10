@@ -1,0 +1,43 @@
+{
+  "source_html_sha256": "3072e6cc0e7be112a7cfc91f1c02cdd2078960543be1d9accc35dd5d4fe0effa",
+  "source_url": "https://dontstarve.huijiwiki.com/wiki/%E7%83%B9%E9%A5%AA",
+  "source_revision": "193291",
+  "icons": {
+    "health": {
+      "asset_id": "stat:health",
+      "source_local_reference": "./烹饪 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/28px-Health_Meter.png",
+      "source_alt": "生命值",
+      "original_candidates": [
+        "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/6/6f/Health_Meter.png/42px-Health_Meter.png 1.5x",
+        "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/6/6f/Health_Meter.png/56px-Health_Meter.png 2x"
+      ],
+      "sha256": "dd0ae468508d63d74980631f003d5c3a49af139407f3fc4abb9247642d0d2c95",
+      "rights_status": "unconfirmed",
+      "redistributable": false
+    },
+    "hunger": {
+      "asset_id": "stat:hunger",
+      "source_local_reference": "./烹饪 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/28px-Hunger_Meter.png",
+      "source_alt": "饥饿值",
+      "original_candidates": [
+        "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/4/48/Hunger_Meter.png/42px-Hunger_Meter.png 1.5x",
+        "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/4/48/Hunger_Meter.png/56px-Hunger_Meter.png 2x"
+      ],
+      "sha256": "0d28d39ff8af8bc62a153f09b4def7afd066501304232a0c39b96b8bd02b72b4",
+      "rights_status": "unconfirmed",
+      "redistributable": false
+    },
+    "sanity": {
+      "asset_id": "stat:sanity",
+      "source_local_reference": "./烹饪 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/28px-Sanity_Meter.png",
+      "source_alt": "理智值",
+      "original_candidates": [
+        "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/2/2f/Sanity_Meter.png/42px-Sanity_Meter.png 1.5x",
+        "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/2/2f/Sanity_Meter.png/56px-Sanity_Meter.png 2x"
+      ],
+      "sha256": "13c8736daee1fad378bbdace9f128929cc9c6103d17ecadca61bf268ce8987d1",
+      "rights_status": "unconfirmed",
+      "redistributable": false
+    }
+  }
+}

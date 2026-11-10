@@ -1,0 +1,22 @@
+{
+  "checked_date": "2026-11-09",
+  "source_revision": "193291",
+  "ingredient_states": 145,
+  "supported_cookers": [
+    "crock_pot",
+    "portable"
+  ],
+  "mechanical_profiles": 68,
+  "complete_queries_checked": 290,
+  "example_pots_replayed": 16029,
+  "elapsed_seconds": 17.518,
+  "all_examples_have_selected_state": true,
+  "all_examples_survive_priority_and_cooker_rules": true,
+  "rarity_scenario": "Default zero; signed-cost optimality covered by independent exhaustive synthetic fixtures",
+  "classification": "Positive explicit named ingredient groups first; general tag matches second",
+  "completeness": "All remaining triples with repetition, compressed only by equivalence under every captured recipe rule",
+  "evidence_level": "Exact-model and source-policy regression, not independent in-game outcomes",
+  "content_database_sha256": "f273606a7db5fa76443a60c5cad64401418166b8823d3e0298edb6c409f22855",
+  "content_modified": false,
+  "readiness_flags_promoted": false
+}

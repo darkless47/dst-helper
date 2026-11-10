@@ -1,0 +1,348 @@
+{
+  "source_revision": "193291",
+  "classification": "Explicit local example-selection policy, reviewed against saved ingredient-state names and IDs; not a game eligibility claim.",
+  "states": [
+    {
+      "ingredient_id": "cactus_meat_cooked",
+      "name_zh": "熟仙人掌肉",
+      "source_row": 2,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "pumpkin_cooked",
+      "name_zh": "烤南瓜",
+      "source_row": 7,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "plantmeat_cooked",
+      "name_zh": "熟叶肉",
+      "source_row": 10,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "potato_cooked",
+      "name_zh": "烤土豆",
+      "source_row": 13,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "berries_juicy_cooked",
+      "name_zh": "烤多汁浆果",
+      "source_row": 15,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "succulent_picked_dried",
+      "name_zh": "干多肉",
+      "source_row": 17,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "ancientfruit_nightvision_cooked",
+      "name_zh": "熟夜莓",
+      "source_row": 19,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "garlic_cooked",
+      "name_zh": "烤大蒜",
+      "source_row": 20,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "smallmeat_dried",
+      "name_zh": "小肉干",
+      "source_row": 23,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "cookedsmallmeat",
+      "name_zh": "熟小肉",
+      "source_row": 24,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "fishmeat_small_dried",
+      "name_zh": "小鱼干",
+      "source_row": 26,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "fishmeat_small_cooked",
+      "name_zh": "熟小鱼块",
+      "source_row": 27,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "cookedmonstermeat",
+      "name_zh": "熟怪物肉",
+      "source_row": 32,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "monstermeat_dried",
+      "name_zh": "怪物肉干",
+      "source_row": 33,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "fig_cooked",
+      "name_zh": "熟无花果",
+      "source_row": 35,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "moon_tree_blossom_dried",
+      "name_zh": "干月树花",
+      "source_row": 37,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "firenettles_dried",
+      "name_zh": "干火荨麻叶",
+      "source_row": 39,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "forgetmelots_dried",
+      "name_zh": "干必忘我",
+      "source_row": 41,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "tillweed_dried",
+      "name_zh": "干犁地草",
+      "source_row": 42,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "acorn_cooked",
+      "name_zh": "烤桦栗果",
+      "source_row": 44,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "durian_cooked",
+      "name_zh": "超臭榴莲",
+      "source_row": 47,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "onion_cooked",
+      "name_zh": "烤洋葱",
+      "source_row": 48,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "batwing_cooked",
+      "name_zh": "熟蝙蝠翅膀",
+      "source_row": 50,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "berries_cooked",
+      "name_zh": "烤浆果",
+      "source_row": 53,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "kelp_cooked",
+      "name_zh": "熟海带叶",
+      "source_row": 54,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "kelp_dried",
+      "name_zh": "干海带叶",
+      "source_row": 55,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "petals_evil_dried",
+      "name_zh": "干深色花瓣",
+      "source_row": 76,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "mitegland_cooked",
+      "name_zh": "熟火腺",
+      "source_row": 78,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "dragonfruit_cooked",
+      "name_zh": "熟火龙果",
+      "source_row": 80,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "corn_cooked",
+      "name_zh": "爆米花",
+      "source_row": 81,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "fishmeat_dried",
+      "name_zh": "鱼肉干",
+      "source_row": 83,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "fishmeat_cooked",
+      "name_zh": "鱼排",
+      "source_row": 85,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "tomato_cooked",
+      "name_zh": "烤番茄",
+      "source_row": 87,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "rock_avocado_fruit_ripe_cooked",
+      "name_zh": "熟石果",
+      "source_row": 89,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "pomegranate_cooked",
+      "name_zh": "切片熟石榴",
+      "source_row": 91,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "meat_dried",
+      "name_zh": "肉干",
+      "source_row": 93,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "cookedmeat",
+      "name_zh": "熟肉",
+      "source_row": 94,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "carrot_cooked",
+      "name_zh": "烤胡萝卜",
+      "source_row": 95,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "asparagus_cooked",
+      "name_zh": "烤芦笋",
+      "source_row": 98,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "petals_dried",
+      "name_zh": "干花瓣",
+      "source_row": 99,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "eggplant_cooked",
+      "name_zh": "烤茄子",
+      "source_row": 102,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "foliage_dried",
+      "name_zh": "干蕨叶",
+      "source_row": 105,
+      "preparation": "dried"
+    },
+    {
+      "ingredient_id": "barnacle_cooked",
+      "name_zh": "熟藤壶",
+      "source_row": 107,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "moon_cap_cooked",
+      "name_zh": "熟月亮蘑菇",
+      "source_row": 111,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "green_cap_cooked",
+      "name_zh": "熟绿蘑菇",
+      "source_row": 112,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "blue_cap_cooked",
+      "name_zh": "熟蓝蘑菇",
+      "source_row": 114,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "red_cap_cooked",
+      "name_zh": "熟红蘑菇",
+      "source_row": 115,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "froglegs_cooked",
+      "name_zh": "熟蛙腿",
+      "source_row": 116,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "batnose_cooked",
+      "name_zh": "炭烤鼻孔",
+      "source_row": 123,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "watermelon_cooked",
+      "name_zh": "烤西瓜",
+      "source_row": 125,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "trunk_cooked",
+      "name_zh": "象鼻排",
+      "source_row": 128,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "pepper_cooked",
+      "name_zh": "烤辣椒",
+      "source_row": 129,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "cave_banana_cooked",
+      "name_zh": "熟香蕉",
+      "source_row": 131,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "tallbirdegg_cooked",
+      "name_zh": "煎高脚鸟蛋",
+      "source_row": 135,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "eel_cooked",
+      "name_zh": "熟鳗鱼",
+      "source_row": 137,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "drumstick_cooked",
+      "name_zh": "炸鸟腿",
+      "source_row": 139,
+      "preparation": "cooked_or_roasted"
+    },
+    {
+      "ingredient_id": "bird_egg_cooked",
+      "name_zh": "熟鸟蛋",
+      "source_row": 142,
+      "preparation": "cooked_or_roasted"
+    }
+  ]
+}

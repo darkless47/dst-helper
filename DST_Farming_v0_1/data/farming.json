@@ -1,0 +1,3270 @@
+{
+  "metadata": {
+    "dataset_version": "0.1.0",
+    "game": "DST",
+    "target_build": "762172",
+    "target_build_evidence": "Previously reported installed build; not reconfirmed November 9",
+    "game_build_verified": null,
+    "received_date": "2026-11-09",
+    "original_retrieval_timestamp": null,
+    "source_url": "https://dontstarve.huijiwiki.com/wiki/%E8%80%95%E7%A7%8D",
+    "source_revision": "203373",
+    "source_sha256": "f8fcadcac503bf4da5a7cd6921e3dd438ba6acd4717cee4ebc6fcc2328c1cd75",
+    "evidence_level": "user_saved_wiki_snapshot",
+    "planner_enabled": true,
+    "planner_mode": "wiki_based_static_balance",
+    "nutrient_order": [
+      "growth_formula",
+      "compost",
+      "manure"
+    ],
+    "nutrient_sign": "positive adds to soil; negative consumes; per growth stage",
+    "season_order": [
+      "autumn",
+      "winter",
+      "spring",
+      "summer"
+    ],
+    "random_seed_percent_note": "Rounded seasonal appearance percentages, not preferred-season flags and not giant-yield probabilities.",
+    "giant_outcome_status": "conditional; no guarantee from ratios alone",
+    "art_status": "references only; permission unconfirmed; images not bundled"
+  },
+  "plants": [
+    {
+      "plant_id": "carrot",
+      "kind": "crop",
+      "product_ingredient_id": "carrot",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "胡萝卜",
+      "plant_name_zh": "胡萝卜植株",
+      "name_en_hint": "Carrot",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E8%83%A1%E8%90%9D%E5%8D%9C%E6%A4%8D%E6%A0%AA",
+      "source_row": 1,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": true,
+        "spring": true,
+        "summer": false
+      },
+      "random_seed_percent": {
+        "autumn": 13.11,
+        "winter": 16.33,
+        "spring": 12.31,
+        "summer": 7.84
+      },
+      "nutrient_delta_per_stage": [
+        -4,
+        2,
+        2
+      ],
+      "water_percent_points_per_stage": 0.75,
+      "water_source_text": "0.75%",
+      "seed_name_en_hint": "Oblong Seeds",
+      "plant_asset_id": "asset:c759fc16c52742ec1c24",
+      "seed_asset_id": "asset:a4e580fe1e2c3f33669d",
+      "product_asset_id": "asset:33555ef385f5e2c7732a",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Carrot Plant.png",
+              "asset_id": "asset:c759fc16c52742ec1c24"
+            }
+          ],
+          "links": [
+            {
+              "title": "胡萝卜植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%83%A1%E8%90%9D%E5%8D%9C%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "胡萝卜植株",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "胡萝卜植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%83%A1%E8%90%9D%E5%8D%9C%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Oblong Seeds.png",
+              "asset_id": "asset:a4e580fe1e2c3f33669d"
+            }
+          ],
+          "links": [
+            {
+              "title": "椭圆形种子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%A4%AD%E5%9C%86%E5%BD%A2%E7%A7%8D%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Carrot.png",
+              "asset_id": "asset:33555ef385f5e2c7732a"
+            }
+          ],
+          "links": [
+            {
+              "title": "胡萝卜",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%83%A1%E8%90%9D%E5%8D%9C"
+            }
+          ]
+        },
+        {
+          "text": "13.11%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "16.33%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "12.31%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "7.84%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "0.75%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "corn",
+      "kind": "crop",
+      "product_ingredient_id": "corn",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "玉米",
+      "plant_name_zh": "玉米杆",
+      "name_en_hint": "Corn",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E7%8E%89%E7%B1%B3%E6%9D%86",
+      "source_row": 2,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": false,
+        "spring": true,
+        "summer": true
+      },
+      "random_seed_percent": {
+        "autumn": 13.11,
+        "winter": 8.16,
+        "spring": 12.31,
+        "summer": 15.69
+      },
+      "nutrient_delta_per_stage": [
+        2,
+        -4,
+        2
+      ],
+      "water_percent_points_per_stage": 0.75,
+      "water_source_text": "0.75%",
+      "seed_name_en_hint": "Clustered Seeds",
+      "plant_asset_id": "asset:08ea3a71a564c211f494",
+      "seed_asset_id": "asset:256a43a4637184fb3d4a",
+      "product_asset_id": "asset:ee88686664e0150e8700",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Corn Stalk.png",
+              "asset_id": "asset:08ea3a71a564c211f494"
+            }
+          ],
+          "links": [
+            {
+              "title": "玉米杆",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%8E%89%E7%B1%B3%E6%9D%86"
+            }
+          ]
+        },
+        {
+          "text": "玉米杆",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "玉米杆",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%8E%89%E7%B1%B3%E6%9D%86"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Clustered Seeds.png",
+              "asset_id": "asset:256a43a4637184fb3d4a"
+            }
+          ],
+          "links": [
+            {
+              "title": "簇状种子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%B0%87%E7%8A%B6%E7%A7%8D%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Corn.png",
+              "asset_id": "asset:ee88686664e0150e8700"
+            }
+          ],
+          "links": [
+            {
+              "title": "玉米",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%8E%89%E7%B1%B3"
+            }
+          ]
+        },
+        {
+          "text": "13.11%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "8.16%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "12.31%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "15.69%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "0.75%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "potato",
+      "kind": "crop",
+      "product_ingredient_id": "potato",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "土豆",
+      "plant_name_zh": "土豆植株",
+      "name_en_hint": "Potato",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E5%9C%9F%E8%B1%86%E6%A4%8D%E6%A0%AA",
+      "source_row": 3,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": true,
+        "spring": true,
+        "summer": false
+      },
+      "random_seed_percent": {
+        "autumn": 13.11,
+        "winter": 16.33,
+        "spring": 12.31,
+        "summer": 7.84
+      },
+      "nutrient_delta_per_stage": [
+        2,
+        2,
+        -4
+      ],
+      "water_percent_points_per_stage": 0.75,
+      "water_source_text": "0.75%",
+      "seed_name_en_hint": "Fluffy Seeds",
+      "plant_asset_id": "asset:5ed342af7156de0a68c0",
+      "seed_asset_id": "asset:b39d9c0f197a6da6415a",
+      "product_asset_id": "asset:fbd732b08800416ba306",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Potato Plant.png",
+              "asset_id": "asset:5ed342af7156de0a68c0"
+            }
+          ],
+          "links": [
+            {
+              "title": "土豆植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%9C%9F%E8%B1%86%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "土豆植株",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "土豆植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%9C%9F%E8%B1%86%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Fluffy Seeds.png",
+              "asset_id": "asset:b39d9c0f197a6da6415a"
+            }
+          ],
+          "links": [
+            {
+              "title": "毛茸茸的种子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%AF%9B%E8%8C%B8%E8%8C%B8%E7%9A%84%E7%A7%8D%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Potato.png",
+              "asset_id": "asset:fbd732b08800416ba306"
+            }
+          ],
+          "links": [
+            {
+              "title": "土豆",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%9C%9F%E8%B1%86"
+            }
+          ]
+        },
+        {
+          "text": "13.11%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "16.33%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "12.31%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "7.84%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "0.75%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "tomato",
+      "kind": "crop",
+      "product_ingredient_id": "tomato",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "番茄",
+      "plant_name_zh": "番茄植株",
+      "name_en_hint": "Toma Root",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E7%95%AA%E8%8C%84%E6%A4%8D%E6%A0%AA",
+      "source_row": 4,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": false,
+        "spring": true,
+        "summer": true
+      },
+      "random_seed_percent": {
+        "autumn": 13.11,
+        "winter": 8.16,
+        "spring": 12.31,
+        "summer": 15.69
+      },
+      "nutrient_delta_per_stage": [
+        -2,
+        -2,
+        4
+      ],
+      "water_percent_points_per_stage": 3.5,
+      "water_source_text": "3.5%",
+      "seed_name_en_hint": "Spiky Seeds",
+      "plant_asset_id": "asset:a68237fdc49765ecba69",
+      "seed_asset_id": "asset:50516b959316e5e0b3e1",
+      "product_asset_id": "asset:2b50ac5e5821a069a6a5",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Toma Root Plant.png",
+              "asset_id": "asset:a68237fdc49765ecba69"
+            }
+          ],
+          "links": [
+            {
+              "title": "番茄植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%95%AA%E8%8C%84%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "番茄植株",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "番茄植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%95%AA%E8%8C%84%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Spiky Seeds.png",
+              "asset_id": "asset:50516b959316e5e0b3e1"
+            }
+          ],
+          "links": [
+            {
+              "title": "带刺的种子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%B8%A6%E5%88%BA%E7%9A%84%E7%A7%8D%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Toma Root.png",
+              "asset_id": "asset:2b50ac5e5821a069a6a5"
+            }
+          ],
+          "links": [
+            {
+              "title": "番茄",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%95%AA%E8%8C%84"
+            }
+          ]
+        },
+        {
+          "text": "13.11%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "8.16%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "12.31%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "15.69%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.5%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "asparagus",
+      "kind": "crop",
+      "product_ingredient_id": "asparagus",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "芦笋",
+      "plant_name_zh": "芦笋蕨",
+      "name_en_hint": "Asparagus",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E8%8A%A6%E7%AC%8B%E8%95%A8",
+      "source_row": 5,
+      "preferred_seasons": {
+        "autumn": false,
+        "winter": true,
+        "spring": true,
+        "summer": false
+      },
+      "random_seed_percent": {
+        "autumn": 2.62,
+        "winter": 6.53,
+        "spring": 4.92,
+        "summer": 3.14
+      },
+      "nutrient_delta_per_stage": [
+        2,
+        -4,
+        2
+      ],
+      "water_percent_points_per_stage": 0.75,
+      "water_source_text": "0.75%",
+      "seed_name_en_hint": "Tubular Seeds",
+      "plant_asset_id": "asset:f2e230a8bbcafa2a419d",
+      "seed_asset_id": "asset:52fffcff0fb6679dde8b",
+      "product_asset_id": "asset:7b9a2a9f4ba8be0ce2fb",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Asparagus Fern.png",
+              "asset_id": "asset:f2e230a8bbcafa2a419d"
+            }
+          ],
+          "links": [
+            {
+              "title": "芦笋蕨",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%8A%A6%E7%AC%8B%E8%95%A8"
+            }
+          ]
+        },
+        {
+          "text": "芦笋蕨",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "芦笋蕨",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%8A%A6%E7%AC%8B%E8%95%A8"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Tubular Seeds.png",
+              "asset_id": "asset:52fffcff0fb6679dde8b"
+            }
+          ],
+          "links": [
+            {
+              "title": "筒状种子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%AD%92%E7%8A%B6%E7%A7%8D%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Asparagus.png",
+              "asset_id": "asset:7b9a2a9f4ba8be0ce2fb"
+            }
+          ],
+          "links": [
+            {
+              "title": "芦笋",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%8A%A6%E7%AC%8B"
+            }
+          ]
+        },
+        {
+          "text": "2.62%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "6.53%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "4.92%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.14%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "0.75%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "eggplant",
+      "kind": "crop",
+      "product_ingredient_id": "eggplant",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "茄子",
+      "plant_name_zh": "茄子杆",
+      "name_en_hint": "Eggplant",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E8%8C%84%E5%AD%90%E6%9D%86",
+      "source_row": 6,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": false,
+        "spring": true,
+        "summer": false
+      },
+      "random_seed_percent": {
+        "autumn": 5.25,
+        "winter": 3.27,
+        "spring": 4.92,
+        "summer": 3.14
+      },
+      "nutrient_delta_per_stage": [
+        2,
+        2,
+        -4
+      ],
+      "water_percent_points_per_stage": 2.0,
+      "water_source_text": "2%",
+      "seed_name_en_hint": "Swirly Seeds",
+      "plant_asset_id": "asset:528f7c9d323262fa44b0",
+      "seed_asset_id": "asset:5f9b9808ac2936ddc378",
+      "product_asset_id": "asset:d64b0730fab15713f39e",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Eggplant Stalk.png",
+              "asset_id": "asset:528f7c9d323262fa44b0"
+            }
+          ],
+          "links": [
+            {
+              "title": "茄子杆",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%8C%84%E5%AD%90%E6%9D%86"
+            }
+          ]
+        },
+        {
+          "text": "茄子杆",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "茄子杆",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%8C%84%E5%AD%90%E6%9D%86"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Swirly Seeds.png",
+              "asset_id": "asset:5f9b9808ac2936ddc378"
+            }
+          ],
+          "links": [
+            {
+              "title": "漩涡种子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%BC%A9%E6%B6%A1%E7%A7%8D%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Eggplant.png",
+              "asset_id": "asset:d64b0730fab15713f39e"
+            }
+          ],
+          "links": [
+            {
+              "title": "茄子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%8C%84%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "5.25%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.27%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "4.92%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.14%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "pumpkin",
+      "kind": "crop",
+      "product_ingredient_id": "pumpkin",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "南瓜",
+      "plant_name_zh": "南瓜植株",
+      "name_en_hint": "Pumpkin",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E5%8D%97%E7%93%9C%E6%A4%8D%E6%A0%AA",
+      "source_row": 7,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": true,
+        "spring": false,
+        "summer": false
+      },
+      "random_seed_percent": {
+        "autumn": 5.25,
+        "winter": 6.53,
+        "spring": 2.46,
+        "summer": 3.14
+      },
+      "nutrient_delta_per_stage": [
+        -4,
+        2,
+        2
+      ],
+      "water_percent_points_per_stage": 2.0,
+      "water_source_text": "2%",
+      "seed_name_en_hint": "Sharp Seeds",
+      "plant_asset_id": "asset:e5b6f01d311c2dcedd82",
+      "seed_asset_id": "asset:d44b4cd0767dd499d62e",
+      "product_asset_id": "asset:113a939069c19c8a745c",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Pumpkin Plant.png",
+              "asset_id": "asset:e5b6f01d311c2dcedd82"
+            }
+          ],
+          "links": [
+            {
+              "title": "南瓜植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%8D%97%E7%93%9C%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "南瓜植株",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "南瓜植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%8D%97%E7%93%9C%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Sharp Seeds.png",
+              "asset_id": "asset:d44b4cd0767dd499d62e"
+            }
+          ],
+          "links": [
+            {
+              "title": "尖种子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%B0%96%E7%A7%8D%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Pumpkin.png",
+              "asset_id": "asset:113a939069c19c8a745c"
+            }
+          ],
+          "links": [
+            {
+              "title": "南瓜",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%8D%97%E7%93%9C"
+            }
+          ]
+        },
+        {
+          "text": "5.25%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "6.53%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2.46%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.14%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "watermelon",
+      "kind": "crop",
+      "product_ingredient_id": "watermelon",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "西瓜",
+      "plant_name_zh": "西瓜植株",
+      "name_en_hint": "Watermelon",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E8%A5%BF%E7%93%9C%E6%A4%8D%E6%A0%AA",
+      "source_row": 8,
+      "preferred_seasons": {
+        "autumn": false,
+        "winter": false,
+        "spring": true,
+        "summer": true
+      },
+      "random_seed_percent": {
+        "autumn": 2.62,
+        "winter": 3.27,
+        "spring": 4.92,
+        "summer": 6.27
+      },
+      "nutrient_delta_per_stage": [
+        4,
+        -2,
+        -2
+      ],
+      "water_percent_points_per_stage": 3.5,
+      "water_source_text": "3.5%",
+      "seed_name_en_hint": "Square Seeds",
+      "plant_asset_id": "asset:7eb27736834ab45dd012",
+      "seed_asset_id": "asset:03c52ac4ba42bf405ddc",
+      "product_asset_id": "asset:dd96f95d736c117cb205",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Watermelon Plant.png",
+              "asset_id": "asset:7eb27736834ab45dd012"
+            }
+          ],
+          "links": [
+            {
+              "title": "西瓜植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%A5%BF%E7%93%9C%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "西瓜植株",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "西瓜植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%A5%BF%E7%93%9C%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Square Seeds.png",
+              "asset_id": "asset:03c52ac4ba42bf405ddc"
+            }
+          ],
+          "links": [
+            {
+              "title": "方形种子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%96%B9%E5%BD%A2%E7%A7%8D%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Watermelon.png",
+              "asset_id": "asset:dd96f95d736c117cb205"
+            }
+          ],
+          "links": [
+            {
+              "title": "西瓜",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%A5%BF%E7%93%9C"
+            }
+          ]
+        },
+        {
+          "text": "2.62%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.27%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "4.92%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "6.27%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.5%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "dragonfruit",
+      "kind": "crop",
+      "product_ingredient_id": "dragonfruit",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "火龙果",
+      "plant_name_zh": "火龙果藤",
+      "name_en_hint": "Dragon Fruit",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E7%81%AB%E9%BE%99%E6%9E%9C%E8%97%A4",
+      "source_row": 9,
+      "preferred_seasons": {
+        "autumn": false,
+        "winter": false,
+        "spring": true,
+        "summer": true
+      },
+      "random_seed_percent": {
+        "autumn": 1.31,
+        "winter": 1.63,
+        "spring": 2.46,
+        "summer": 3.14
+      },
+      "nutrient_delta_per_stage": [
+        4,
+        4,
+        -8
+      ],
+      "water_percent_points_per_stage": 2.0,
+      "water_source_text": "2%",
+      "seed_name_en_hint": "Bulbous Seeds",
+      "plant_asset_id": "asset:99cea624f4548ba31515",
+      "seed_asset_id": "asset:1fe8f231617946eae40d",
+      "product_asset_id": "asset:b4b8173bd1f14d70612b",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Dragon Fruit Vine.png",
+              "asset_id": "asset:99cea624f4548ba31515"
+            }
+          ],
+          "links": [
+            {
+              "title": "火龙果藤",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%81%AB%E9%BE%99%E6%9E%9C%E8%97%A4"
+            }
+          ]
+        },
+        {
+          "text": "火龙果藤",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "火龙果藤",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%81%AB%E9%BE%99%E6%9E%9C%E8%97%A4"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Bulbous Seeds.png",
+              "asset_id": "asset:1fe8f231617946eae40d"
+            }
+          ],
+          "links": [
+            {
+              "title": "球茎状种子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%90%83%E8%8C%8E%E7%8A%B6%E7%A7%8D%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Dragon Fruit.png",
+              "asset_id": "asset:b4b8173bd1f14d70612b"
+            }
+          ],
+          "links": [
+            {
+              "title": "火龙果",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%81%AB%E9%BE%99%E6%9E%9C"
+            }
+          ]
+        },
+        {
+          "text": "1.31%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.63%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2.46%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.14%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-8",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "durian",
+      "kind": "crop",
+      "product_ingredient_id": "durian",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "榴莲",
+      "plant_name_zh": "榴莲藤",
+      "name_en_hint": "Durian",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E6%A6%B4%E8%8E%B2%E8%97%A4",
+      "source_row": 10,
+      "preferred_seasons": {
+        "autumn": false,
+        "winter": false,
+        "spring": true,
+        "summer": false
+      },
+      "random_seed_percent": {
+        "autumn": 1.31,
+        "winter": 1.63,
+        "spring": 2.46,
+        "summer": 1.57
+      },
+      "nutrient_delta_per_stage": [
+        4,
+        -8,
+        4
+      ],
+      "water_percent_points_per_stage": 0.75,
+      "water_source_text": "0.75%",
+      "seed_name_en_hint": "Brittle Seed Pods",
+      "plant_asset_id": "asset:16c02192bbbedccc1c58",
+      "seed_asset_id": "asset:204e0f22afa9f173af6f",
+      "product_asset_id": "asset:dd6a38cf1434972d84bb",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Durian Vine.png",
+              "asset_id": "asset:16c02192bbbedccc1c58"
+            }
+          ],
+          "links": [
+            {
+              "title": "榴莲藤",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%A6%B4%E8%8E%B2%E8%97%A4"
+            }
+          ]
+        },
+        {
+          "text": "榴莲藤",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "榴莲藤",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%A6%B4%E8%8E%B2%E8%97%A4"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Brittle Seed Pods.png",
+              "asset_id": "asset:204e0f22afa9f173af6f"
+            }
+          ],
+          "links": [
+            {
+              "title": "脆籽荚",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%84%86%E7%B1%BD%E8%8D%9A"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Durian.png",
+              "asset_id": "asset:dd6a38cf1434972d84bb"
+            }
+          ],
+          "links": [
+            {
+              "title": "榴莲",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%A6%B4%E8%8E%B2"
+            }
+          ]
+        },
+        {
+          "text": "1.31%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.63%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2.46%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.57%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-8",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "0.75%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "garlic",
+      "kind": "crop",
+      "product_ingredient_id": "garlic",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "大蒜",
+      "plant_name_zh": "大蒜植株",
+      "name_en_hint": "Garlic",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E5%A4%A7%E8%92%9C%E6%A4%8D%E6%A0%AA",
+      "source_row": 11,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": true,
+        "spring": true,
+        "summer": true
+      },
+      "random_seed_percent": {
+        "autumn": 2.62,
+        "winter": 3.27,
+        "spring": 2.46,
+        "summer": 3.14
+      },
+      "nutrient_delta_per_stage": [
+        4,
+        -8,
+        4
+      ],
+      "water_percent_points_per_stage": 0.75,
+      "water_source_text": "0.75%",
+      "seed_name_en_hint": "Seed Pods",
+      "plant_asset_id": "asset:6dec7bc90be0a9432aff",
+      "seed_asset_id": "asset:97376007264dc668159e",
+      "product_asset_id": "asset:970dfec0ed0fd59a510b",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Garlic Plant.png",
+              "asset_id": "asset:6dec7bc90be0a9432aff"
+            }
+          ],
+          "links": [
+            {
+              "title": "大蒜植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%A4%A7%E8%92%9C%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "大蒜植株",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "大蒜植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%A4%A7%E8%92%9C%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Seed Pods.png",
+              "asset_id": "asset:97376007264dc668159e"
+            }
+          ],
+          "links": [
+            {
+              "title": "种子荚",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%A7%8D%E5%AD%90%E8%8D%9A"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Garlic.png",
+              "asset_id": "asset:970dfec0ed0fd59a510b"
+            }
+          ],
+          "links": [
+            {
+              "title": "大蒜",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%A4%A7%E8%92%9C"
+            }
+          ]
+        },
+        {
+          "text": "2.62%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.27%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2.46%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.14%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-8",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "0.75%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "onion",
+      "kind": "crop",
+      "product_ingredient_id": "onion",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "洋葱",
+      "plant_name_zh": "洋葱植株",
+      "name_en_hint": "Onion",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E6%B4%8B%E8%91%B1%E6%A4%8D%E6%A0%AA",
+      "source_row": 12,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": false,
+        "spring": true,
+        "summer": true
+      },
+      "random_seed_percent": {
+        "autumn": 2.62,
+        "winter": 1.63,
+        "spring": 2.46,
+        "summer": 3.14
+      },
+      "nutrient_delta_per_stage": [
+        -8,
+        4,
+        4
+      ],
+      "water_percent_points_per_stage": 2.0,
+      "water_source_text": "2%",
+      "seed_name_en_hint": "Pointy Seeds",
+      "plant_asset_id": "asset:d2f7980fcc20bb401829",
+      "seed_asset_id": "asset:3902d5f0afd4b8bfa127",
+      "product_asset_id": "asset:6db8ed70fab8ca372d1e",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Onion Plant.png",
+              "asset_id": "asset:d2f7980fcc20bb401829"
+            }
+          ],
+          "links": [
+            {
+              "title": "洋葱植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%B4%8B%E8%91%B1%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "洋葱植株",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "洋葱植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%B4%8B%E8%91%B1%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Pointy Seeds.png",
+              "asset_id": "asset:3902d5f0afd4b8bfa127"
+            }
+          ],
+          "links": [
+            {
+              "title": "尖形种子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%B0%96%E5%BD%A2%E7%A7%8D%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Onion.png",
+              "asset_id": "asset:6db8ed70fab8ca372d1e"
+            }
+          ],
+          "links": [
+            {
+              "title": "洋葱",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%B4%8B%E8%91%B1"
+            }
+          ]
+        },
+        {
+          "text": "2.62%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.63%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2.46%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.14%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-8",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "pepper",
+      "kind": "crop",
+      "product_ingredient_id": "pepper",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "辣椒",
+      "plant_name_zh": "辣椒植株",
+      "name_en_hint": "Pepper",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E8%BE%A3%E6%A4%92%E6%A4%8D%E6%A0%AA",
+      "source_row": 13,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": false,
+        "spring": false,
+        "summer": true
+      },
+      "random_seed_percent": {
+        "autumn": 2.62,
+        "winter": 1.63,
+        "spring": 1.23,
+        "summer": 3.14
+      },
+      "nutrient_delta_per_stage": [
+        4,
+        4,
+        -8
+      ],
+      "water_percent_points_per_stage": 0.75,
+      "water_source_text": "0.75%",
+      "seed_name_en_hint": "Lumpy Seeds",
+      "plant_asset_id": "asset:5d02e021c69d7509d3be",
+      "seed_asset_id": "asset:4703a319f3e82e7c5f11",
+      "product_asset_id": "asset:800ae8429e809c8270a4",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Pepper Plant.png",
+              "asset_id": "asset:5d02e021c69d7509d3be"
+            }
+          ],
+          "links": [
+            {
+              "title": "辣椒植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%BE%A3%E6%A4%92%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "辣椒植株",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "辣椒植株",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%BE%A3%E6%A4%92%E6%A4%8D%E6%A0%AA"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Lumpy Seeds.png",
+              "asset_id": "asset:4703a319f3e82e7c5f11"
+            }
+          ],
+          "links": [
+            {
+              "title": "块状种子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%9D%97%E7%8A%B6%E7%A7%8D%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Pepper.png",
+              "asset_id": "asset:800ae8429e809c8270a4"
+            }
+          ],
+          "links": [
+            {
+              "title": "辣椒",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E8%BE%A3%E6%A4%92"
+            }
+          ]
+        },
+        {
+          "text": "2.62%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.63%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.23%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.14%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-8",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "0.75%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "pomegranate",
+      "kind": "crop",
+      "product_ingredient_id": "pomegranate",
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "石榴",
+      "plant_name_zh": "石榴枝",
+      "name_en_hint": "Pomegranate",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E7%9F%B3%E6%A6%B4%E6%9E%9D",
+      "source_row": 14,
+      "preferred_seasons": {
+        "autumn": false,
+        "winter": false,
+        "spring": true,
+        "summer": true
+      },
+      "random_seed_percent": {
+        "autumn": 1.31,
+        "winter": 1.63,
+        "spring": 2.46,
+        "summer": 3.14
+      },
+      "nutrient_delta_per_stage": [
+        -8,
+        4,
+        4
+      ],
+      "water_percent_points_per_stage": 2.0,
+      "water_source_text": "2%",
+      "seed_name_en_hint": "Windblown Seeds",
+      "plant_asset_id": "asset:9a0dd3519d615f70450e",
+      "seed_asset_id": "asset:9c458fa28896d8bd9df5",
+      "product_asset_id": "asset:48eebb90c034b992bfb6",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Pomegranate Branch.png",
+              "asset_id": "asset:9a0dd3519d615f70450e"
+            }
+          ],
+          "links": [
+            {
+              "title": "石榴枝",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%9F%B3%E6%A6%B4%E6%9E%9D"
+            }
+          ]
+        },
+        {
+          "text": "石榴枝",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "石榴枝",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%9F%B3%E6%A6%B4%E6%9E%9D"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Windblown Seeds.png",
+              "asset_id": "asset:9c458fa28896d8bd9df5"
+            }
+          ],
+          "links": [
+            {
+              "title": "风刮来的种子",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E9%A3%8E%E5%88%AE%E6%9D%A5%E7%9A%84%E7%A7%8D%E5%AD%90"
+            }
+          ]
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Pomegranate.png",
+              "asset_id": "asset:48eebb90c034b992bfb6"
+            }
+          ],
+          "links": [
+            {
+              "title": "石榴",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%9F%B3%E6%A6%B4"
+            }
+          ]
+        },
+        {
+          "text": "1.31%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.63%",
+          "style": "color:#D1E8EF",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2.46%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "3.14%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-8",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "+4",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "huiji:必忘我",
+      "kind": "weed",
+      "product_ingredient_id": null,
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "必忘我",
+      "plant_name_zh": "必忘我",
+      "name_en_hint": "Forget-Me-Lots Plant",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E6%9D%82%E8%8D%89#%E5%BF%85%E5%BF%98%E6%88%91",
+      "source_row": 15,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": true,
+        "spring": true,
+        "summer": true
+      },
+      "random_seed_percent": {
+        "autumn": 15.38,
+        "winter": 15.38,
+        "spring": 15.38,
+        "summer": 15.38
+      },
+      "nutrient_delta_per_stage": [
+        -2,
+        -2,
+        -2
+      ],
+      "water_percent_points_per_stage": 0.75,
+      "water_source_text": "0.75%",
+      "seed_name_en_hint": null,
+      "plant_asset_id": "asset:52b2ce399374e0472f5a",
+      "seed_asset_id": null,
+      "product_asset_id": "asset:1b5e1b8ef1a29d93697e",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Forget-Me-Lots Plant.png",
+              "asset_id": "asset:52b2ce399374e0472f5a"
+            }
+          ],
+          "links": [
+            {
+              "title": "必忘我",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%BF%85%E5%BF%98%E6%88%91"
+            }
+          ]
+        },
+        {
+          "text": "必忘我",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "杂草",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%9D%82%E8%8D%89#%E5%BF%85%E5%BF%98%E6%88%91"
+            }
+          ]
+        },
+        {
+          "text": "无",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Forget-Me-Lots.png",
+              "asset_id": "asset:1b5e1b8ef1a29d93697e"
+            }
+          ],
+          "links": [
+            {
+              "title": "必忘我",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%BF%85%E5%BF%98%E6%88%91"
+            }
+          ]
+        },
+        {
+          "text": "15.38%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "15.38%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "15.38%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "15.38%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "0.75%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "huiji:犁地草",
+      "kind": "weed",
+      "product_ingredient_id": null,
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "犁地草",
+      "plant_name_zh": "犁地草",
+      "name_en_hint": "Tillweed",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E6%9D%82%E8%8D%89#%E7%8A%81%E5%9C%B0%E8%8D%89",
+      "source_row": 16,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": true,
+        "spring": true,
+        "summer": true
+      },
+      "random_seed_percent": {
+        "autumn": 1.54,
+        "winter": 1.54,
+        "spring": 1.54,
+        "summer": 1.54
+      },
+      "nutrient_delta_per_stage": [
+        -2,
+        -2,
+        -2
+      ],
+      "water_percent_points_per_stage": 2.0,
+      "water_source_text": "2%",
+      "seed_name_en_hint": null,
+      "plant_asset_id": "asset:ccc10cacf39e8d0a72f8",
+      "seed_asset_id": null,
+      "product_asset_id": "asset:b29e821a71ac024999c3",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Tillweed.png",
+              "asset_id": "asset:ccc10cacf39e8d0a72f8"
+            }
+          ],
+          "links": [
+            {
+              "title": "犁地草",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%8A%81%E5%9C%B0%E8%8D%89"
+            }
+          ]
+        },
+        {
+          "text": "犁地草",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "杂草",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%9D%82%E8%8D%89#%E7%8A%81%E5%9C%B0%E8%8D%89"
+            }
+          ]
+        },
+        {
+          "text": "无",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Tillweeds.png",
+              "asset_id": "asset:b29e821a71ac024999c3"
+            }
+          ],
+          "links": [
+            {
+              "title": "犁地草",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%8A%81%E5%9C%B0%E8%8D%89"
+            }
+          ]
+        },
+        {
+          "text": "1.54%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.54%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.54%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.54%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "huiji:火荨麻",
+      "kind": "weed",
+      "product_ingredient_id": null,
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "火荨麻",
+      "plant_name_zh": "火荨麻",
+      "name_en_hint": "Fire Nettles",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E6%9D%82%E8%8D%89#%E7%81%AB%E8%8D%A8%E9%BA%BB",
+      "source_row": 17,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": true,
+        "spring": true,
+        "summer": true
+      },
+      "random_seed_percent": {
+        "autumn": 1.54,
+        "winter": 1.54,
+        "spring": 1.54,
+        "summer": 1.54
+      },
+      "nutrient_delta_per_stage": [
+        -2,
+        -2,
+        -2
+      ],
+      "water_percent_points_per_stage": 2.0,
+      "water_source_text": "2%",
+      "seed_name_en_hint": null,
+      "plant_asset_id": "asset:7460a1f1b97b1cf8221e",
+      "seed_asset_id": null,
+      "product_asset_id": "asset:bb8b08822d5c51da0f81",
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Fire Nettles.png",
+              "asset_id": "asset:7460a1f1b97b1cf8221e"
+            }
+          ],
+          "links": [
+            {
+              "title": "火荨麻",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%81%AB%E8%8D%A8%E9%BA%BB"
+            }
+          ]
+        },
+        {
+          "text": "火荨麻",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "杂草",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%9D%82%E8%8D%89#%E7%81%AB%E8%8D%A8%E9%BA%BB"
+            }
+          ]
+        },
+        {
+          "text": "无",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Fire Nettle Fronds.png",
+              "asset_id": "asset:bb8b08822d5c51da0f81"
+            }
+          ],
+          "links": [
+            {
+              "title": "火荨麻叶",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E7%81%AB%E8%8D%A8%E9%BA%BB%E5%8F%B6"
+            }
+          ]
+        },
+        {
+          "text": "1.54%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.54%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.54%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.54%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "plant_id": "huiji:刺针旋花",
+      "kind": "weed",
+      "product_ingredient_id": null,
+      "plant_prefab_id": null,
+      "seed_prefab_id": null,
+      "name_zh": "刺针旋花",
+      "plant_name_zh": "刺针旋花",
+      "name_en_hint": "Spiny Bindweed",
+      "source_url": "https://dontstarve.huijiwiki.com/wiki/%E6%9D%82%E8%8D%89#%E5%88%BA%E9%92%88%E6%97%8B%E8%8A%B1",
+      "source_row": 18,
+      "preferred_seasons": {
+        "autumn": true,
+        "winter": true,
+        "spring": true,
+        "summer": true
+      },
+      "random_seed_percent": {
+        "autumn": 1.54,
+        "winter": 1.54,
+        "spring": 1.54,
+        "summer": 1.54
+      },
+      "nutrient_delta_per_stage": [
+        -2,
+        -2,
+        -2
+      ],
+      "water_percent_points_per_stage": 2.0,
+      "water_source_text": "2%",
+      "seed_name_en_hint": null,
+      "plant_asset_id": "asset:cab35eb5c35c1bc7cfb0",
+      "seed_asset_id": null,
+      "product_asset_id": null,
+      "source_cells": [
+        {
+          "text": "",
+          "style": null,
+          "images": [
+            {
+              "alt": "Spiny Bindweed.png",
+              "asset_id": "asset:cab35eb5c35c1bc7cfb0"
+            }
+          ],
+          "links": [
+            {
+              "title": "刺针旋花",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E5%88%BA%E9%92%88%E6%97%8B%E8%8A%B1"
+            }
+          ]
+        },
+        {
+          "text": "刺针旋花",
+          "style": null,
+          "images": [],
+          "links": [
+            {
+              "title": "杂草",
+              "url": "https://dontstarve.huijiwiki.com/wiki/%E6%9D%82%E8%8D%89#%E5%88%BA%E9%92%88%E6%97%8B%E8%8A%B1"
+            }
+          ]
+        },
+        {
+          "text": "无",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "无",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.54%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.54%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.54%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "1.54%",
+          "style": "color:#7FFFAA",
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "-2",
+          "style": null,
+          "images": [],
+          "links": []
+        },
+        {
+          "text": "2%",
+          "style": null,
+          "images": [],
+          "links": []
+        }
+      ]
+    }
+  ],
+  "assets": {
+    "asset:c759fc16c52742ec1c24": {
+      "alt": "Carrot Plant.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Carrot_Plant.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/6/68/Carrot_Plant.png/48px-Carrot_Plant.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/6/68/Carrot_Plant.png/64px-Carrot_Plant.png 2x",
+      "sha256": "f08a03a9c9cd150b10b51cdb4aa2aa221e5e47c649ed9089cb8f5233279d4c6c",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:a4e580fe1e2c3f33669d": {
+      "alt": "Oblong Seeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Oblong_Seeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/a/ae/Oblong_Seeds.png/48px-Oblong_Seeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/a/ae/Oblong_Seeds.png 2x",
+      "sha256": "0df68f70b625e19e511dad3c91ff12a433a677d9a6dffa546672f7e74cf14cd7",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:33555ef385f5e2c7732a": {
+      "alt": "Carrot.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Carrot.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/c/c3/Carrot.png/48px-Carrot.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/c/c3/Carrot.png 2x",
+      "sha256": "b9fa18c3a97004aa3f7cd10a2d17ec23c4686deac1fab1426565a939c930fee4",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:08ea3a71a564c211f494": {
+      "alt": "Corn Stalk.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Corn_Stalk.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/c/cc/Corn_Stalk.png/48px-Corn_Stalk.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/c/cc/Corn_Stalk.png/64px-Corn_Stalk.png 2x",
+      "sha256": "d13c622b511fe0dd3b0eabfe3a0dc00175d776a7cd636049d246c7921893ba65",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:256a43a4637184fb3d4a": {
+      "alt": "Clustered Seeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Clustered_Seeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/7/73/Clustered_Seeds.png/48px-Clustered_Seeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/7/73/Clustered_Seeds.png 2x",
+      "sha256": "bbe56a592b9747fa82c3e6c5e8b95ac6fae045f87855483576eee50bebc9c3e7",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:ee88686664e0150e8700": {
+      "alt": "Corn.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Corn.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/f/f8/Corn.png/48px-Corn.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/f/f8/Corn.png 2x",
+      "sha256": "f92fd0fbbbae31b057a80fc4fcc6a4d66fd6ff2dff75ad94460cd764f09e22a8",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:5ed342af7156de0a68c0": {
+      "alt": "Potato Plant.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Potato_Plant.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/8/81/Potato_Plant.png/48px-Potato_Plant.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/8/81/Potato_Plant.png/64px-Potato_Plant.png 2x",
+      "sha256": "8206a4a80adfeed887b63a9269a2b20f4d259792d96b6191c464165dae9315e0",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:b39d9c0f197a6da6415a": {
+      "alt": "Fluffy Seeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Fluffy_Seeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/c/cd/Fluffy_Seeds.png/48px-Fluffy_Seeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/c/cd/Fluffy_Seeds.png 2x",
+      "sha256": "0a53e5bdcbf14ec2d505f65945b751f165671a4ae45e3ed0e490214112df87bf",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:fbd732b08800416ba306": {
+      "alt": "Potato.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Potato.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/c/c2/Potato.png/48px-Potato.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/c/c2/Potato.png 2x",
+      "sha256": "b70131ad954db014c985c16e75aea260d725ccfe1febad64889f3685cc13bac9",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:a68237fdc49765ecba69": {
+      "alt": "Toma Root Plant.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Toma_Root_Plant.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/2/2f/Toma_Root_Plant.png/48px-Toma_Root_Plant.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/2/2f/Toma_Root_Plant.png/64px-Toma_Root_Plant.png 2x",
+      "sha256": "0840231627fe6ff2994cff20d7ea41f699774f7b90629f517e71b3c8ede3bd69",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:50516b959316e5e0b3e1": {
+      "alt": "Spiky Seeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Spiky_Seeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/e/e0/Spiky_Seeds.png/48px-Spiky_Seeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/e/e0/Spiky_Seeds.png 2x",
+      "sha256": "f2a854d1ea9ea2f0ccd17632e0cc2428f07d897f0509961cc81ac81da4236ef4",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:2b50ac5e5821a069a6a5": {
+      "alt": "Toma Root.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Toma_Root.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/9/9c/Toma_Root.png/48px-Toma_Root.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/9/9c/Toma_Root.png 2x",
+      "sha256": "a9c1699ba7ce8c6e19640fab9771f4172c1ece0ea4ba5a9b03b777cc78063b4f",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:f2e230a8bbcafa2a419d": {
+      "alt": "Asparagus Fern.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Asparagus_Fern.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/0/09/Asparagus_Fern.png/48px-Asparagus_Fern.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/0/09/Asparagus_Fern.png/64px-Asparagus_Fern.png 2x",
+      "sha256": "2bc7fee3acb01b62ca9fe5ea95155801aee240ffde1e49923b50329f50f8c6be",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:52fffcff0fb6679dde8b": {
+      "alt": "Tubular Seeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Tubular_Seeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/c/c2/Tubular_Seeds.png/48px-Tubular_Seeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/c/c2/Tubular_Seeds.png 2x",
+      "sha256": "9e1d390ce0d8118fd30012a62a61ac5746e9c3b6f91713a3365adb8f30cf0ab8",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:7b9a2a9f4ba8be0ce2fb": {
+      "alt": "Asparagus.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Asparagus.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/4/45/Asparagus.png/48px-Asparagus.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/4/45/Asparagus.png 2x",
+      "sha256": "bb29c8298eff6d7ea82e2fdedae68b99e6d9dd2bfe85479c6a7c1263abb8b4c7",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:528f7c9d323262fa44b0": {
+      "alt": "Eggplant Stalk.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Eggplant_Stalk.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/5/51/Eggplant_Stalk.png/48px-Eggplant_Stalk.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/5/51/Eggplant_Stalk.png/64px-Eggplant_Stalk.png 2x",
+      "sha256": "e1967e5bf4af8f42439e9a78f7a36a81481ac7ffc1e4dbcbab83cab838c62345",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:5f9b9808ac2936ddc378": {
+      "alt": "Swirly Seeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Swirly_Seeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/7/75/Swirly_Seeds.png/48px-Swirly_Seeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/7/75/Swirly_Seeds.png 2x",
+      "sha256": "88d1731042bd9c4d24b2d50ad061c34f284c1cc3ef78884fe874f6bb47384505",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:d64b0730fab15713f39e": {
+      "alt": "Eggplant.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Eggplant.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/8/8f/Eggplant.png/48px-Eggplant.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/8/8f/Eggplant.png 2x",
+      "sha256": "9476b538bf5e61e4a7b16639d2deb824455ceae49b758bbf2ba54d69bb1d53f4",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:e5b6f01d311c2dcedd82": {
+      "alt": "Pumpkin Plant.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Pumpkin_Plant.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/d/dd/Pumpkin_Plant.png/48px-Pumpkin_Plant.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/d/dd/Pumpkin_Plant.png/64px-Pumpkin_Plant.png 2x",
+      "sha256": "6ab41362f7a93a5b0129562675695a2e7edb0b08180a30049894cc268eee1678",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:d44b4cd0767dd499d62e": {
+      "alt": "Sharp Seeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Sharp_Seeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/4/4f/Sharp_Seeds.png/48px-Sharp_Seeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/4/4f/Sharp_Seeds.png 2x",
+      "sha256": "06c9f4f8aed7fc6e2b7f5269667cc940ff05fdb4d174854763d3a20ab9db46c0",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:113a939069c19c8a745c": {
+      "alt": "Pumpkin.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Pumpkin.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/6/64/Pumpkin.png/48px-Pumpkin.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/6/64/Pumpkin.png 2x",
+      "sha256": "f3ea3287b0d6637f54741312ca150ec6cecf47fb493e30d924ca1871559b8910",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:7eb27736834ab45dd012": {
+      "alt": "Watermelon Plant.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Watermelon_Plant.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/2/22/Watermelon_Plant.png/48px-Watermelon_Plant.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/2/22/Watermelon_Plant.png/64px-Watermelon_Plant.png 2x",
+      "sha256": "f4cf309bc7e0479ccccfdbec9d43eb9af159595958836d3c666b89d403a928aa",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:03c52ac4ba42bf405ddc": {
+      "alt": "Square Seeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Square_Seeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/2/2a/Square_Seeds.png/48px-Square_Seeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/2/2a/Square_Seeds.png 2x",
+      "sha256": "e5df936c8e80cf3adabf5393d60f7b2f5d818144ada25650fd67dbfcdf5fcb76",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:dd96f95d736c117cb205": {
+      "alt": "Watermelon.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Watermelon.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/0/06/Watermelon.png/48px-Watermelon.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/0/06/Watermelon.png 2x",
+      "sha256": "2f5b52465154b3383180028618ebe972eb5a7dc3d29ba57a4a4b967790c8d39b",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:99cea624f4548ba31515": {
+      "alt": "Dragon Fruit Vine.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Dragon_Fruit_Vine.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/d/d1/Dragon_Fruit_Vine.png/48px-Dragon_Fruit_Vine.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/d/d1/Dragon_Fruit_Vine.png/64px-Dragon_Fruit_Vine.png 2x",
+      "sha256": "6a96dfda3b5d46c463cd8487fb9dfc1c4ff8b2cef13e99d296370a35d245df8c",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:1fe8f231617946eae40d": {
+      "alt": "Bulbous Seeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Bulbous_Seeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/8/8a/Bulbous_Seeds.png/48px-Bulbous_Seeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/8/8a/Bulbous_Seeds.png 2x",
+      "sha256": "fcb5105d0ee17ed9ea62e7f201276810bc39ec3ee6152da99478eb84403d431d",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:b4b8173bd1f14d70612b": {
+      "alt": "Dragon Fruit.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Dragon_Fruit.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/2/29/Dragon_Fruit.png/48px-Dragon_Fruit.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/2/29/Dragon_Fruit.png 2x",
+      "sha256": "78db0c31d2fa4afd89db3811265a32f35021c1b4f11ee3fdcac8352a63c4f851",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:16c02192bbbedccc1c58": {
+      "alt": "Durian Vine.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Durian_Vine.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/8/86/Durian_Vine.png/48px-Durian_Vine.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/8/86/Durian_Vine.png/64px-Durian_Vine.png 2x",
+      "sha256": "7bcab1806165ef3047c2add3db36e428bcab262642640a4db96a9463d87d3e77",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:204e0f22afa9f173af6f": {
+      "alt": "Brittle Seed Pods.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Brittle_Seed_Pods.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/d/de/Brittle_Seed_Pods.png/48px-Brittle_Seed_Pods.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/d/de/Brittle_Seed_Pods.png 2x",
+      "sha256": "e6426d27eb824522847d021b80f39811c150980d1c0d1a657369f1a4093b68db",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:dd6a38cf1434972d84bb": {
+      "alt": "Durian.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Durian.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/3/39/Durian.png/48px-Durian.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/3/39/Durian.png 2x",
+      "sha256": "9cdbb6612fb59c4049819c914aa7ed377880c66803428b8fa7b7ce520c6f2382",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:6dec7bc90be0a9432aff": {
+      "alt": "Garlic Plant.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Garlic_Plant.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/b/b5/Garlic_Plant.png/48px-Garlic_Plant.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/b/b5/Garlic_Plant.png/64px-Garlic_Plant.png 2x",
+      "sha256": "fb9cb4a419793958ebd363d22100835c04871cce57729ebaf6ad3cbb629b8f1b",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:97376007264dc668159e": {
+      "alt": "Seed Pods.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Seed_Pods.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/e/ea/Seed_Pods.png/48px-Seed_Pods.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/e/ea/Seed_Pods.png 2x",
+      "sha256": "7c9a7d432525bb96e040bfade60ab0df53b5d9fa42fa2d453bc6d28c4ed5d7f4",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:970dfec0ed0fd59a510b": {
+      "alt": "Garlic.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Garlic.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/c/cc/Garlic.png/48px-Garlic.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/c/cc/Garlic.png 2x",
+      "sha256": "f9d5c9ed834d41158dea94a3e4adf39003b109fcffddf09635c9595de5faba28",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:d2f7980fcc20bb401829": {
+      "alt": "Onion Plant.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Onion_Plant.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/f/f0/Onion_Plant.png/48px-Onion_Plant.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/f/f0/Onion_Plant.png/64px-Onion_Plant.png 2x",
+      "sha256": "5ff406712b4230ce053372e6ec326275440d60eeffc6dcc13f541acce7539b05",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:3902d5f0afd4b8bfa127": {
+      "alt": "Pointy Seeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Pointy_Seeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/e/e9/Pointy_Seeds.png/48px-Pointy_Seeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/e/e9/Pointy_Seeds.png 2x",
+      "sha256": "1052fe0663b125fc6ad433a5aa6e0ccacf4020cd5cc858e4add4d947c211830a",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:6db8ed70fab8ca372d1e": {
+      "alt": "Onion.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Onion.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/5/51/Onion.png/48px-Onion.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/5/51/Onion.png 2x",
+      "sha256": "d81420038f10cb2945035aae7c60d5b593aff3147dfb5e3eb6709999cff248e6",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:5d02e021c69d7509d3be": {
+      "alt": "Pepper Plant.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Pepper_Plant.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/f/f8/Pepper_Plant.png/48px-Pepper_Plant.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/f/f8/Pepper_Plant.png/64px-Pepper_Plant.png 2x",
+      "sha256": "2facfa6e594305917a9ea37769f399cbb8de6484d5f6e9d2a1c064d70a7aa96a",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:4703a319f3e82e7c5f11": {
+      "alt": "Lumpy Seeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Lumpy_Seeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/a/a4/Lumpy_Seeds.png/48px-Lumpy_Seeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/a/a4/Lumpy_Seeds.png 2x",
+      "sha256": "92f083faa5d80c1833ffe6331948d6eccd64204c434fb1fa227f3217ed8c8a1f",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:800ae8429e809c8270a4": {
+      "alt": "Pepper.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Pepper.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/5/50/Pepper.png/48px-Pepper.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/5/50/Pepper.png 2x",
+      "sha256": "d8c923bd680ac9743de81c34e4fd5d84369f3783c793f35b0240e39bad9e32d6",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:9a0dd3519d615f70450e": {
+      "alt": "Pomegranate Branch.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Pomegranate_Branch.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/5/5c/Pomegranate_Branch.png/48px-Pomegranate_Branch.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/5/5c/Pomegranate_Branch.png/64px-Pomegranate_Branch.png 2x",
+      "sha256": "556b1de2a6ab6772258431350d88fe07587f417dc55a00d5f305a427861180ba",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:9c458fa28896d8bd9df5": {
+      "alt": "Windblown Seeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Windblown_Seeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/4/40/Windblown_Seeds.png/48px-Windblown_Seeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/4/40/Windblown_Seeds.png 2x",
+      "sha256": "0bfc33002496df7a439a096f77f92573776b98265572751c3b4f61de8b83aaba",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:48eebb90c034b992bfb6": {
+      "alt": "Pomegranate.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Pomegranate.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/1/1b/Pomegranate.png/48px-Pomegranate.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/1/1b/Pomegranate.png 2x",
+      "sha256": "5cc41eb6bb46f63d53ea5a0a290440d6dad78b3cf89ac722005be9a2a42b5ef2",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:52b2ce399374e0472f5a": {
+      "alt": "Forget-Me-Lots Plant.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Forget-Me-Lots_Plant_Full.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/b/b9/Forget-Me-Lots_Plant_Full.png/48px-Forget-Me-Lots_Plant_Full.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/b/b9/Forget-Me-Lots_Plant_Full.png/64px-Forget-Me-Lots_Plant_Full.png 2x",
+      "sha256": "6640cf140b14cb80f8671b4de9dc2e83ace119a5dbea23b46a4ffa7c56086546",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:1b5e1b8ef1a29d93697e": {
+      "alt": "Forget-Me-Lots.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Forget-Me-Lots.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/3/31/Forget-Me-Lots.png/48px-Forget-Me-Lots.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/3/31/Forget-Me-Lots.png 2x",
+      "sha256": "e09e5b81a173a88dbce0790dd631008ee465fe218441eef67c281fd1025d60a1",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:ccc10cacf39e8d0a72f8": {
+      "alt": "Tillweed.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Tillweed_Full.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/2/26/Tillweed_Full.png/48px-Tillweed_Full.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/2/26/Tillweed_Full.png/64px-Tillweed_Full.png 2x",
+      "sha256": "c233b36da6f29d3018458c52fd767796b6f4e6c77ab8abeb4272bf8dfab87693",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:b29e821a71ac024999c3": {
+      "alt": "Tillweeds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Tillweeds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/2/22/Tillweeds.png/48px-Tillweeds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/2/22/Tillweeds.png 2x",
+      "sha256": "47de6b6f34147e05227fca659ef77ce00f1d4dff821677b3b24361fc680cc2a8",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:7460a1f1b97b1cf8221e": {
+      "alt": "Fire Nettles.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Fire_Nettles_Full.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/7/7a/Fire_Nettles_Full.png/48px-Fire_Nettles_Full.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/7/7a/Fire_Nettles_Full.png/64px-Fire_Nettles_Full.png 2x",
+      "sha256": "db215ee3d16aad83579dff62970e846316b7d7e438f8464fcadc9dd90b004f38",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:bb8b08822d5c51da0f81": {
+      "alt": "Fire Nettle Fronds.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Fire_Nettle_Fronds.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/c/c7/Fire_Nettle_Fronds.png/48px-Fire_Nettle_Fronds.png 1.5x, https://huiji-public.huijistatic.com/dontstarve/uploads/c/c7/Fire_Nettle_Fronds.png 2x",
+      "sha256": "ad072e84525488992cf48f99f50b67cc9ff165633ac2dd782cd165998f14ed71",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    },
+    "asset:cab35eb5c35c1bc7cfb0": {
+      "alt": "Spiny Bindweed.png",
+      "source_local_reference": "./耕种 - 饥荒维基 - 灰机wiki - 北京嘉闻杰诺网络科技有限公司_files/32px-Spiny_Bindweed_Full.png",
+      "srcset": "https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/4/49/Spiny_Bindweed_Full.png/48px-Spiny_Bindweed_Full.png 1.5x, https://huiji-thumb.huijistatic.com/dontstarve/uploads/thumb/4/49/Spiny_Bindweed_Full.png/64px-Spiny_Bindweed_Full.png 2x",
+      "sha256": "2038836a7165b03e137476651e6f7f9bded2bf62f105c09e99c1541186bf7aec",
+      "redistributable": false,
+      "rights_status": "unconfirmed"
+    }
+  },
+  "mechanics": [
+    {
+      "rule_id": "stress_sources",
+      "value": [
+        "nutrients",
+        "moisture",
+        "debris",
+        "season",
+        "family",
+        "overcrowding",
+        "tending"
+      ],
+      "source_section": "压力",
+      "note": "Up to one stress point per category per stage, over four growth transitions; maximum 28.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "checked_growth_transitions",
+      "value": 4,
+      "source_section": "生长阶段与收获",
+      "note": "Track actual stages, not four arbitrary watering actions.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "giant_max_stress",
+      "value": 1,
+      "source_section": "生长阶段与收获",
+      "note": "Also requires crop-specific seeds, no rot/regrowth history and no forced ripening.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "family",
+      "value": {
+        "radius_game_units": 4,
+        "minimum_same_kind_including_self": 4
+      },
+      "source_section": "家庭",
+      "note": "Count actual positions, across tile boundaries; boundary equality needs game check.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "tile_width_game_units",
+      "value": 4,
+      "source_section": "家庭",
+      "note": "Footnote defines one distance unit as one quarter of a tile side.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "recommended_planner_slots_per_tile",
+      "value": 9,
+      "source_section": "拥挤",
+      "note": "Design default, not the exact game threshold. Use a 3x3 grid.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "overcrowding",
+      "value": {
+        "safe_count_max": 9,
+        "ambiguous_count": 10,
+        "definite_overcrowded_min": 11,
+        "source_phrase": "10 株以上"
+      },
+      "source_section": "拥挤",
+      "note": "Wiki wording leaves the exact ten-plant boundary ambiguous; plants AND weeds count.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "debris_radius_game_units",
+      "value": 6,
+      "source_section": "杂物",
+      "note": "Includes weeds, rotten plants, farm debris and rotten giant produce.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "moisture_min_positive_fraction_per_stage",
+      "value": 0.1,
+      "source_section": "土壤水分",
+      "note": "Stress if fraction of stage with soil moisture >0 is below 10%; not a moisture threshold of 10 units.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "soil_nutrient_bounds",
+      "value": {
+        "min": 0,
+        "max": 100,
+        "initial_min": 25,
+        "initial_max": 50
+      },
+      "source_section": "土壤营养",
+      "note": "Three separate stores per TILE. Nutrient output is coupled to actual consumption; capped surplus is wasted.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "soil_moisture_bounds",
+      "value": {
+        "min": 0,
+        "max": 100
+      },
+      "source_section": "土壤水分",
+      "note": "Water demand column is percent per stage, not a per-second rate.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "preferred_season_growth_time_multiplier",
+      "value": 0.5,
+      "source_section": "生长时间",
+      "note": "Night/darkness may pause growth; no exact clock simulation in v0.1.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "harvest_stress_bands",
+      "value": [
+        {
+          "min": 0,
+          "max": 6,
+          "produce": 1,
+          "specific_seeds": 2
+        },
+        {
+          "min": 7,
+          "max": 11,
+          "produce": 1,
+          "specific_seeds": 1
+        },
+        {
+          "min": 12,
+          "max": 28,
+          "produce": 1,
+          "specific_seeds": 0
+        }
+      ],
+      "source_section": "生长阶段与收获",
+      "note": "For ordinary mature plants. Giant eligibility is evaluated separately, not inferred from the first band.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "harvest_rot_delay_game_days",
+      "value": {
+        "ordinary": 4,
+        "giant": 6,
+        "wormwood_planted_multiplier": 1.5
+      },
+      "source_section": "生长时间",
+      "note": "Wiki-based. Exact growing-time and regrowth simulation deferred.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "tending",
+      "value": {
+        "required_each_stage": true,
+        "can_be_reset_by": [
+          "burning",
+          "fruit_fly_harassment"
+        ]
+      },
+      "source_section": "幸福",
+      "note": "Talking, applicable music or friendly fruit fly; no instrument range dataset in v0.1.",
+      "verification_status": "wiki_snapshot_only"
+    },
+    {
+      "rule_id": "generic_seeds",
+      "value": {
+        "default_preferred_seasons": [
+          "autumn",
+          "spring"
+        ],
+        "giant_eligible": false
+      },
+      "source_section": "生长时间",
+      "note": "Later season preference follows the resulting plant. Use identified crop-specific seeds for giant plans.",
+      "verification_status": "wiki_snapshot_only"
+    }
+  ],
+  "source_sections": [
+    {
+      "heading": "intro",
+      "paragraphs": [
+        "耕种是饥荒：联机版中的一项游戏机制，该机制影响农作物的生长及其产物。"
+      ]
+    },
+    {
+      "heading": "生长阶段与收获",
+      "paragraphs": [
+        "每种农作物都有以下生长阶段：种子，萌芽，小，中，已长成，巨大，腐烂，腐烂巨大。具体切换如下图：",
+        "其中处于前四个阶段的农作物在生长到下一阶段时，都会依照环境条件产生压力数值，压力值决定了作物长成后采收的产出，具体如下表：",
+        "需要注意的是，只有由作物种子种出，从未经过腐烂阶段或被催熟，且累积压力值为 0~1 时农作物才能生长至巨大阶段，不满足条件时则只能生长至已长成阶段。"
+      ]
+    },
+    {
+      "heading": "生长时间",
+      "paragraphs": [
+        "处于前四个阶段的农作物生长到下一阶段速度取决于其前一个阶段生长跨越至本阶段时所积累的压力值和当时所受到的压力源个数，积累的压力值越多，生长速度越慢。但如果当前季节是作物喜欢的季节，则生长时间将变为原来的一半，下表所列出的生长时间默认为不应季的生长时间：",
+        "虽然说作物最快只要 4.75 天就可以长好，但这只是计算生长时间，当农作物在洞穴世界的无天光处、夜晚时是不生长的。如果需要在这些情况下让农作物生长，可以在地下有天光处种植，或召唤矮星、火球，阅读永恒之光或永恒之光之复兴提供光照。",
+        "普通种子在秋季和春季默认应季，在进入幼苗阶段后的应季根据能长出的作物或杂草决定。",
+        "农作物在进入已长成阶段后 4 天未收获将会进入腐烂阶段，而巨型农产品则为 6 天后进入腐烂巨大阶段，如果作物由沃姆伍德种植，则会延长 50% 的时间。",
+        "普通农作物进入腐烂阶段后，再累计 4 ~ 5 天的可生长时间会回到幼苗阶段；这段时间不受应季加速影响，在无法生长的黑暗环境中仍会暂停。重新生长的作物无法长成巨大作物，腐烂的巨大作物则不会重新生长。"
+      ]
+    },
+    {
+      "heading": "压力",
+      "paragraphs": [
+        "有 7 个原因可能导致农作物积累压力值，作物将会在改变形态时检查状态并积累压力值，最多可以积累 28 点压力值。"
+      ]
+    },
+    {
+      "heading": "土壤营养",
+      "paragraphs": [
+        "一共有三种不同的土壤营养：催长剂、堆肥和粪肥，每一块农田地块都能够储存营养物质，三种营养物质分别计算，上限都为 100 点、下限为 0。初始营养物质在 25~50 不等。",
+        "每个生长阶段，农场植物都会消耗/产出不同营养物质。植物登记表中记录的每个箭头代表它在整个从种子到长成的过程中会总共消耗/产出 8 点该营养物质。你也可以在下方#总览查看每阶段消耗/产出的营养物质。",
+        "如果在一个生长阶段中，农田地块中所含的营养不能满足作物的消耗，或者作物不在农田地块上，那么该作物会积累 1 点压力值。如果产生的营养物质达到上限，并不会影响其压力。",
+        "需要注意的是农作物营养消耗和营养产出是成比例的，当没有营养消耗的时候不会有营养产出。如果土地该种营养已经达到上限，那么产出的营养将被浪费，但作物不会因为营养浪费而增长压力值。",
+        "杂草植物只会消耗营养。使用肥料可以向土壤中添加不同的营养。"
+      ]
+    },
+    {
+      "heading": "土壤水分",
+      "paragraphs": [
+        "在每个生长阶段中，如果作物处于土壤水分 > 0 的土地上的时间低于该阶段的 10%，那么该作物会积累 1 压力值。",
+        "每块农田地块都有土壤水分，取值区间为 0 ~ 100，刚开垦时的土壤水分等于当时的世界湿度。浇水壶和鸟嘴壶浇灌、冰融化会提升 25 土壤水分，消防泵浇灌、水球砸中会提升 20 土壤水分；阅读实用求雨仪式会将周围 4 距离单位内的农田地块的土壤水分补满（包括未开垦的土地）。下雨时，土壤水分会根据降水速率缓慢提升，最快 + 1.5 水分值/秒。",
+        "土壤水分会自然降低 0 ~ 24/天，降低速率取决于环境温度：温度低于 0 时土壤水分不会降低；温度达到 70 时土壤水分的降低速率达到 24/天。不同作物也会以不同的速率消耗土壤中的土壤水分。（见下表）",
+        "每株作物在其生长的每个阶段都会吸收固定量的水分。"
+      ]
+    },
+    {
+      "heading": "杂物",
+      "paragraphs": [
+        "在每个生长阶段中，如果一株植物周围 6 距离单位1 距离单位等于 1/4 地块边长，即一般情况下放置墙壁的最小间隔，也是建筑对齐网格的默认间隔。半径的范围内存在杂物，那么该作物会积累 1 点压力值。",
+        "杂物包括：腐烂的所有作物、农田杂物、腐烂的巨型蔬果和所有杂草。"
+      ]
+    },
+    {
+      "heading": "季节",
+      "paragraphs": [
+        "在每个生长阶段中，如果当前季节不是该作物喜欢的季节，那么该作物会积累 1 点压力值。"
+      ]
+    },
+    {
+      "heading": "家庭",
+      "paragraphs": [
+        "在每个生长阶段中，如果一株植物周围 4 距离单位1 距离单位等于 1/4 地块边长，即一般情况下放置墙壁的最小间隔，也是建筑对齐网格的默认间隔。半径的范围内同类作物少于 4 株（包括自己），那么该作物会积累 1 点压力值。"
+      ]
+    },
+    {
+      "heading": "拥挤",
+      "paragraphs": [
+        "在每个生长阶段中，如果同一地块上有 10 株以上的作物或者杂草，那么该作物会积累 1 点压力值。"
+      ]
+    },
+    {
+      "heading": "幸福",
+      "paragraphs": [
+        "在每个生长阶段中，如果作物没有被照料，那么该作物会积累 1 点压力值。",
+        "玩家可以直接点击作物，或在作物附近按空格，让角色对作物说话（韦斯除外，他不能说话）。也可以使用各种道具为其演奏音乐，不同道具有不同的作用范围（见下表）。友好果蝇也可以代替玩家照料植物。",
+        "以下情况会导致已经被照料的农作物失去照料状态：",
+        "被点燃。 被果蝇或果蝇王骚扰。"
+      ]
+    },
+    {
+      "heading": "总览",
+      "paragraphs": [
+        "肥料消耗的总值只需要该数值乘4即可算出，同时请注意表中季节顺序为秋冬春夏。"
+      ]
+    },
+    {
+      "heading": "提示",
+      "paragraphs": [
+        "玩家可以参考肥料配平表来快速找到适合种植的作物配比。 也可以参考如下速记表："
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "code": "build_unconfirmed",
+      "details": "No confirmation the saved wiki reflects build 762172; target build is last user report."
+    },
+    {
+      "code": "static_not_growth_simulation",
+      "details": "Exact nutrient balance does not prove sufficient starting stock or synchronized consumption; no daily moisture/growth forecast."
+    },
+    {
+      "code": "position_required",
+      "details": "Total crop counts do not prove family proximity; balancing across different tiles does not share soil nutrients."
+    },
+    {
+      "code": "ten_plant_boundary",
+      "details": "Source says 10株以上; default nine, report exactly ten as unknown."
+    },
+    {
+      "code": "provisional_plant_ids",
+      "details": "Crop keys are raw-product ingredient IDs cross-linked to prior wiki data. Actual plant/seed prefabs remain NULL; image names are localization hints."
+    },
+    {
+      "code": "unverified_art_rights",
+      "details": "Image references/hashes only. No game artwork bundled."
+    },
+    {
+      "code": "scope",
+      "details": "No fertilizer-item database, skill tree effects, exact growth clocks, automatic optimal layout solver or season-transition forecast in v0.1."
+    }
+  ]
+}

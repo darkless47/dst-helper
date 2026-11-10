@@ -1,0 +1,20 @@
+{
+  "counts": {
+    "ingredients": 145,
+    "ingredient_tags": 200,
+    "dishes": 81,
+    "recipe_rules": 81,
+    "assets": 226,
+    "source_rows": 226,
+    "review_issues": 11
+  },
+  "sqlite_integrity_check": "ok",
+  "foreign_key_violations": [],
+  "fixture_cases_passed": 18,
+  "independent_game_verification": false,
+  "notes": [
+    "All 81 predicate trees are draft; all solver_ready flags false.",
+    "144 distinct ingredient prefabs; 145 source states.",
+    "No game art is bundled."
+  ]
+}

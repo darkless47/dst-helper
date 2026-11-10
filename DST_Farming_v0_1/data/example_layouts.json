@@ -1,0 +1,523 @@
+[
+  {
+    "id": "single_tile_potato_tomato",
+    "label_zh": "一块田：土豆4 + 番茄4，空1格",
+    "seasons": [
+      "autumn",
+      "spring"
+    ],
+    "ratio": {
+      "potato": 1,
+      "tomato": 1
+    },
+    "placements": [
+      {
+        "plant_id": "potato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 0,
+        "col": 0
+      },
+      {
+        "plant_id": "potato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 0,
+        "col": 1
+      },
+      {
+        "plant_id": "potato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 0,
+        "col": 2
+      },
+      {
+        "plant_id": "potato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 1,
+        "col": 0
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 1,
+        "col": 1
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 1,
+        "col": 2
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 2,
+        "col": 0
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 2,
+        "col": 1
+      }
+    ],
+    "analysis": {
+      "tiles": [
+        {
+          "tile": [
+            0,
+            0
+          ],
+          "plant_count": 8,
+          "net_per_stage": [
+            0,
+            0,
+            0
+          ],
+          "nutrient_balanced": true,
+          "external_nutrient_deficit_per_stage": [
+            0,
+            0,
+            0
+          ],
+          "overcrowding_status": "pass"
+        }
+      ],
+      "plants": [
+        {
+          "index": 0,
+          "plant_id": "potato",
+          "same_kind_strictly_inside_radius": 4,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 1,
+          "plant_id": "potato",
+          "same_kind_strictly_inside_radius": 4,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 2,
+          "plant_id": "potato",
+          "same_kind_strictly_inside_radius": 4,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 3,
+          "plant_id": "potato",
+          "same_kind_strictly_inside_radius": 4,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 4,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 4,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 5,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 4,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 6,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 4,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 7,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 4,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        }
+      ],
+      "all_tiles_nutrient_balanced": true,
+      "all_crop_family_checks_pass": true,
+      "guaranteed_giant": false,
+      "other_conditions": "Water/tending, initial soil, outside-plan debris, crop-specific seeds, actual seasons during growth and plant history still require management."
+    }
+  },
+  {
+    "id": "two_tiles_tomato_dragonfruit",
+    "label_zh": "相邻两块田：每块番茄6 + 火龙果3，火龙果靠共同边界",
+    "seasons": [
+      "spring",
+      "summer"
+    ],
+    "ratio": {
+      "tomato": 2,
+      "dragonfruit": 1
+    },
+    "placements": [
+      {
+        "plant_id": "tomato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 0,
+        "col": 0
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 0,
+        "col": 1
+      },
+      {
+        "plant_id": "dragonfruit",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 0,
+        "col": 2
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 1,
+        "col": 0
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 1,
+        "col": 1
+      },
+      {
+        "plant_id": "dragonfruit",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 1,
+        "col": 2
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 2,
+        "col": 0
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 2,
+        "col": 1
+      },
+      {
+        "plant_id": "dragonfruit",
+        "tile_x": 0,
+        "tile_y": 0,
+        "row": 2,
+        "col": 2
+      },
+      {
+        "plant_id": "dragonfruit",
+        "tile_x": 1,
+        "tile_y": 0,
+        "row": 0,
+        "col": 0
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 1,
+        "tile_y": 0,
+        "row": 0,
+        "col": 1
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 1,
+        "tile_y": 0,
+        "row": 0,
+        "col": 2
+      },
+      {
+        "plant_id": "dragonfruit",
+        "tile_x": 1,
+        "tile_y": 0,
+        "row": 1,
+        "col": 0
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 1,
+        "tile_y": 0,
+        "row": 1,
+        "col": 1
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 1,
+        "tile_y": 0,
+        "row": 1,
+        "col": 2
+      },
+      {
+        "plant_id": "dragonfruit",
+        "tile_x": 1,
+        "tile_y": 0,
+        "row": 2,
+        "col": 0
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 1,
+        "tile_y": 0,
+        "row": 2,
+        "col": 1
+      },
+      {
+        "plant_id": "tomato",
+        "tile_x": 1,
+        "tile_y": 0,
+        "row": 2,
+        "col": 2
+      }
+    ],
+    "analysis": {
+      "tiles": [
+        {
+          "tile": [
+            0,
+            0
+          ],
+          "plant_count": 9,
+          "net_per_stage": [
+            0,
+            0,
+            0
+          ],
+          "nutrient_balanced": true,
+          "external_nutrient_deficit_per_stage": [
+            0,
+            0,
+            0
+          ],
+          "overcrowding_status": "pass"
+        },
+        {
+          "tile": [
+            1,
+            0
+          ],
+          "plant_count": 9,
+          "net_per_stage": [
+            0,
+            0,
+            0
+          ],
+          "nutrient_balanced": true,
+          "external_nutrient_deficit_per_stage": [
+            0,
+            0,
+            0
+          ],
+          "overcrowding_status": "pass"
+        }
+      ],
+      "plants": [
+        {
+          "index": 0,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 1,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 1,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 2,
+          "plant_id": "dragonfruit",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 3,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 4,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 1,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 5,
+          "plant_id": "dragonfruit",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 6,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 7,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 1,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 8,
+          "plant_id": "dragonfruit",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 9,
+          "plant_id": "dragonfruit",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 10,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 1,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 11,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 12,
+          "plant_id": "dragonfruit",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 13,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 1,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 14,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 15,
+          "plant_id": "dragonfruit",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 16,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 1,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        },
+        {
+          "index": 17,
+          "plant_id": "tomato",
+          "same_kind_strictly_inside_radius": 6,
+          "same_kind_on_boundary": 0,
+          "family_status": "pass",
+          "season_status": "pass",
+          "known_weed_debris_status": "no_known_weed_in_plan"
+        }
+      ],
+      "all_tiles_nutrient_balanced": true,
+      "all_crop_family_checks_pass": true,
+      "guaranteed_giant": false,
+      "other_conditions": "Water/tending, initial soil, outside-plan debris, crop-specific seeds, actual seasons during growth and plant history still require management."
+    }
+  }
+]

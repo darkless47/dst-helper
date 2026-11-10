@@ -1,0 +1,25 @@
+{
+  "policy_version": 1,
+  "mode": "experimental_wiki",
+  "source_revision": "193291",
+  "source_html_sha256": "3072e6cc0e7be112a7cfc91f1c02cdd2078960543be1d9accc35dd5d4fe0effa",
+  "selection": "maximum_priority",
+  "ties": "uniform",
+  "named_groups": "sum_explicitly_listed_prefabs",
+  "user_confirmation": {
+    "date": "2026-11-08",
+    "selection_and_ties": true,
+    "mixed_listed_forms_share_count": true,
+    "ordinary_recipes_both_pots": true
+  },
+  "cookers": {
+    "crock_pot": {"name_zh": "烹饪锅", "include_portable_only": false},
+    "portable": {"name_zh": "便携烹饪锅（沃利）", "include_portable_only": true}
+  },
+  "ingredient_universe": "all_snapshot_ingredient_states",
+  "eligibility_verified": false,
+  "assumptions_zh": [
+    "暂按维基食材表收录的全部状态作为可选食材；各锅具的完整食材适用范围尚未核验。",
+    "用户确认：普通配方可在烹饪锅或沃利的便携烹饪锅制作；便携锅专属配方仍只用于便携锅。远古窑暂不支持。"
+  ]
+}

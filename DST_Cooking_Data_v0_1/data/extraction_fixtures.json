@@ -1,0 +1,20 @@
+[
+ {"dish_zh":"肉丸","item_counts":{},"tag_totals":{"meat":0.5},"matches":true},
+ {"dish_zh":"肉丸","item_counts":{},"tag_totals":{"meat":1,"inedible":1},"matches":false},
+ {"dish_zh":"蝴蝶松饼","item_counts":{"moonbutterflywings":1},"tag_totals":{"veggie":0.5},"matches":true},
+ {"dish_zh":"蝴蝶松饼","item_counts":{"butterflywings":1},"tag_totals":{"veggie":0.5,"meat":1},"matches":false},
+ {"dish_zh":"火鸡正餐","item_counts":{"drumstick":2},"tag_totals":{"meat":2,"veggie":0.5},"matches":true},
+ {"dish_zh":"火鸡正餐","item_counts":{"drumstick":2},"tag_totals":{"meat":2,"fruit":0.5},"matches":true},
+ {"dish_zh":"火鸡正餐","item_counts":{"drumstick":2},"tag_totals":{"meat":2},"matches":false},
+ {"dish_zh":"发光浆果慕斯","item_counts":{"wormlight_lesser":2},"tag_totals":{"fruit":2},"matches":true},
+ {"dish_zh":"发光浆果慕斯","item_counts":{"wormlight":1},"tag_totals":{"fruit":2},"matches":true},
+ {"dish_zh":"发光浆果慕斯","item_counts":{"wormlight_lesser":1},"tag_totals":{"fruit":2},"matches":false},
+ {"dish_zh":"奶油土豆泥","item_counts":{"potato":1,"potato_cooked":1,"garlic":1},"tag_totals":{},"matches":true},
+ {"dish_zh":"骨头汤","item_counts":{"boneshard":2,"onion":1},"tag_totals":{"inedible":2},"matches":true},
+ {"dish_zh":"骨头汤","item_counts":{"boneshard":2,"onion":1},"tag_totals":{"inedible":3},"matches":false},
+ {"dish_zh":"恐怖国王饼","item_counts":{"nightmarefuel":2,"potato":1,"onion_cooked":1},"tag_totals":{},"matches":true},
+ {"dish_zh":"恐怖国王饼","item_counts":{"nightmarefuel":2,"potato":2,"onion_cooked":1},"tag_totals":{},"matches":false},
+ {"dish_zh":"潮湿黏糊","item_counts":{},"tag_totals":{},"matches":true},
+ {"dish_zh":"炖兔子","item_counts":{},"tag_totals":{"meat":0.5,"frozen":2},"matches":true},
+ {"dish_zh":"炖兔子","item_counts":{},"tag_totals":{"meat":1,"frozen":2},"matches":false}
+]

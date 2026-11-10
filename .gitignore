@@ -1,0 +1,39 @@
+# Python environments and generated caches
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local preferences, farming plans, browser QA, and server state
+.local/
+*.log
+.env
+.env.*
+!.env.example
+
+# Raw wiki saves are optional source material for re-extraction and audits.
+# Runtime PNGs live in assets/images/ and should be committed.
+/wiki-webpage-save/
+
+# Generated/user databases; retain the two curated content snapshots.
+*.sqlite
+*.sqlite3
+*.db
+*.sqlite-*
+*.sqlite3-*
+*.db-journal
+*.db-wal
+*.db-shm
+!/DST_Cooking_Data_v0_1/dst_cooking.sqlite
+!/DST_Farming_v0_1/farming.sqlite
+
+# OS metadata
+.DS_Store
+Thumbs.db
+Desktop.ini

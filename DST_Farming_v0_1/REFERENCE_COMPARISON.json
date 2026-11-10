@@ -1,0 +1,28 @@
+{
+  "reference_url": "https://hzhangxyz.github.io/dst-farming/",
+  "retrieved_date": "2026-11-09",
+  "reference_html_sha256": "44b29595cd5b355871c4d6a1add26a4038d915bfbf8c43eba83342f9333bf290",
+  "inspection": "HTTP HTML and embedded app behavior inspected; no screenshot/browser-render verification claimed",
+  "matched_crop_nutrient_and_season_records": 14,
+  "matched_season_filter_combinations": 16,
+  "ratio_counts_by_filter": {
+    "no_filter": 74,
+    "autumn": 22,
+    "spring": 43,
+    "autumn+spring": 11,
+    "summer": 12,
+    "autumn+summer": 3,
+    "spring+summer": 7,
+    "autumn+spring+summer": 0,
+    "winter": 4,
+    "autumn+winter": 2,
+    "spring+winter": 2,
+    "autumn+spring+winter": 1,
+    "summer+winter": 0,
+    "autumn+summer+winter": 0,
+    "spring+summer+winter": 0,
+    "autumn+spring+summer+winter": 0
+  },
+  "reference_scope": "two or three crop types; primitive coefficients 1 or 2; exact zero net of all three nutrients",
+  "interpretation": "Agreement between two wiki-based tools, not independent game-build verification"
+}
