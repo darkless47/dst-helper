@@ -113,6 +113,11 @@ Cooked/roasted/dried states are excluded unless explicitly required without a li
 alternative. Fewer than three possible combinations are disclosed rather than duplicated.
 See `PREDICTION.md`, `SIGNATURE_RECIPES.md`, and `RARITY_AND_EXAMPLES.md`.
 
+The target-build and evidence summary appears on **助手首页**. Cooking's sidebar lists
+four functions; open **数据与边界** from the button beside **非官方 · 本地手册** for
+the full source/limitations page. The snapshot-version badge and prediction-status summary
+are omitted from Cooking's header; the underlying metadata and predictor behavior stay intact.
+
 Dish details keep **表格记录** concise: **更多...** reveals tie selection, extra probability
 weight, finished food type, game prefab, and provisional dish ID. **配方条件** has its own
 **更多...** for parser/readiness metadata and the review AST. The **⚠** button beside

@@ -111,6 +111,7 @@
       1024
     ],
     "checks_passed": [
+      "Relocated Home metadata, simplified Cooking header and four-function navigation, unnumbered edition-label evidence action, mobile access, and load-error recovery",
       "Consistent Home/Cooking/Farming module navigation, persistent selected Cooking entry across all five subsections, reload/deep-link entry, and 390px/320px layouts",
       "Collapsed source/evidence section in both detail types, keyboard expansion, preserved records, and mobile layout",
       "Compact dish detail More sections, renamed recipe heading, and accessible warning popover on desktop/mobile",
@@ -243,7 +244,7 @@
     "source_metadata_changed": false
   },
   "main_navigation": {
-    "checked_date": "2026-11-09",
+    "checked_date": "2026-11-10",
     "primary_routes": [
       "/",
       "/cooking",
@@ -251,12 +252,26 @@
     ],
     "checks": [
       "Home, Cooking, and Farming share the same three main navigation entries",
-      "Cooking stays visible and selected while all five cooking subsections remain in a separate secondary group",
+      "Cooking stays visible and selected while all four cooking functions remain in a separate secondary group",
       "Cooking selection survives subsection changes, module round trips, reload, and farming ingredient deep links",
       "1440px desktop and 390px/320px mobile navigation remain visible without horizontal overflow",
       "Real combined-server Chrome check uses isolated settings, stops its test server, and reports no JavaScript exceptions",
-      "On Cooking pages, Farming follows all five cooking subsections in DOM and visual order on desktop and mobile, retaining its main-entry styling"
+      "On Cooking pages, Farming follows all four cooking functions in DOM and visual order on desktop and mobile, retaining its main-entry styling",
+      "Data/evidence is accessible through the edition-label action rather than a numbered cooking function"
     ],
     "backend_changed": false
+  },
+  "cooking_verification_layout": {
+    "checked_date": "2026-11-10",
+    "checks": [
+      "Cooking snapshot/version badge and entire three-part trust bar removed, including stale load/error DOM references",
+      "Home displays two metadata fields loaded from the same live catalog: target build and evidence level/revision",
+      "Prediction-status summary omitted from the relocated bar; other prediction behavior and underlying readiness metadata unchanged",
+      "Cooking lists four functional subsections; evidence action sits beside the edition label and remains visible on mobile",
+      "Evidence page title is unnumbered SOURCES & LIMITS; keyboard activation, active state, and return to all four functions checked",
+      "Desktop and 390px/320px layouts have no page overflow; Home metadata failure retains module links; Cooking error and reload paths remain functional"
+    ],
+    "http_route_check": "CombinedHTTPTests.test_routes_assets_and_deep_links passed, including /home.js",
+    "source_metadata_changed": false
   }
 }

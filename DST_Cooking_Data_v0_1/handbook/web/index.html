@@ -20,7 +20,7 @@
   <div class="shell">
     <aside class="sidebar">
       <a class="brand" href="/" aria-label="荒野食记首页"><span class="brand-mark" aria-hidden="true">食</span><span>荒野食记<small>DST COOKING HANDBOOK</small></span></a>
-      <div class="edition">非官方 · 本地手册</div>
+      <div class="edition cooking-edition"><span>非官方 · 本地手册</span><span aria-hidden="true">·</span><button type="button" class="edition-link" data-view="evidence" aria-controls="evidence-section">数据与边界</button></div>
       <nav class="cooking-module-nav" aria-label="助手导航">
         <a class="nav-button" href="/"><span>00</span>助手首页</a>
         <a class="nav-button active" href="/cooking" aria-current="page"><span>01</span>烹饪助手 Cooking</a>
@@ -29,24 +29,18 @@
           <button class="nav-button" data-view="ingredients"><span>02</span>食材探索<b id="ingredient-count">—</b></button>
           <button class="nav-button" data-view="signature"><span>03</span>优选料理</button>
           <button class="nav-button" data-view="prediction"><span>04</span>出锅预测</button>
-          <button class="nav-button" data-view="evidence"><span>05</span>数据与边界</button>
         </nav>
         <a class="nav-button" href="/farming"><span>02</span>种植规划 Farming</a>
       </nav>
-      <div class="field-note"><span class="eyebrow">FIELD NOTE / 阅读须知</span><p>一份维基快照，<br>一册待核实的荒野食谱。</p><p class="muted small">先看来源，再做判断。<br>四格预测为维基实验功能。</p></div>
+      <div class="field-note"><span class="eyebrow">FIELD NOTE / 阅读须知</span><p>一册荒野食谱。</p><p class="muted small">先看来源，再做判断。<br>四格预测为维基实验功能。</p></div>
       <div class="local-status"><i aria-hidden="true"></i>维基快照只读 · 设置保存在本机</div>
     </aside>
     <div class="workspace">
-      <header class="topbar"><span>饥荒联机版 <span class="slash">/</span> 烹饪资料库</span><span class="snapshot-label" id="snapshot-label">正在读取本地快照</span></header>
+      <header class="topbar"><span>饥荒联机版 <span class="slash">/</span> 烹饪资料库</span></header>
       <main id="main" tabindex="-1">
         <section class="hero">
           <div><p class="eyebrow" id="section-kicker">THE WILDERNESS TABLE / 01</p><h1 id="page-title">在荒野，好好吃饭。</h1><p class="intro" id="page-description">查阅料理的表格数值、食材标签与原始证据。每一条资料，都有来处。</p></div>
-          <div class="stamp" aria-hidden="true"><span>荒野生存</span><strong>烹饪<br>手记</strong><span>WIKI SNAPSHOT</span></div>
-        </section>
-        <section class="trust-strip" aria-label="版本与核验状态">
-          <div><span>目标游戏版本</span><strong id="target-build">—</strong><small>用户报告的安装版本</small></div>
-          <div><span>资料证据等级</span><strong>单一维基快照</strong><small id="revision">尚未核验游戏版本兼容性</small></div>
-          <div><span>出锅预测</span><strong class="amber" id="prediction-status">维基预测 · 实验</strong><small>最高优先级 · 同分等概率</small></div>
+          <div class="stamp" aria-hidden="true"><span>荒野生存</span><strong>烹饪<br>手记</strong><span>COOK PLANNER</span></div>
         </section>
         <section id="catalog-section" aria-label="目录">
           <div class="section-heading"><h2 id="catalog-title">料理索引</h2><div class="catalog-display"><span id="result-count" role="status" aria-live="polite">读取中…</span><div id="catalog-layout-switch" class="layout-switch" role="group" aria-label="料理显示方式"><button type="button" data-layout="cards" aria-pressed="true">卡片</button><button type="button" data-layout="table" aria-pressed="false">表格</button></div></div></div>

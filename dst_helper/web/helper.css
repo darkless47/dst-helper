@@ -1,5 +1,17 @@
 @charset "UTF-8";
 a.nav-button { text-decoration:none; }
+.home-trust-strip { grid-template-columns:1fr 1.2fr; }
+.home-trust-strip>div { min-width:0; overflow-wrap:anywhere; }
+@media(max-width:760px) {
+  .home-trust-strip { padding:16px 0; }
+  .home-trust-strip>div:last-child {
+    grid-column:auto;
+    display:block;
+    border-top:0;
+    margin-top:0;
+    padding:0 13px;
+  }
+}
 .module-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; margin:18px 0 30px; }
 .module-card { display:flex; flex-direction:column; padding:30px; background:var(--white); border:1px solid var(--line); border-radius:12px; text-decoration:none; color:var(--ink); }
 .module-card h2 { font:600 30px var(--serif); margin:16px 0; }

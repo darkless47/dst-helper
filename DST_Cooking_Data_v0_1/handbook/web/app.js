@@ -13,7 +13,7 @@ const copy = {
   ingredients: ['KNOW YOUR INGREDIENTS / 02', '每种食材，各有分量。', '按状态查看维基记录的食材标签。标签贡献与具名食材计数，使用不同的身份。', '食材索引'],
   signature: ['SIGNATURE RECIPES / 03', '这一味，最适合哪道料理？', '配方点名的拿手料理排在前面，再按营养值发现更多搭配。', '优选料理'],
   prediction: ['EXACT POT / 04', '四格食材，会煮出什么？', '选满四件食材，按最高优先级计算料理；同分结果均分概率。', '出锅预测'],
-  evidence: ['SOURCES & LIMITS / 05', '让每条资料，都有来处。', '保留来源、缺失与疑问。目标游戏版本与数据核验等级，分别记录。', '数据与边界']
+  evidence: ['SOURCES & LIMITS', '让每条资料，都有来处。', '保留来源、缺失与疑问。目标游戏版本与数据核验等级，分别记录。', '数据与边界']
 };
 const issueLabels = {
   state_variant: ['同一 prefab 的不同状态', '两条营养砖状态各自保留。@wiki_state_ 是资料集后缀，不是游戏 prefab。'],
@@ -415,10 +415,6 @@ async function load() {
     const d = state.data;
     $('dish-count').textContent = d.dishes.length;
     $('ingredient-count').textContent = d.ingredients.length;
-    $('target-build').textContent = unknown(d.metadata.target_build);
-    $('revision').textContent = '修订 ' + unknown(d.metadata.source_revision) + ' · 版本兼容性未确认';
-    $('snapshot-label').textContent = 'HUIJI SNAPSHOT · v' + unknown(d.metadata.dataset_version);
-    $('prediction-status').textContent = d.prediction?.enabled ? '维基预测 · 实验' : '预测暂不可用';
     $('tag-filter').replaceChildren(el('option', { value: 'all', text: '全部标签' }),
       ...Object.entries(d.tag_labels).map(([key, label]) => el('option', { value: key, text: label })));
     renderEvidence();
@@ -432,7 +428,6 @@ async function load() {
     $('evidence-section').hidden = true;
     $('prediction-section').hidden = true;
     $('signature-section').hidden = true;
-    $('snapshot-label').textContent = '本地快照读取失败';
   } finally { $('retry').disabled = false; }
 }
 

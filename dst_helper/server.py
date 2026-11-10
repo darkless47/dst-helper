@@ -16,6 +16,7 @@ from .farming import FarmingPlanner
 
 WEB = Path(__file__).with_name('web')
 STATIC = {'/': ('home.html', 'text/html'), '/farming': ('farming.html', 'text/html'),
+          '/home.js': ('home.js', 'text/javascript'),
           '/helper.css': ('helper.css', 'text/css'), '/farming.js': ('farming.js', 'text/javascript')}
 
 

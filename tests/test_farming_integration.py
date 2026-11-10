@@ -186,7 +186,7 @@ class CombinedHTTPTests(unittest.TestCase):
             connection.close()
 
     def test_routes_assets_and_deep_links(self):
-        for path in ['/', '/cooking', '/cooking?ingredient=tomato', '/farming', '/helper.css', '/farming.js', '/app.js']:
+        for path in ['/', '/cooking', '/cooking?ingredient=tomato', '/farming', '/home.js', '/helper.css', '/farming.js', '/app.js']:
             with self.subTest(path=path):
                 status, headers, body = self.request(path)
                 self.assertEqual(status, 200)

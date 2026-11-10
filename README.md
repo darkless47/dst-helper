@@ -7,6 +7,10 @@ An unofficial, local-first Don't Starve Together helper with **Cooking** and
 Cooking retains the recipe catalog, ingredient explorer, **优选料理**, four-slot
 wiki-based outcome predictor, rarity settings, and recommendation exclusions.
 
+The home page shows the target game build and Cooking data evidence level. Cooking's
+four function entries stay in its sidebar; **数据与边界** opens from the button beside
+**非官方 · 本地手册**, including on mobile.
+
 Run these commands from this workspace directory (`C:\Users\oyblu\Dev\dst-helper`).
 
 Create a virtual environment and install the runtime packages first:
