@@ -18,7 +18,15 @@ The older entry point below still works when running from this package directory
 
 The application includes a read-only Chinese wiki catalog, editable ingredient rarity,
 experimental wiki-based exact-pot prediction, **优选料理** discovery, and pictured dish examples.
-Python 3.10+ is the only runtime dependency; no Node, pip installation, or network access is required.
+The app requires Python 3.11+ and the pinned Starlette/Uvicorn dependencies in
+`../requirements.txt`. Install them into your virtual environment before running:
+
+```bash
+python -m pip install -r ../requirements.txt
+```
+
+No Node build or runtime network access is required. See `../DEPLOYMENT.md` for Docker
+and Nginx setup; all existing entry points use Uvicorn.
 
 ```bash
 python run_handbook.py

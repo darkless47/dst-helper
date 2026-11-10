@@ -1,0 +1,21 @@
+services:
+  dst-helper:
+    build: .
+    image: dst-helper:local
+    restart: unless-stopped
+    init: true
+    environment:
+      FORWARDED_ALLOW_IPS: "${FORWARDED_ALLOW_IPS:-127.0.0.1,::1}"
+    ports:
+      - "127.0.0.1:8765:8765"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 35s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

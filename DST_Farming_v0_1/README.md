@@ -44,7 +44,9 @@ python scripts/planner_core.py
 python scripts/build_database.py --output rebuilt_farming.sqlite
 ```
 
-Normal use and rebuild need only Python's standard library. Re-extracting the user's original HTML needs `lxml`:
+Standalone data rebuilds and planner calculations need only Python's standard library.
+The integrated web app also requires the Starlette/Uvicorn packages in `../requirements.txt`.
+Re-extracting the user's original HTML needs `lxml`:
 
 ```bash
 python -m pip install -r requirements-extraction.txt

@@ -181,7 +181,7 @@ class CombinedHTTPTests(unittest.TestCase):
             body = json.dumps(payload, ensure_ascii=False).encode('utf-8') if payload is not None else None
             connection.request(method or ('POST' if body else 'GET'), path, body, headers or ({'Content-Type': 'application/json'} if body else {}))
             response = connection.getresponse()
-            return response.status, dict(response.getheaders()), response.read()
+            return response.status, response.headers, response.read()
         finally:
             connection.close()
 

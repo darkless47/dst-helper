@@ -128,7 +128,7 @@ class HTTPTests(unittest.TestCase):
         try:
             conn.request(method, path)
             response = conn.getresponse()
-            return response.status, dict(response.getheaders()), response.read()
+            return response.status, response.headers, response.read()
         finally:
             conn.close()
 

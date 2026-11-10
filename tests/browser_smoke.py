@@ -1,4 +1,4 @@
-"""Optional real-browser acceptance check. Uses installed Chrome/Edge and stdlib.
+"""Optional real-browser acceptance check. Uses Chrome/Edge and the runtime packages.
 
 Run: python tests/browser_smoke.py
 Uses isolated browser profiles; no shared user preferences are written.

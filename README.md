@@ -2,12 +2,23 @@
 
 An unofficial, local-first Don't Starve Together helper with **Cooking** and
 **Farming Planner** modules, connected through a shared home page. Requires Python
-3.10+; no additional runtime packages.
+3.11+ with Starlette and Uvicorn; runtime dependencies are pinned in `requirements.txt`.
 
 Cooking retains the recipe catalog, ingredient explorer, **优选料理**, four-slot
 wiki-based outcome predictor, rarity settings, and recommendation exclusions.
 
 Run these commands from this workspace directory (`C:\Users\oyblu\Dev\dst-helper`).
+
+Create a virtual environment and install the runtime packages first:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+If activation is blocked, use `.\.venv\Scripts\python.exe` directly for the commands below.
+The existing entry points now launch Uvicorn with one worker.
 
 Local-only test server:
 
@@ -62,6 +73,18 @@ not copied into new visitors' browsers. Curated game data stays read-only.
 
 See [the application README](DST_Cooking_Data_v0_1/README.md) for data, assets,
 prediction behavior, checks, and firewall setup details.
+
+## Server deployment
+
+```sh
+docker compose up -d --build
+```
+
+The container publishes `127.0.0.1:8765` for your existing host Nginx on port 80.
+The image includes the runtime data and images, runs as a non-root user, and has a
+`/healthz` check. Compose uses a read-only filesystem and needs no persistent volume.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for the Cloudflare Tunnel/Nginx configuration,
+trusted proxy addresses, setup without Docker, checks, and updates.
 
 ## Repository contents
 
@@ -153,8 +176,8 @@ Pop-Location
 ```
 
 Optional real-browser acceptance checks use an installed Windows Edge/Chrome,
-isolated headless browser contexts, with no Python
-dependencies. They require permission for local loopback debugging connections:
+isolated headless browser contexts. They require the runtime packages above and
+permission for local loopback debugging connections:
 
 ```powershell
 python tests/browser_smoke.py

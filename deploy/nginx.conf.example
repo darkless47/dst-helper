@@ -1,0 +1,32 @@
+# Adapt into the existing Nginx configuration; do not add a second listener
+# on an address already owned by another server block without checking routing.
+# The map belongs inside Nginx's http {} context, outside server {}.
+map $http_x_forwarded_proto $dst_helper_scheme {
+    default $scheme;
+    https https;
+    http http;
+}
+
+server {
+    listen 127.0.0.1:80;
+    server_name helper.example.com;
+
+    client_max_body_size 64k;
+    client_body_timeout 15s;
+
+    location / {
+        proxy_pass http://127.0.0.1:8765;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Proto $dst_helper_scheme;
+        # Record the immediate hop. Configure Nginx's trusted Cloudflare real-IP
+        # handling separately if you need original visitor IPs in application logs.
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_request_buffering on;
+        proxy_buffering on;
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+}

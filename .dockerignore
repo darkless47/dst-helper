@@ -1,0 +1,21 @@
+.git
+.agents
+.codex
+.aws
+.venv
+venv
+**/.local
+**/__pycache__
+**/*.py[cod]
+**/*.log
+.env
+.env.*
+wiki-webpage-save
+tests
+**/tests
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage*
+htmlcov
+# Do not ignore *.sqlite: the Cooking snapshot is a runtime input.

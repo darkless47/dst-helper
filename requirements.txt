@@ -1,0 +1,8 @@
+# Runtime only. Saved-wiki re-extraction has separate requirements-extraction.txt files.
+starlette==1.10.0
+uvicorn==0.54.0
+anyio==4.16.0
+click==8.5.1
+h11==0.16.0
+idna==3.20
+typing_extensions==4.16.0

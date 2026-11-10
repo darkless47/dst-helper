@@ -1,11 +1,18 @@
-"""Read-only wiki content and stateless calculations; preferences live in browsers."""
-import argparse
-from functools import partial
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+"""Starlette routes for read-only content and browser-owned preferences."""
+from contextlib import asynccontextmanager
+from functools import wraps
 import json
 from pathlib import Path
 import sqlite3
 from urllib.parse import parse_qs, urlsplit
+
+from starlette.applications import Starlette
+from starlette.concurrency import run_in_threadpool
+from starlette.exceptions import HTTPException
+from starlette.middleware import Middleware
+from starlette.requests import Request
+from starlette.responses import Response
+from starlette.routing import Route
 
 from .catalog import Catalog, DEFAULT_DATABASE
 from .assets import DEFAULT_ASSET_ROOT, LocalAssets
@@ -18,216 +25,290 @@ WEB = Path(__file__).with_name('web')
 STATIC = {'/': ('index.html', 'text/html'),
           '/app.css': ('app.css', 'text/css'), '/app.js': ('app.js', 'text/javascript'),
           '/favicon.svg': ('favicon.svg', 'image/svg+xml')}
-STATIC['/prediction.js'] = ('prediction.js', 'text/javascript')
-STATIC['/signature.js'] = ('signature.js', 'text/javascript')
-STATIC['/rarity.js'] = ('rarity.js', 'text/javascript')
-STATIC['/examples.js'] = ('examples.js', 'text/javascript')
-STATIC['/exclusions.js'] = ('exclusions.js', 'text/javascript')
-STATIC['/browser-storage.js'] = ('browser-storage.js', 'text/javascript')
+for name in ('prediction', 'signature', 'rarity', 'examples', 'exclusions', 'browser-storage'):
+    STATIC[f'/{name}.js'] = (f'{name}.js', 'text/javascript')
+
+SECURITY_HEADERS = {
+    'Cache-Control': 'no-store',
+    'X-Content-Type-Options': 'nosniff',
+    'Content-Security-Policy': "default-src 'self'; connect-src 'self'; object-src 'none'; "
+                               "base-uri 'none'; frame-ancestors 'none'",
+}
 
 
-class Handler(BaseHTTPRequestHandler):
-    def __init__(self, *args, catalog, media, predictor, signature, settings, exclusions, prediction_error, **kwargs):
-        self.catalog = catalog
-        self.media = media
-        self.predictor = predictor
-        self.signature = signature
-        self.settings = settings
-        self.exclusions = exclusions
-        self.prediction_error = prediction_error
-        super().__init__(*args, **kwargs)
+def respond(status, payload, content_type='application/json'):
+    if not isinstance(payload, bytes):
+        payload = json.dumps(payload, ensure_ascii=False, allow_nan=False).encode('utf-8')
+    charset = '' if content_type == 'image/png' else '; charset=utf-8'
+    return Response(payload, status_code=status,
+                    headers={**SECURITY_HEADERS, 'Content-Type': content_type + charset})
 
-    def respond(self, status, payload, content_type='application/json', head=False):
-        if not isinstance(payload, bytes):
-            payload = json.dumps(payload, ensure_ascii=False, allow_nan=False).encode('utf-8')
-        self.send_response(status)
-        charset = '; charset=utf-8' if content_type != 'image/png' else ''
-        self.send_header('Content-Type', content_type + charset)
-        self.send_header('Content-Length', str(len(payload)))
-        self.send_header('Cache-Control', 'no-store')
-        self.send_header('X-Content-Type-Options', 'nosniff')
-        self.send_header('Content-Security-Policy', "default-src 'self'; connect-src 'self'; "
-                         "object-src 'none'; base-uri 'none'; frame-ancestors 'none'")
-        self.end_headers()
-        if not head:
-            try:
-                self.wfile.write(payload)
-            except ConnectionError:
-                pass  # The user may switch ingredients and cancel an in-flight search.
 
-    def do_GET(self, head=False):
-        url = urlsplit(self.path)
+class ResponseHeaders:
+    """Apply headers and HEAD semantics to framework errors as well as our routes."""
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope['type'] != 'http':
+            return await self.app(scope, receive, send)
+
+        async def send_response(message):
+            if message['type'] == 'http.response.start':
+                headers = dict(message['headers'])
+                headers.update((k.lower().encode(), v.encode()) for k, v in SECURITY_HEADERS.items())
+                message['headers'] = list(headers.items())
+            elif message['type'] == 'http.response.body' and scope['method'] == 'HEAD':
+                message['body'] = b''
+            await send(message)
+
+        await self.app(scope, receive, send_response)
+
+
+class CookingServices:
+    def __init__(self, database, assets_root, settings_path, exclusions_path):
+        self.catalog = Catalog(database)
+        overview = self.catalog.overview()
+        self.settings = CookingDefaults(settings_path, (i['ingredient_id'] for i in overview['ingredients']))
+        self.exclusions = DefaultExclusions(exclusions_path or DEFAULT_EXCLUSIONS,
+                                           {d['dish_id'] for d in overview['dishes']})
+        self.media = LocalAssets(self.catalog.asset_records(), assets_root)
+        self.predictor, self.signature, self.prediction_error = None, None, None
         try:
-            if url.path in STATIC:
-                filename, content_type = STATIC[url.path]
-                self.respond(200, (WEB / filename).read_bytes(), content_type, head)
-            elif url.path == '/api/catalog':
-                data = self.catalog.overview()
-                preferences = self.settings.snapshot()
-                data['settings'] = preferences
-                for row in data['ingredients']:
-                    row['rarity'] = preferences['rarities'].get(row['ingredient_id'], 0)
-                data['media'] = self.media.overview()
-                data['media']['stat_provenance'] = self.media.stat_provenance()
-                data['prediction'] = (self.predictor.capabilities() if self.predictor else
-                                      dict(enabled=False, error=self.prediction_error))
-                data['signature'] = dict(enabled=self.signature is not None, error=self.prediction_error,
-                                         exclusions=self.exclusions.snapshot())
-                self.respond(200, data, head=head)
-            elif url.path == '/api/predict':
-                if not self.predictor:
-                    self.respond(503, {'error': self.prediction_error}, head=head)
-                    return
-                try:
-                    query = parse_qs(url.query, keep_blank_values=True, max_num_fields=16)
-                except ValueError as error:
-                    raise PredictionInputError('预测参数过多。') from error
-                if set(query) - {'ingredient', 'cooker'} or len(query.get('cooker', [])) != 1:
-                    raise PredictionInputError('请提供四件食材及一个锅具。')
-                self.respond(200, self.predictor.predict(query.get('ingredient', []), query['cooker'][0]), head=head)
-            elif url.path == '/api/signature':
-                if not self.signature:
-                    self.respond(503, {'error': self.prediction_error}, head=head)
-                    return
-                try:
-                    query = parse_qs(url.query, keep_blank_values=True, max_num_fields=4)
-                except ValueError as error:
-                    raise PredictionInputError('优选料理参数过多。') from error
-                if set(query) != {'ingredient', 'cooker'} or any(len(values) != 1 for values in query.values()):
-                    raise PredictionInputError('请选择一种食材和一个锅具。')
-                result = self.signature.recommend(query['ingredient'][0], query['cooker'][0])
-                self.respond(200, result, head=head)
-            elif url.path == '/api/examples':
-                if not self.signature:
-                    self.respond(503, {'error': self.prediction_error}, head=head)
-                    return
-                try:
-                    query = parse_qs(url.query, keep_blank_values=True, max_num_fields=4)
-                except ValueError as error:
-                    raise PredictionInputError('料理示例参数过多。') from error
-                if set(query) != {'dish', 'cooker'} or any(len(values) != 1 for values in query.values()):
-                    raise PredictionInputError('请选择一道料理和一个锅具。')
-                self.respond(200, self.signature.examples(query['dish'][0], query['cooker'][0]), head=head)
-            elif url.path == '/api/rarity':
-                self.respond(200, self.settings.snapshot(), head=head)
-            elif url.path == '/api/signature-exclusions':
-                self.respond(200, self.exclusions.snapshot(), head=head)
-            elif url.path == '/api/detail':
-                query = parse_qs(url.query)
-                data = self.catalog.detail(query.get('kind', [''])[0], query.get('id', [''])[0])
-                data['local_image'] = self.media.provenance(data['icon_asset_id'])
-                if query.get('kind', [''])[0] == 'ingredient':
-                    preferences = self.settings.snapshot()
-                    data['rarity'] = preferences['rarities'].get(data['ingredient_id'], 0)
-                    data['rarity_version'] = preferences['version']
-                self.respond(200, data, head=head)
-            elif url.path.startswith('/assets/'):
-                self.respond(200, self.media.get(url.path), 'image/png', head=head)
-            else:
-                self.respond(404, {'error': '未找到内容'}, head=head)
+            snapshot = self.catalog.prediction_snapshot()
+            self.predictor = ExactPotPredictor(snapshot)
+            self.signature = RecipePlanner(self.predictor, snapshot['dishes'], self.settings)
+        except PredictionDataError as error:
+            self.prediction_error = str(error)
+
+
+def read_errors(endpoint):
+    @wraps(endpoint)
+    def checked(request):
+        try:
+            return endpoint(request)
         except PredictionInputError as error:
-            self.respond(422, {'error': str(error)}, head=head)
+            return respond(422, {'error': str(error)})
         except PredictionDataError as error:
-            self.respond(503, {'error': str(error)}, head=head)
+            return respond(503, {'error': str(error)})
         except KeyError:
-            self.respond(404, {'error': '未找到该条目'}, head=head)
+            return respond(404, {'error': '未找到该条目'})
         except (OSError, ValueError, sqlite3.Error):
-            self.respond(500, {'error': '无法读取内容快照。请检查数据库与迁移版本。'}, head=head)
-
-    def do_HEAD(self):
-        self.do_GET(head=True)
-
-    def read_json(self, max_size=16384):
-        origin = self.headers.get('Origin')
-        try:
-            allowed = not origin or (urlsplit(origin).scheme in ('http', 'https') and urlsplit(origin).netloc == self.headers.get('Host'))
-        except ValueError:
-            allowed = False
-        if not allowed or self.headers.get('Sec-Fetch-Site') == 'cross-site':
-            self.respond(403, {'error': '请从助手页面使用计算功能。'})
-            return None
-        length = int(self.headers.get('Content-Length', '0'))
-        if (self.headers.get_content_type() != 'application/json' or not 0 < length <= max_size
-                or self.headers.get('Transfer-Encoding')):
-            raise PredictionInputError('请发送大小有效的 JSON 计算请求。')
-        value = json.loads(self.rfile.read(length).decode('utf-8'))
-        if type(value) is not dict:
-            raise PredictionInputError('计算请求须为 JSON 对象。')
-        return value
-
-    def do_POST(self):
-        if self.path not in ('/api/signature', '/api/examples'):
-            self.respond(405, {'error': '偏好仅保存在当前浏览器。'})
-            return
-        try:
-            payload = self.read_json()
-            if payload is None:
-                return
-            subject = 'ingredient' if self.path == '/api/signature' else 'dish'
-            if set(payload) != {subject, 'cooker', 'rarities', 'rarity_version'}:
-                raise PredictionInputError('请提供条目、锅具、稀有度和浏览器设置版本。')
-            if (type(payload[subject]) is not str or type(payload['cooker']) is not str
-                    or type(payload['rarity_version']) is not int or not 0 <= payload['rarity_version'] <= 9007199254740991):
-                raise PredictionInputError('计算参数无效。')
-            rarities = validate_rarities(payload['rarities'], self.settings.ingredient_ids)
-            if not self.signature:
-                self.respond(503, {'error': self.prediction_error})
-                return
-            calculate = self.signature.recommend if subject == 'ingredient' else self.signature.examples
-            self.respond(200, calculate(payload[subject], payload['cooker'], rarities, payload['rarity_version']))
-        except KeyError:
-            self.respond(404, {'error': '未找到该条目'})
-        except PredictionDataError as error:
-            self.respond(503, {'error': str(error)})
-        except (ValueError, UnicodeError, RecursionError) as error:
-            self.respond(422, {'error': str(error)})
-
-    def reject_write(self):
-        self.respond(405, {'error': '此操作不受支持'})
-
-    do_PUT = reject_write
-    do_PATCH = reject_write
-    do_DELETE = reject_write
+            return respond(500, {'error': '无法读取内容快照。请检查数据库与迁移版本。'})
+    return checked
 
 
-def create_server(port=8765, database=DEFAULT_DATABASE, assets_root=DEFAULT_ASSET_ROOT, host='127.0.0.1', settings_path=DEFAULT_SETTINGS, exclusions_path=None, handler_class=Handler):
-    bind_host = '127.0.0.1' if host.casefold() == 'localhost' else host
-    catalog = Catalog(database)
-    overview = catalog.overview()  # Fail before announcing a usable local URL.
-    settings = CookingDefaults(settings_path, (row['ingredient_id'] for row in overview['ingredients']))
-    exclusions = DefaultExclusions(exclusions_path or DEFAULT_EXCLUSIONS,
-                                   {row['dish_id'] for row in overview['dishes']})
-    media = LocalAssets(catalog.asset_records(), assets_root)
-    predictor, signature, prediction_error = None, None, None
+@read_errors
+def static_file(request):
+    path, mime = request.app.state.static[request.url.path]
+    return respond(200, path.read_bytes(), mime)
+
+
+@read_errors
+def catalog(request):
+    service = request.app.state.cooking
+    data = service.catalog.overview()
+    preferences = service.settings.snapshot()
+    data['settings'] = preferences
+    for row in data['ingredients']:
+        row['rarity'] = preferences['rarities'].get(row['ingredient_id'], 0)
+    data['media'] = service.media.overview()
+    data['media']['stat_provenance'] = service.media.stat_provenance()
+    data['prediction'] = (service.predictor.capabilities() if service.predictor else
+                          dict(enabled=False, error=service.prediction_error))
+    data['signature'] = dict(enabled=service.signature is not None, error=service.prediction_error,
+                             exclusions=service.exclusions.snapshot())
+    return respond(200, data)
+
+
+@read_errors
+def predict(request):
+    service = request.app.state.cooking
+    if not service.predictor:
+        return respond(503, {'error': service.prediction_error})
     try:
-        snapshot = catalog.prediction_snapshot()
-        predictor = ExactPotPredictor(snapshot)
-        signature = RecipePlanner(predictor, snapshot['dishes'], settings)
+        query = parse_qs(request.url.query, keep_blank_values=True, max_num_fields=16)
+    except ValueError as error:
+        raise PredictionInputError('预测参数过多。') from error
+    if set(query) - {'ingredient', 'cooker'} or len(query.get('cooker', [])) != 1:
+        raise PredictionInputError('请提供四件食材及一个锅具。')
+    return respond(200, service.predictor.predict(query.get('ingredient', []), query['cooker'][0]))
+
+
+@read_errors
+def suggestions(request):
+    service = request.app.state.cooking
+    if not service.signature:
+        return respond(503, {'error': service.prediction_error})
+    subject = 'ingredient' if request.url.path == '/api/signature' else 'dish'
+    try:
+        query = parse_qs(request.url.query, keep_blank_values=True, max_num_fields=4)
+    except ValueError as error:
+        raise PredictionInputError('计算参数过多。') from error
+    if set(query) != {subject, 'cooker'} or any(len(values) != 1 for values in query.values()):
+        raise PredictionInputError('请选择条目和一个锅具。')
+    calculate = service.signature.recommend if subject == 'ingredient' else service.signature.examples
+    return respond(200, calculate(query[subject][0], query['cooker'][0]))
+
+
+@read_errors
+def rarity(request):
+    return respond(200, request.app.state.cooking.settings.snapshot())
+
+
+@read_errors
+def exclusions(request):
+    return respond(200, request.app.state.cooking.exclusions.snapshot())
+
+
+@read_errors
+def detail(request):
+    service = request.app.state.cooking
+    try:
+        query = parse_qs(request.url.query, max_num_fields=4)
+    except ValueError as error:
+        raise PredictionInputError('查询参数过多。') from error
+    data = service.catalog.detail(query.get('kind', [''])[0], query.get('id', [''])[0])
+    data['local_image'] = service.media.provenance(data['icon_asset_id'])
+    if query.get('kind', [''])[0] == 'ingredient':
+        preferences = service.settings.snapshot()
+        data['rarity'] = preferences['rarities'].get(data['ingredient_id'], 0)
+        data['rarity_version'] = preferences['version']
+    return respond(200, data)
+
+
+@read_errors
+def asset(request):
+    return respond(200, request.app.state.cooking.media.get(request.url.path), 'image/png')
+
+
+def health(request):
+    ready = request.app.state.cooking.predictor is not None
+    return respond(200 if ready else 503, {'status': 'ok' if ready else 'degraded'})
+
+
+class RequestError(Exception):
+    def __init__(self, status, message):
+        self.status = status
+        super().__init__(message)
+
+
+async def read_json(request: Request, max_size=16384):
+    """Enforce the actual streamed size, including requests without Content-Length."""
+    origin = request.headers.get('origin')
+    try:
+        allowed = not origin or (urlsplit(origin).scheme in ('http', 'https')
+                                 and urlsplit(origin).netloc == request.headers.get('host'))
+    except ValueError:
+        allowed = False
+    if not allowed or request.headers.get('sec-fetch-site') == 'cross-site':
+        raise RequestError(403, '请从助手页面使用计算功能。')
+    if request.headers.get('content-type', '').split(';', 1)[0].strip().lower() != 'application/json':
+        raise PredictionInputError('请发送 JSON 计算请求。')
+    length = request.headers.get('content-length')
+    if length is not None and not 0 < int(length) <= max_size:
+        raise PredictionInputError('请发送大小有效的 JSON 计算请求。')
+    body = bytearray()
+    async for chunk in request.stream():
+        if len(body) + len(chunk) > max_size:
+            raise PredictionInputError('计算请求超过大小限制。')
+        body.extend(chunk)
+    value = json.loads(body.decode('utf-8'))
+    if type(value) is not dict:
+        raise PredictionInputError('计算请求须为 JSON 对象。')
+    return value
+
+
+async def calculate(request):
+    try:
+        payload = await read_json(request)
+        subject = 'ingredient' if request.url.path == '/api/signature' else 'dish'
+        if set(payload) != {subject, 'cooker', 'rarities', 'rarity_version'}:
+            raise PredictionInputError('请提供条目、锅具、稀有度和浏览器设置版本。')
+        if (type(payload[subject]) is not str or type(payload['cooker']) is not str
+                or type(payload['rarity_version']) is not int
+                or not 0 <= payload['rarity_version'] <= 9007199254740991):
+            raise PredictionInputError('计算参数无效。')
+        service = request.app.state.cooking
+        rarities = validate_rarities(payload['rarities'], service.settings.ingredient_ids)
+        if not service.signature:
+            return respond(503, {'error': service.prediction_error})
+        function = service.signature.recommend if subject == 'ingredient' else service.signature.examples
+        result = await run_in_threadpool(function, payload[subject], payload['cooker'], rarities,
+                                        payload['rarity_version'])
+        return respond(200, result)
+    except RequestError as error:
+        return respond(error.status, {'error': str(error)})
+    except KeyError:
+        return respond(404, {'error': '未找到该条目'})
     except PredictionDataError as error:
-        prediction_error = str(error)
-    return ThreadingHTTPServer((bind_host, port), partial(handler_class, catalog=catalog, media=media,
-                               predictor=predictor, signature=signature, settings=settings, exclusions=exclusions, prediction_error=prediction_error))
+        return respond(503, {'error': str(error)})
+    except (ValueError, UnicodeError, RecursionError) as error:
+        return respond(422, {'error': str(error)})
+
+
+async def suggestion_route(request):
+    if request.method == 'POST':
+        return await calculate(request)
+    return await run_in_threadpool(suggestions, request)
+
+
+def http_error(request, error):
+    status = error.status_code
+    if status == 404 and request.method not in ('GET', 'HEAD'):
+        status = 405
+    message = '此操作不受支持' if status == 405 else '未找到内容'
+    response = respond(status, {'error': message})
+    response.headers.update(error.headers or {})
+    return response
+
+
+def server_error(request, error):
+    return respond(500, {'error': '无法处理请求。'})
+
+
+def create_app(database=DEFAULT_DATABASE, assets_root=DEFAULT_ASSET_ROOT,
+               settings_path=DEFAULT_SETTINGS, exclusions_path=None, *,
+               static=None, extra_routes=(), initialize=None):
+    @asynccontextmanager
+    async def lifespan(app):
+        app.state.cooking = await run_in_threadpool(CookingServices, database, assets_root,
+                                                    settings_path, exclusions_path)
+        if initialize:
+            await run_in_threadpool(initialize, app)
+        yield
+
+    files = {path: (WEB / filename, mime) for path, (filename, mime) in STATIC.items()}
+    files.update(static or {})
+    routes = [Route(path, static_file) for path in files]
+    routes.extend([
+        Route('/healthz', health), Route('/api/catalog', catalog), Route('/api/predict', predict),
+        Route('/api/signature', suggestion_route, methods=['GET', 'POST']),
+        Route('/api/examples', suggestion_route, methods=['GET', 'POST']),
+        Route('/api/rarity', rarity), Route('/api/signature-exclusions', exclusions),
+        Route('/api/detail', detail), Route('/assets/{filename:path}', asset),
+        *extra_routes,
+    ])
+    app = Starlette(routes=routes, lifespan=lifespan, middleware=[Middleware(ResponseHeaders)],
+                    exception_handlers={HTTPException: http_error, Exception: server_error})
+    app.router.redirect_slashes = False
+    app.state.static = files
+    return app
+
+
+def create_server(port=8765, database=DEFAULT_DATABASE, assets_root=DEFAULT_ASSET_ROOT,
+                  host='127.0.0.1', settings_path=DEFAULT_SETTINGS, exclusions_path=None):
+    """Embedded Uvicorn runner retained for local HTTP acceptance tests."""
+    from .serving import EmbeddedServer
+    return EmbeddedServer(create_app(database, assets_root, settings_path, exclusions_path), host, port)
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Unofficial DST cooking handbook; local wiki content and editable rarity')
-    parser.add_argument('--port', type=int, default=8765)
-    parser.add_argument('--host', default='127.0.0.1',
-                        help='localhost for local-only access, or your private IPv4 address for LAN sharing (default: 127.0.0.1)')
-    parser.add_argument('--database', type=Path, default=DEFAULT_DATABASE)
-    parser.add_argument('--settings', type=Path, default=DEFAULT_SETTINGS,
-                        help='Read-only ingredient rarity defaults JSON')
-    parser.add_argument('--exclusions', type=Path, default=DEFAULT_EXCLUSIONS, help='Read-only excluded-dish defaults JSON')
-    parser.add_argument('--assets', type=Path, default=DEFAULT_ASSET_ROOT,
-                        help='Image directory (default: assets/images); saved-page archive roots also supported')
-    args = parser.parse_args()
-    with create_server(args.port, args.database, args.assets, host=args.host, settings_path=args.settings, exclusions_path=args.exclusions) as server:
-        print(f'Unofficial DST handbook: http://{args.host}:{server.server_port}', flush=True)
-        print('Read-only wiki snapshot; preferences stored in each browser. Press Ctrl+C to stop.', flush=True)
-        try:
-            server.serve_forever()
-        except KeyboardInterrupt:
-            pass
+    # The historical Cooking command now starts the same combined production app.
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from dst_helper.server import main as run
+    run()
 
 
 if __name__ == '__main__':
