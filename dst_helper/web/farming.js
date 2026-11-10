@@ -3,16 +3,6 @@
 (() => {
   const $ = id => document.getElementById(id);
   const seasons = { autumn: '秋', winter: '冬', spring: '春', summer: '夏' };
-  const stressNames = { nutrients: '养分', moisture: '水分', debris: '杂物', season: '季节', family: '家族', overcrowding: '拥挤', tending: '照料' };
-  const flags = { specific_seed: '使用作物专属种子', never_rotted: '没有腐烂 / 再生长历史', not_forced_ripened: '没有被强制催熟' };
-  const careItems = {
-    water: ['水分', '每阶段至少 10% 的时间，土壤湿度 >0；不是湿度保持在 10 以上。'],
-    tending: ['照料', '每个生长阶段都需要照料。'],
-    soil: ['起始养分', '每块田分别管理三种养分；零净变化不保证生长时有足够存量。'],
-    debris: ['周围杂物', '检查 6 单位内的杂草、腐烂作物及农田杂物；布局看不到外部危害。'],
-    seeds: ['作物专属种子', '巨大作物需要对应作物的种子。'],
-    history: ['生长历史', '无腐烂后再生长，且没有被强制催熟。']
-  };
   let data, plan, version, result, timer, pending = false, busy = false, blocked = false, seq = 0, limit = 12;
   let resetting = false, loading = false, importing = false;
   const resetDialog = $('reset-plan-dialog');
@@ -68,12 +58,7 @@
     }
     return body;
   }
-  function unknownCare() {
-    plan.care = {};
-    plan.stages = [{}, {}, {}, {}];
-    for (const k of Object.keys(flags)) plan[k] = null;
-  }
-  function changed({ controls = false, layout = false, care = false } = {}) {
+  function changed({ controls = false, layout = false } = {}) {
     seq++;
     limit = 12;
     pending = true;
@@ -82,7 +67,6 @@
     $('ratio-results').setAttribute('aria-busy', 'true');
     if (controls) renderControls();
     if (layout) renderGrid();
-    if (care) renderCare();
     if (!blocked) $('save-status').textContent = '有更改，正在计算并保存…';
     clearTimeout(timer);
     timer = setTimeout(work, 120);
@@ -104,7 +88,6 @@
         result = analysis;
         renderResults();
         renderReport();
-        renderStress();
         $('ratio-results').setAttribute('aria-busy', 'false');
         if (blocked) continue;
         try {
@@ -123,7 +106,6 @@
       $('ratio-count').textContent = '计算失败';
       $('layout-report').replaceChildren(text('p', '布局检查未完成。', 'status-unknown'));
       $('plant-report').replaceChildren();
-      $('stress-output').textContent = '阶段记录尚未完成检查。';
       error(issue.message);
       $('save-status').textContent = '尚未保存；可导出当前草稿后重试。';
     } finally {
@@ -197,8 +179,7 @@
       plan.tile_count = ex.placements.some(p => p.tile_x === 1) ? 2 : 1;
       plan.selected_counts = clone(ex.ratio);
       plan.scale = ex.id === 'single_tile_potato_tomato' ? 4 : 6;
-      unknownCare();
-      changed({ controls: true, layout: true, care: true });
+      changed({ controls: true, layout: true });
     })));
     renderControls();
   }
@@ -271,8 +252,7 @@
             if ((p?.plant_id || '') === brush) return;
             plan.placements = plan.placements.filter(p => !(p.tile_x === tileX && p.tile_y === tileY && p.row === row && p.col === col));
             if (brush) plan.placements.push({ plant_id: brush, tile_x: tileX, tile_y: tileY, row, col });
-            unknownCare();
-            changed({ care: true });
+            changed();
             renderGrid(key);
           } }, [text('span', p ? name(p.plant_id) : '＋ 空位'), text('small', `${row + 1} 行 · ${col + 1} 列`)]);
         return b;
@@ -297,7 +277,7 @@
     const layoutPassed = a.all_tiles_nutrient_balanced && a.all_crop_family_checks_pass;
     $('layout-report').replaceChildren(text('p', intro, layoutPassed ? 'layout-success' : 'small'),
       text('p', `不适宜所选季节：${offSeason} 株；已知附近杂草危害：${weedsNearby} 株。未选季节、外部杂物和实际养护仍不能推断。`, offSeason || weedsNearby ? 'small status-fail' : 'small muted'),
-      text('p', result.layout_matches_selected ? '布局用种与选中配比的当前倍数一致。养护条件仍需记录。' : '布局用种尚未对应一个当前有效的选中配比。布局始终独立检查，不会自动填入比例。', 'small muted'),
+      text('p', result.layout_matches_selected ? '布局用种与选中配比的当前倍数一致。实际种植时仍需注意下方养护提醒。' : '布局用种尚未对应一个当前有效的选中配比。布局始终独立检查，不会自动填入比例。', 'small muted'),
       node('div', { class: 'report-grid' }, reports), text('p', '养分只在各自田块内计算，邻田不能抵消亏损。家族可以跨田界；九个位置是本工具的默认布局，不是游戏的绝对种植上限。', 'small muted'));
     $('plant-report').replaceChildren(node('table', { class: 'farm-table' }, [
       node('thead', {}, [node('tr', {}, ['位置', '作物', '半径内同类（含自身及边界）', '其中边界同类', '家族', '季节', '已知杂草'].map(label => node('th', { scope: 'col', text: label })))]),
@@ -309,25 +289,6 @@
       }))
     ]));
   }
-  function triSelect(value, onChange, stress = false, label = '') {
-    const select = node('select', { 'aria-label': label, onchange: () => { onChange(select.value === '' ? null : select.value === 'true'); changed(); } },
-      [['', '未知 / 未记录'], ['false', stress ? '无压力 · 0' : '未满足'], ['true', stress ? '有压力 · 1' : '已满足']].map(([v, label]) => node('option', { value: v, text: label })));
-    select.value = value == null ? '' : String(value);
-    return select;
-  }
-  function renderCare() {
-    $('care-checks').replaceChildren(...Object.entries(careItems).map(([key, [label, desc]]) => node('label', { class: 'care-item' }, [text('strong', label), text('small', desc), triSelect(plan.care[key], v => { plan.care[key] = v; }, false, label)])));
-    $('history-flags').replaceChildren(...Object.entries(flags).map(([key, label]) => node('label', { class: 'care-item' }, [text('span', label), triSelect(plan[key], v => { plan[key] = v; }, false, label)])));
-    $('stress-table').replaceChildren(node('table', { class: 'farm-table' }, [node('thead', {}, [node('tr', {}, ['压力来源', '阶段 1', '阶段 2', '阶段 3', '阶段 4'].map(t => node('th', { scope: 'col', text: t })))]),
-      node('tbody', {}, Object.entries(stressNames).map(([key, label]) => node('tr', {}, [node('th', { scope: 'row', text: label }), ...Array.from({ length: 4 }, (_, i) => node('td', {}, [triSelect(plan.stages[i]?.[key], v => { plan.stages[i] ??= {}; plan.stages[i][key] = v; }, true, label + '阶段' + (i + 1))]))])))
-    ]));
-  }
-  function renderStress() {
-    const s = result.stress;
-    const label = { unknown: '巨大资格：未知，仍有未记录条件。', ineligible: '巨大资格：不满足已记录的维基条件。', eligible_under_wiki_rules: '符合已记录的维基巨大资格条件；不是游戏内结果保证。' }[s.giant_eligibility];
-    $('stress-output').textContent = `总压力范围 ${s.stress_min}–${s.stress_max} / 28。${label}`;
-  }
-
   async function load() {
     loading = true;
     updateResetButton();
@@ -339,7 +300,7 @@
       version = data.preferences.version;
       blocked = false;
       for (const p of data.plants) { plants.set(p.plant_id, p); if (p.kind === 'crop') crops.set(p.plant_id, p); }
-      initControls(); renderGrid(); renderCare();
+      initControls(); renderGrid();
       $('planner').hidden = false;
       for (const id of ['save-plan', 'reload-plan', 'export-plan', 'import-plan']) $(id).disabled = false;
       changed();
@@ -377,12 +338,11 @@
       result = null;
       ratioLayout = 'cards';
       try { localStorage.removeItem(RATIO_LAYOUT_KEY); } catch { /* Reset remains usable when browser storage is unavailable. */ }
-      initControls(); renderGrid(); renderCare(); renderRatioSwitch();
+      initControls(); renderGrid(); renderRatioSwitch();
       document.querySelectorAll('#planner details[open]').forEach(d => { d.open = false; });
       $('ratio-results').replaceChildren();
       $('layout-report').replaceChildren();
       $('plant-report').replaceChildren();
-      $('stress-output').textContent = '';
       changed();
       resetDialog.close();
     } catch (issue) {
@@ -421,7 +381,7 @@
     if (plan.placements.some(p => !fitsFields(p, n))) { $('tile-count').value = plan.tile_count; error('将被移除的田还有植物。请先用擦除画笔清空这些田，再减少田地。'); return; }
     plan.tile_count = n; changed({ layout: true });
   });
-  $('clear-layout').addEventListener('click', () => { plan.placements = []; unknownCare(); changed({ layout: true, care: true }); });
+  $('clear-layout').addEventListener('click', () => { plan.placements = []; changed({ layout: true }); });
   $('more-ratios').addEventListener('click', () => { limit += 12; renderResults(); });
   document.querySelectorAll('[data-ratio-layout]').forEach(b => b.addEventListener('click', () => {
     ratioLayout = b.dataset.ratioLayout;
@@ -446,8 +406,7 @@
       const imported = JSON.parse(await file.text());
       await api('/api/farming/analyze', imported);
       plan = imported;
-      plan.stages = Array.from({ length: 4 }, (_, i) => plan.stages[i] || {});
-      renderControls(); renderGrid(); renderCare(); changed();
+      renderControls(); renderGrid(); changed();
     } catch (issue) { error('导入失败：' + issue.message); }
     finally { event.target.value = ''; importing = false; updateResetButton(); }
   });

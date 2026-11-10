@@ -50,16 +50,21 @@
             <div class="section-heading"><h2 id="layout-title">04 / 摆一摆田地</h2><span class="eyebrow">LAYOUT ASSIST</span></div>
             <p class="small muted">每块田宽 4 游戏单位；九宫格中心为 2/3、2、10/3。各田紧邻，不留游戏距离间隔；家族半径 ≤4，含自己至少 4 株即通过（计入恰好位于半径边界的同类）。此图仅作放置指引。</p>
             <div class="farm-actions"><label>田地 <select id="tile-count"><option value="1">一块田</option><option value="2">两块田</option><option value="4">四块田</option></select></label><label>种植画笔 <select id="crop-brush" aria-label="种植画笔"></select></label><button id="clear-layout" type="button" class="secondary">清空布局</button></div>
-            <p class="small muted">四块田按左上 1、右上 2、左下 3、右下 4 排列。用画笔点击格子；键盘 Tab 移动、空格或 Enter 放置。选择「擦除」清空单格。减少田地前请先清空将被移除的田。修改植物位置会将养护和生长记录恢复为未知。</p>
-            <div id="layout-examples" class="farm-actions"></div><p class="small muted">载入示例会替换布局、倍数、配比与季节，保留可用种子和库存；养护与生长记录恢复未知。</p>
+            <p class="small muted">四块田按左上 1、右上 2、左下 3、右下 4 排列。用画笔点击格子；键盘 Tab 移动、空格或 Enter 放置。选择「擦除」清空单格。减少田地前请先清空将被移除的田。</p>
+            <div id="layout-examples" class="farm-actions"></div><p class="small muted">载入示例会替换布局、倍数、配比与季节，保留可用种子和库存。</p>
             <div id="tile-grids" class="tile-grids"></div>
             <div id="layout-report" aria-live="polite"></div>
             <details class="farm-details"><summary>逐株检查：家族、季节与杂草</summary><div id="plant-report" class="farm-table-scroll"></div></details>
           </section>
-          <section class="farm-panel" aria-labelledby="care-title">
+          <section class="farm-panel" id="care-panel" aria-labelledby="care-title">
             <div class="section-heading"><h2 id="care-title">05 / 记得照料它们</h2><span class="eyebrow">REMAINING CARE</span></div>
-            <p class="small muted">配比或布局通过不能保证巨大作物。以下项目由你确认；未记录保持未知，也不会自动填入生长阶段记录。</p><div id="care-checks" class="care-grid"></div>
-            <details class="farm-details"><summary>可选：四阶段压力记录与巨大资格</summary><p class="small muted">按同一株（或经历完全一致的一批）作物记录四次生长转换。七类压力每阶段各计 0 或 1 分；巨大资格需总压力 ≤1，且满足种子与历史条件。此表不从布局推断照料已完成。</p><div id="history-flags" class="care-grid"></div><div id="stress-table" class="farm-table-scroll"></div><p id="stress-output" role="status" aria-live="polite"></p></details>
+            <p class="small muted">配比或布局通过不能保证巨大作物。计划确定后，请在游戏中留意以下养护条件。</p>
+            <div id="care-reminders" class="care-grid">
+              <article class="care-item"><h3>水分</h3><p>每阶段至少 10% 的时间，土壤湿度需大于 0；并非湿度保持在 10 以上。</p></article>
+              <article class="care-item"><h3>照料</h3><p>每个生长阶段都需要照料。</p></article>
+              <article class="care-item"><h3>起始养分</h3><p>每块田分别管理三种养分；零净变化不保证生长时有足够存量。</p></article>
+              <article class="care-item"><h3>周围杂物</h3><p>检查 6 单位内的杂草、腐烂作物及农田杂物；布局看不到外部危害。</p></article>
+            </div>
           </section>
         </div>
         <footer><span>荒野手记 · 非官方粉丝项目，与 Klei 无隶属关系。</span><span>灰机维基 · 静态规划，非精确生长时序模拟</span></footer>
@@ -68,7 +73,7 @@
   </div>
   <dialog id="reset-plan-dialog" class="reset-dialog" aria-labelledby="reset-plan-title" aria-describedby="reset-plan-description">
     <div class="reset-dialog-heading"><h2 id="reset-plan-title">重置全部种植数据？</h2><button id="close-reset-plan" type="button" class="icon-button" aria-label="取消重置" autofocus>×</button></div>
-    <p id="reset-plan-description">季节、可用种子、库存、倍数、选中配比、田地布局、养护与生长记录，以及当前浏览器的显示偏好，都将恢复默认。此服务器的 LAN 用户共享同一份种植规划。</p>
+    <p id="reset-plan-description">季节、可用种子、库存、倍数、选中配比、田地布局，以及当前浏览器的显示偏好，都将恢复默认。此服务器的 LAN 用户共享同一份种植规划。</p>
     <p class="small muted">Reset 直接重置；Export and Reset 先下载当前规划 JSON，再重置。按 Esc 或关闭此窗口可取消。</p>
     <p id="reset-plan-error" class="status-fail" role="alert" hidden></p>
     <div class="farm-actions reset-actions"><button id="confirm-reset-plan" type="button" class="secondary danger-button">Reset</button><button id="export-reset-plan" type="button" class="secondary">Export and Reset</button></div>

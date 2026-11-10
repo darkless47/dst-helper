@@ -84,10 +84,9 @@ a standalone offline wiki viewer.
    **≤4** (boundary included, per the user's confirmed planning rule). Four fields
    form a **2×2** square numbered top-left 1, top-right 2, bottom-left 3, bottom-right 4.
    All fields touch without an intervening game-distance gap. Weeds can be
-   placed for hazard checks. Placement changes reset care and growth records.
-5. Follow the care checklist. Optionally record the seven stress sources across
-   four growth stages and the required seed/history conditions. Unknown conditions
-   remain unknown. A balanced ratio does not guarantee giant crops.
+   placed for hazard checks.
+5. Review the four general care reminders: water, tending, starting soil nutrients,
+   and nearby debris. A balanced ratio does not guarantee giant crops.
 
 The combination list has **卡片 / 表格** views, with the display preference saved
 in the browser. Cards put each crop and its count on a separate row; the table
@@ -104,7 +103,7 @@ wiki-based static calculations; compatibility with reported game build **762172*
 has not been verified. Exact growth timing, water scheduling, and automatic layout
 synthesis are outside this implementation.
 
-The working plan, seed availability, stock counts, filters, care records and layout
+The working plan, seed availability, stock counts, filters and layout
 automatically persist in `DST_Cooking_Data_v0_1/.local/farming_plans.sqlite`, separately
 from Cooking preferences and both curated datasets. `--settings` relocates this
 default alongside the Cooking settings; `--farming-settings <path>` overrides only

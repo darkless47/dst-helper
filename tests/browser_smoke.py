@@ -151,7 +151,8 @@ def run():
             client.settled()
             assert client.js("document.getElementById('layout-report').textContent.includes('所有作物通过')")
             assert client.js("document.querySelectorAll('.plant-slot.planted').length") == 8
-            assert client.js("document.getElementById('stress-output').textContent.includes('0–28')")
+            assert client.js("Array.from(document.querySelectorAll('#care-reminders h3')).map(n=>n.textContent)") == ['水分', '照料', '起始养分', '周围杂物']
+            assert client.js("document.querySelectorAll('#care-panel input,#care-panel select,#care-panel textarea,#care-panel button,#care-panel details').length") == 0
             client.js("document.querySelectorAll('#layout-examples button')[1].click()")
             client.settled()
             assert client.js("document.getElementById('layout-report').textContent.includes('所有作物通过')")
@@ -212,16 +213,13 @@ def run():
             client.settled()
             assert client.js("document.querySelectorAll('.plant-slot').length") == 18
             assert client.js("document.querySelectorAll('.plant-slot.planted').length") == 9
-            client.js("document.querySelectorAll('#history-flags select').forEach(s=>{s.value='true';s.dispatchEvent(new Event('change'));});document.querySelectorAll('#stress-table select').forEach(s=>{s.value='false';s.dispatchEvent(new Event('change'));})")
-            client.settled()
-            assert client.js("document.getElementById('stress-output').textContent.includes('符合已记录')")
-            client.js("document.querySelectorAll('#stress-table select').forEach((s,i)=>{if(i<2){s.value='true';s.dispatchEvent(new Event('change'));}})")
-            client.settled()
-            assert client.js("document.getElementById('stress-output').textContent.includes('不满足')")
             client.js("document.getElementById('crop-brush').value='';document.getElementById('slot-0-0-0').click()")
             client.settled()
-            assert client.js("document.getElementById('stress-output').textContent.includes('0–28')")
-            print('PASS: recorded stress eligibility and resetting history after layout changes')
+            assert client.js("document.querySelectorAll('#care-reminders .care-item').length") == 4
+            assert client.js("document.querySelectorAll('#history-flags,#stress-table,#stress-output,#care-checks').length") == 0
+            client.js("document.getElementById('care-panel').scrollIntoView()")
+            (out / 'farming-care-reminders.png').write_bytes(base64.b64decode(client.call('Page.captureScreenshot')['data']))
+            print('PASS: section 05 has exactly four static care reminders and no recording controls')
 
             client.js("(async()=>{const d=await(await fetch('/api/farming')).json();d.preferences.state.scale=5;await fetch('/api/farming/preferences',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({state:d.preferences.state,expected_version:d.preferences.version})});})()")
             client.js("{const s=document.getElementById('ratio-scale');s.value='7';s.dispatchEvent(new Event('change'));}")
@@ -232,9 +230,10 @@ def run():
             assert client.js("document.getElementById('ratio-scale').value") == '5'
             print('PASS: concurrent save conflict retains the draft, explicit reload gets server state')
 
-            client.js("(async()=>{const d=await(await fetch('/api/farming')).json();d.preferences.state.scale=9;const transfer=new DataTransfer();transfer.items.add(new File([JSON.stringify(d.preferences.state)],'plan.json',{type:'application/json'}));const input=document.getElementById('import-plan');input.files=transfer.files;input.dispatchEvent(new Event('change'));})()")
+            client.js("(async()=>{const d=await(await fetch('/api/farming')).json();d.preferences.state.scale=9;d.preferences.state.care={water:true};d.preferences.state.stages=[{tending:true},{},{},{}];d.preferences.state.specific_seed=true;const transfer=new DataTransfer();transfer.items.add(new File([JSON.stringify(d.preferences.state)],'plan.json',{type:'application/json'}));const input=document.getElementById('import-plan');input.files=transfer.files;input.dispatchEvent(new Event('change'));})()")
             client.wait("document.getElementById('ratio-scale').value==='9'")
             client.settled()
+            assert client.js("document.querySelectorAll('#care-panel input,#care-panel select,#care-panel details').length") == 0
             client.js("(async()=>{const d=await(await fetch('/api/farming')).json();d.preferences.state.dataset_version='future';const transfer=new DataTransfer();transfer.items.add(new File([JSON.stringify(d.preferences.state)],'plan.json',{type:'application/json'}));const input=document.getElementById('import-plan');input.files=transfer.files;input.dispatchEvent(new Event('change'));})()")
             client.wait("document.getElementById('farm-error').textContent.includes('导入失败')")
             assert client.js("document.getElementById('ratio-scale').value") == '9'
@@ -243,7 +242,7 @@ def run():
             downloads = Path(tmp) / 'downloads'
             downloads.mkdir()
             client.call('Browser.setDownloadBehavior', dict(behavior='allow', downloadPath=str(downloads)))
-            client.js("{const s=document.querySelector('#crop-tomato input[type=number]');s.value='15';s.dispatchEvent(new Event('change'));}document.querySelector('#crop-carrot input[type=checkbox]').click();{const s=document.querySelector('#care-checks select');s.value='true';s.dispatchEvent(new Event('change'));}")
+            client.js("{const s=document.querySelector('#crop-tomato input[type=number]');s.value='15';s.dispatchEvent(new Event('change'));}document.querySelector('#crop-carrot input[type=checkbox]').click()")
             client.settled()
             before_reset = client.js("(async()=> (await(await fetch('/api/farming')).json()).preferences.state)()")
             client.js("document.getElementById('reset-plan').click()")
