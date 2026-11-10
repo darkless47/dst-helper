@@ -83,7 +83,8 @@ table. Both layouts share the current search, filters, and sort order. The table
 pictures, names, HP, hunger, sanity, perishability, cooking time, priority, and cooker hints;
 click a dish name or row to open its full details. Headers and dish names stay visible while
 scrolling, and smaller screens can scroll horizontally within the table. The ingredient table
-shows portraits, names, state IDs/prefabs, and all 15 captured tag contributions, including
+puts rarity immediately after the ingredient name, followed by all 15 captured tag contributions;
+state IDs/prefabs are kept in the last column. The table preserves
 fractional values and explicit zeroes for blank captured cells. Each state has its own row and
 detail link. Dish and ingredient layout choices are remembered independently in this browser; if browser storage is
 unavailable, switching still works for the current session.

@@ -168,7 +168,7 @@
     "Farming"
   ],
   "ingredient_layout": {
-    "checked_date": "2026-11-09",
+    "checked_date": "2026-11-10",
     "states_checked": 145,
     "columns": 18,
     "tag_cells_checked": 2175,
@@ -180,8 +180,10 @@
       "Dish and ingredient layout preferences persist independently across navigation and reload",
       "Switching works when browser storage writes are blocked",
       "Desktop and phone tables scroll within their container with sticky headers and ingredient names; no page overflow",
-      "Signed rarity column opens the state-specific editor; rarity sorting uses effective zero defaults"
-    ]
+      "Signed rarity column opens the state-specific editor; rarity sorting uses effective zero defaults",
+      "All 145 state IDs and rarities plus 2175 tag cells checked after column reorder; rarity edited at 390px and 320px with horizontal scroll remaining zero; filtering and card/table switching preserved"
+    ],
+    "column_order": "Ingredient identity, editable rarity, 15 captured tags, state ID/prefab last"
   },
   "rarity_and_examples": {
     "report": "EXAMPLES_VALIDATION_REPORT.json",

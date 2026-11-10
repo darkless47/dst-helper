@@ -1388,7 +1388,7 @@ pre {
 .ingredient-table .column-tag {
   width:84px;
 }
-.ingredient-table thead th:nth-child(n+3) {
+.ingredient-table thead th:not(:first-child):not(:last-child) {
   text-align:right;
 }
 .table-state-id {
@@ -1436,7 +1436,10 @@ pre {
     width:180px;
   }
   .ingredient-table {
-    min-width:1792px;
+    min-width:1756px;
+  }
+  .ingredient-table .column-rarity {
+    width:96px;
   }
   .table-english {
     max-width:130px;

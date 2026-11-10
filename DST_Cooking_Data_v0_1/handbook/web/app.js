@@ -150,7 +150,7 @@ function dishTable(rows) {
 }
 function ingredientTable(rows) {
   const tags = Object.entries(state.data.tag_labels);
-  const headers = ['食材', '状态 ID / prefab', '稀有度', ...tags.map(([, label]) => label)].map(label => el('th', { scope: 'col', text: label }));
+  const headers = ['食材', '稀有度', ...tags.map(([, label]) => label), '状态 ID / prefab'].map(label => el('th', { scope: 'col', text: label }));
   const body = rows.map(ingredient => {
     const open = () => openDetail('ingredient', ingredient.ingredient_id);
     const name = el('button', { type: 'button', class: 'table-item-name table-ingredient-name',
@@ -163,18 +163,18 @@ function ingredientTable(rows) {
       ids.push(text('small', 'prefab：' + ingredient.prefab_id), text('small', '独立状态记录'));
     }
     return el('tr', { onclick: event => { if (!event.target.closest('button, a')) open(); } }, [
-      el('th', { scope: 'row' }, [identity]), el('td', { class: 'table-state-id' }, ids),
-      el('td', { class: 'table-number' }, [el('button', { type: 'button', class: 'rarity-edit-button',
+      el('th', { scope: 'row' }, [identity]),
+      el('td', { class: 'table-number table-rarity' }, [el('button', { type: 'button', class: 'rarity-edit-button',
         text: (ingredient.rarity ?? 0) + ' ✎', 'aria-label': '编辑' + ingredient.name_zh + '的稀有度，当前 ' + (ingredient.rarity ?? 0),
         onclick: () => rarityUI.edit(ingredient.ingredient_id) })]),
       ...tags.map(([key]) => {
         const value = ingredient.tags[key] ?? 0;
         return text('td', number(value), 'table-number' + (value === 0 ? ' table-zero' : ''));
-      })]);
+      }), el('td', { class: 'table-state-id' }, ids)]);
   });
   return el('table', { class: 'catalog-table ingredient-table' }, [
     text('caption', '食材状态与 15 个已收录标签的贡献值。源表空白按 0 解读；点击食材名称查看来源与完整标签。', 'sr-only'),
-    el('colgroup', {}, ['name', 'state-id', 'rarity', ...tags.map(() => 'tag')].map(column => el('col', { class: 'column-' + column }))),
+    el('colgroup', {}, ['name', 'rarity', ...tags.map(() => 'tag'), 'state-id'].map(column => el('col', { class: 'column-' + column }))),
     el('thead', {}, [el('tr', {}, headers)]), el('tbody', {}, body)]);
 }
 function setCatalogLayout(layout) {
