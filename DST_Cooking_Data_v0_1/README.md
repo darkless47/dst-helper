@@ -108,6 +108,9 @@ In **食材探索**, click a table's **稀有度** value or open any ingredient 
 integer; unset/blank values count as zero. A negative value means prefer consuming that state.
 Dish details include **料理示例** just after **配方条件**: the three cheapest distinct
 four-item combinations, with small ingredient pictures, total rarity, and outcome probability.
+Uncertain outcomes have a yellow probability badge. **只显示确定配方**, beside the cooker
+selector, searches for the cheapest 100% combinations and remembers the choice in this
+browser across dishes and reloads. Fewer than three guaranteed combinations are disclosed.
 Hover or focus a picture for its name; click it to open that exact state in **食材探索**.
 Cooked/roasted/dried states are excluded unless explicitly required without a listed raw
 alternative. Fewer than three possible combinations are disclosed rather than duplicated.

@@ -100,6 +100,37 @@ class CostOptimalityTests(unittest.TestCase):
                             winner = next(r for r in predictor.predict(row['ingredients'], cooker)['outcomes'] if r['dish_id'] == dish)
                             self.assertEqual(row['probability'], winner['probability'])
 
+    def test_guaranteed_examples_match_brute_force_and_do_not_reuse_unfiltered_cache(self):
+        snapshot = synthetic_snapshot()
+        duplicate = dict(snapshot['recipes'][0], dish_id='named_twin')
+        snapshot['recipes'].append(duplicate)
+        snapshot['dishes'].append(dict(dish_id='named_twin'))
+        predictor = ExactPotPredictor(snapshot)
+        universe = list(predictor.ingredients)
+        for rarities in [{}, {'raw': -7, 'fruit': 10, 'sweet': -2, 'filler': 4}]:
+            search = DishExamples(predictor, snapshot['dishes'], rarities, prepared_ids=set())
+            for cooker in predictor.policy['cookers']:
+                expected = {row['dish_id']: [] for row in snapshot['dishes']}
+                for pot in combinations_with_replacement(universe, 4):
+                    outcomes = predictor.predict(list(pot), cooker)['outcomes']
+                    if len(outcomes) == 1:
+                        expected[outcomes[0]['dish_id']].append(sum(rarities.get(item, 0) for item in pot))
+                for dish, costs in expected.items():
+                    with self.subTest(rarities=rarities, cooker=cooker, dish=dish):
+                        unfiltered = search.examples(dish, cooker)
+                        actual = search.examples(dish, cooker, guaranteed_only=True)
+                        self.assertTrue(actual['guaranteed_only'])
+                        self.assertEqual([r['total_rarity'] for r in actual['examples']], sorted(costs)[:3])
+                        self.assertEqual(actual['fewer_than_requested'], len(costs) < 3)
+                        self.assertEqual(search.examples(dish, cooker), unfiltered)
+                        pots = [tuple(sorted(r['ingredients'])) for r in actual['examples']]
+                        self.assertEqual(len(pots), len(set(pots)))
+                        for row in actual['examples']:
+                            self.assertEqual(row['probability']['value'], 1)
+                            self.assertEqual(len(predictor.predict(row['ingredients'], cooker)['outcomes']), 1)
+                self.assertTrue(search.examples('named', cooker)['examples'])
+                self.assertEqual(search.examples('named', cooker, True)['examples'], [])
+
     def test_prepared_policy_excludes_mixed_alternatives_and_nonpositive_requirements(self):
         snapshot = synthetic_snapshot()
         ast = ExactPotPredictor(snapshot).recipes[0][1]
@@ -176,6 +207,33 @@ class RarityHTTPTests(unittest.TestCase):
         _, result = self.request('/api/signature', 'POST', dict(ingredient='meat', cooker='crock_pot', rarities={'butter': 30}, rarity_version=1))
         waffles = next(r for r in result['other'] if r['dish_id'] == 'huiji:华夫饼')
         self.assertEqual(waffles['additional_rarity'], 30)
+
+    def test_guaranteed_filter_contract_and_spicy_chili(self):
+        defaults = self.request('/api/rarity')[1]['rarities']
+        payload = dict(dish='huiji:辣椒炖肉', cooker='crock_pot', rarities=defaults, rarity_version=7)
+        status, unfiltered = self.request('/api/examples', 'POST', payload)
+        self.assertEqual(status, 200)
+        self.assertTrue(any(e['probability']['value'] < 1 for e in unfiltered['examples']))
+        status, filtered = self.request('/api/examples', 'POST', dict(payload, guaranteed_only=True))
+        self.assertEqual(status, 200)
+        self.assertTrue(filtered['guaranteed_only'])
+        self.assertEqual(filtered['rarity_version'], 7)
+        self.assertEqual(len(filtered['examples']), 3)
+        self.assertTrue(all(e['probability']['value'] == 1 for e in filtered['examples']))
+        self.assertEqual(self.request('/api/examples', 'POST', dict(payload, guaranteed_only=False))[1], unfiltered)
+        for value in [0, 1, 'true', None, []]:
+            self.assertEqual(self.request('/api/examples', 'POST', dict(payload, guaranteed_only=value))[0], 422)
+        from urllib.parse import urlencode
+        query = urlencode(dict(dish=payload['dish'], cooker=payload['cooker'], guaranteed_only='true'))
+        status, result = self.request('/api/examples?' + query)
+        self.assertEqual(status, 200)
+        self.assertTrue(result['guaranteed_only'])
+        self.assertTrue(all(e['probability']['value'] == 1 for e in result['examples']))
+        for suffix in ['&guaranteed_only=false', '&extra=']:
+            self.assertEqual(self.request('/api/examples?' + query + suffix)[0], 422)
+        self.assertEqual(self.request('/api/examples?' + query.replace('true', '1'))[0], 422)
+        signature = dict(ingredient='meat', cooker='crock_pot', rarities={}, rarity_version=1, guaranteed_only=True)
+        self.assertEqual(self.request('/api/signature', 'POST', signature)[0], 422)
 
     def test_validation_origin_guards_and_removed_write_endpoints(self):
         payload = dict(ingredient='meat', cooker='crock_pot', rarities={}, rarity_version=1)

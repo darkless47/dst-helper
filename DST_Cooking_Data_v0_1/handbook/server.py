@@ -145,10 +145,17 @@ def suggestions(request):
         query = parse_qs(request.url.query, keep_blank_values=True, max_num_fields=4)
     except ValueError as error:
         raise PredictionInputError('计算参数过多。') from error
-    if set(query) != {subject, 'cooker'} or any(len(values) != 1 for values in query.values()):
+    allowed = {subject, 'cooker'} | ({'guaranteed_only'} if subject == 'dish' else set())
+    if (not {subject, 'cooker'} <= set(query) or set(query) - allowed
+            or any(len(values) != 1 for values in query.values())):
         raise PredictionInputError('请选择条目和一个锅具。')
+    options = {}
+    if 'guaranteed_only' in query:
+        if query['guaranteed_only'][0] not in ('true', 'false'):
+            raise PredictionInputError('确定配方筛选须为 true 或 false。')
+        options['guaranteed_only'] = query['guaranteed_only'][0] == 'true'
     calculate = service.signature.recommend if subject == 'ingredient' else service.signature.examples
-    return respond(200, calculate(query[subject][0], query['cooker'][0]))
+    return respond(200, calculate(query[subject][0], query['cooker'][0], **options))
 
 
 @read_errors
@@ -223,8 +230,15 @@ async def calculate(request):
     try:
         payload = await read_json(request)
         subject = 'ingredient' if request.url.path == '/api/signature' else 'dish'
-        if set(payload) != {subject, 'cooker', 'rarities', 'rarity_version'}:
+        required = {subject, 'cooker', 'rarities', 'rarity_version'}
+        allowed = required | ({'guaranteed_only'} if subject == 'dish' else set())
+        if not required <= set(payload) or set(payload) - allowed:
             raise PredictionInputError('请提供条目、锅具、稀有度和浏览器设置版本。')
+        options = {}
+        if 'guaranteed_only' in payload:
+            if type(payload['guaranteed_only']) is not bool:
+                raise PredictionInputError('确定配方筛选须为布尔值。')
+            options['guaranteed_only'] = payload['guaranteed_only']
         if (type(payload[subject]) is not str or type(payload['cooker']) is not str
                 or type(payload['rarity_version']) is not int
                 or not 0 <= payload['rarity_version'] <= 9007199254740991):
@@ -235,7 +249,7 @@ async def calculate(request):
             return respond(503, {'error': service.prediction_error})
         function = service.signature.recommend if subject == 'ingredient' else service.signature.examples
         result = await run_in_threadpool(function, payload[subject], payload['cooker'], rarities,
-                                        payload['rarity_version'])
+                                        payload['rarity_version'], **options)
         return respond(200, result)
     except RequestError as error:
         return respond(error.status, {'error': str(error)})

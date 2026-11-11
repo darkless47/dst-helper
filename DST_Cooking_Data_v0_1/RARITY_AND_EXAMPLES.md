@@ -36,6 +36,15 @@ outcome chance, and **试煮**. Hovering or focusing an image reveals its name a
 Clicking it switches the underlying section to **食材探索** and opens the exact state’s
 detail. **试煮** transfers the four IDs and cooker to **出锅预测**.
 
+Uncertain results display a yellow **非确定 · 本锅概率** badge with the percentage and
+exact fraction. **只显示确定配方** beside the cooker selector excludes tied outcomes
+before choosing the three cheapest examples, rather than hiding rows from the existing
+three. It defaults to unchecked. The browser remembers this boolean in localStorage
+under `dst-helper.cooking.examples.guaranteed-only.v1` across dishes and reloads, without
+changing rarity, exclusions, or other modules. If fewer than three guaranteed combinations
+exist, the available count is shown; the filter never falls back to uncertain examples.
+“100%” describes the current prediction model, with the same evidence limits as prediction.
+
 The examples are the three lowest-total-rarity distinct unordered four-state multisets.
 Reordering ingredients is not a different example; duplicate copies still occupy slots.
 Only pots where the dish survives all higher-priority available recipes qualify. Tied
@@ -70,7 +79,9 @@ the complete **特别** group remains first in both modes.
 Dish examples enumerate actual states, preserving distinct equivalent substitutes. Three
 prefix slots are searched in nondecreasing state order; bit masks evaluate all last-slot
 possibilities against the target and strictly higher-priority rules. Nondecreasing rarity
-allows exact cost bounds, including negative costs. At most three last-slot candidates per
+allows exact cost bounds, including negative costs. When guaranteed-only is selected,
+other equal-priority matches are also excluded, and the cache separates the two modes.
+At most three last-slot candidates per
 prefix can enter a global top three. There is no sampling or time cutoff. Every returned
 pot is replayed through `ExactPotPredictor` and fails closed if its outcome disagrees.
 
@@ -85,7 +96,7 @@ Other tabs in this browser synchronize through storage events.
 ```text
 GET /api/rarity                         # read-only initial defaults
 POST /api/examples
-  {"dish":"huiji:华夫饼","cooker":"crock_pot","rarities":{"butter":20},"rarity_version":1}
+  {"dish":"huiji:华夫饼","cooker":"crock_pot","rarities":{"butter":20},"rarity_version":1,"guaranteed_only":true}
 POST /api/signature
   {"ingredient":"meat","cooker":"crock_pot","rarities":{},"rarity_version":1}
 ```
@@ -96,7 +107,9 @@ rarity ID and signed integer. Empty `rarities` means all zero, not server defaul
 API remains. GET search endpoints use defaults for compatibility. Exclusions are applied
 by the browser to full search results, preserving priority competition and probabilities.
 
-Examples return `complete`, `rarity_version`, `available`, `fewer_than_requested`, and
+Examples accept optional boolean `guaranteed_only` (default false); the GET compatibility
+endpoint accepts the query values `true` or `false`. Signature requests do not accept it.
+Examples return `complete`, `rarity_version`, `available`, `guaranteed_only`, `fewer_than_requested`, and
 `examples[{ingredients,total_rarity,probability}]`. Unknown dishes return 404, malformed
 requests 422, unsupported model data 503. Catalog and detail GET responses carry initial
 rarity defaults; the UI overlays browser preferences before display.

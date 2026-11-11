@@ -1,6 +1,7 @@
 'use strict';
 
 const examplesUI = (() => {
+  const FILTER_KEY = 'dst-helper.cooking.examples.guaranteed-only.v1';
   let current = null, request = null;
   function cancel() { request?.abort(); request = null; current = null; }
   function mount(dish) {
@@ -10,12 +11,20 @@ const examplesUI = (() => {
       current.cooker = select.value; fetchExamples();
     } }, Object.entries(state.data.prediction?.cookers || {}).map(([id, info]) => el('option', { value: id, text: info.name_zh })));
     select.value = cooker;
+    const filter = el('input', { type: 'checkbox', id: 'example-guaranteed-only', onchange: () => {
+      current.guaranteedOnly = filter.checked;
+      try { browserStorage.write(FILTER_KEY, filter.checked); } catch { /* The storage helper explains persistence failures. */ }
+      fetchExamples();
+    } });
+    filter.checked = browserStorage.read(FILTER_KEY, false, value => typeof value === 'boolean');
     const output = el('div', { id: 'dish-example-results', 'aria-live': 'polite' });
     const node = section('料理示例', [
       text('p', '按四份食材的总稀有度从低到高选出三种不同组合。优先原料，不选熟制、烘烤或晒干食材，除非配方明确需要该形态。', 'small muted'),
-      el('label', { class: 'example-cooker-label' }, [text('span', '使用锅具'), select]), output,
+      el('div', { class: 'example-controls' }, [
+        el('label', { class: 'example-cooker-label' }, [text('span', '使用锅具'), select]),
+        el('label', { class: 'example-guaranteed-label' }, [filter, text('span', '只显示确定配方')])]), output,
       text('p', '基于维基实验规则，不限库存；同优先级的结果可能均分概率。悬停或聚焦图片查看食材名称，点击图片前往食材探索。', 'small muted')]);
-    node.id = 'dish-examples'; current = { dish, cooker, node, output };
+    node.id = 'dish-examples'; current = { dish, cooker, guaranteedOnly: filter.checked, node, output };
     return node;
   }
   function active(target) { return current === target && target.node.isConnected && $('detail-dialog').open; }
@@ -30,7 +39,8 @@ const examplesUI = (() => {
       target.output.setAttribute('aria-busy', 'false'); request = null; return;
     }
     try {
-      const data = await rarityUI.calculate('/api/examples', { dish: target.dish.dish_id, cooker: target.cooker }, controller.signal);
+      const data = await rarityUI.calculate('/api/examples', { dish: target.dish.dish_id, cooker: target.cooker,
+        guaranteed_only: target.guaranteedOnly }, controller.signal);
       if (!active(target) || request !== controller) return;
       if (!data.complete || data.rarity_version < state.data.settings.version) throw new Error('稀有度已更新，请重新查找。');
       if (!active(target) || request !== controller) return;
@@ -44,15 +54,19 @@ const examplesUI = (() => {
             [portrait(item), text('span', label, 'ingredient-tooltip')]);
         }));
         const chance = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 2 }).format(example.probability.value * 100) + '%';
+        const uncertain = example.probability.numerator !== example.probability.denominator;
         return el('article', { class: 'dish-example-row' }, [text('span', String(index + 1).padStart(2, '0'), 'row-number'), pictures,
           el('div', { class: 'dish-example-summary' }, [text('strong', '总稀有度 ' + example.total_rarity),
-            text('small', '本锅概率 ' + chance + (example.probability.denominator > 1 ? ' · 1/' + example.probability.denominator : ''))]),
+            text('span', (uncertain ? '⚠ 非确定 · ' : '') + '本锅概率 ' + chance +
+              (uncertain ? ' · ' + example.probability.numerator + '/' + example.probability.denominator : ''),
+              uncertain ? 'example-probability uncertain' : 'example-probability')]),
           el('button', { type: 'button', class: 'text-button', text: '试煮 ↗', onclick: () => {
             $('detail-dialog').close(); predictionUI.loadPot(example.ingredients, data.cooker);
           } })]);
       });
       if (!data.available) rows.push(text('p', '这道料理不适用于当前锅具，请选择便携烹饪锅。', 'notice'));
-      else if (data.fewer_than_requested) rows.push(text('p', '在当前原料限制与锅具规则下，仅找到 ' + data.examples.length + ' 种可出锅的不同组合。', 'small muted'));
+      else if (data.fewer_than_requested) rows.push(text('p', '在当前原料限制与锅具规则下，仅找到 ' + data.examples.length +
+        (data.guaranteed_only ? ' 种确定出锅的不同组合。' : ' 种可出锅的不同组合。'), 'small muted'));
       target.output.replaceChildren(...rows);
     } catch (error) {
       if (error.name !== 'AbortError' && active(target) && request === controller) target.output.replaceChildren(

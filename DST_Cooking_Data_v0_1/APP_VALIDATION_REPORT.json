@@ -261,6 +261,19 @@
     ],
     "backend_changed": false
   },
+  "dish_example_certainty": {
+    "checked_date": "2026-11-11",
+    "checks": [
+      "Spicy Chili default-rarity examples show two yellow 50% / 1/2 badges; certain examples retain a quiet 100% label",
+      "Guaranteed-only filtering excludes other available recipes at equal priority before selecting the three cheapest distinct pots; modes have separate cache entries",
+      "Independent brute-force comparisons cover guaranteed costs, negative rarity, ties with no guaranteed solution, higher-priority competition, both cookers, and distinctness",
+      "HTTP checks validate optional boolean filtering, reject malformed/duplicate fields, preserve unfiltered results, and keep the option out of Signature requests",
+      "Browser checkbox defaults off and persists both values across dishes and reloads without server-side preference writes",
+      "Keyboard checkbox interaction, cooker changes, rapid request cancellation, predictor handoff, and 390px/320px layouts checked without JavaScript exceptions or dialog overflow"
+    ],
+    "preference_key": "dst-helper.cooking.examples.guaranteed-only.v1",
+    "source_metadata_changed": false
+  },
   "cooking_verification_layout": {
     "checked_date": "2026-11-10",
     "checks": [

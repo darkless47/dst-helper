@@ -19,11 +19,11 @@ class DishExamples(SignatureRecipes):
         self.prepared_ids = frozenset(prepared_ids)
         self._examples_cache = {}
 
-    def examples(self, dish_id, cooker):
+    def examples(self, dish_id, cooker, guaranteed_only=False):
         self.predictor.validate_cooker(cooker)
         if dish_id not in self.dishes:
             raise KeyError(dish_id)
-        key = dish_id, cooker
+        key = dish_id, cooker, guaranteed_only
         with self._lock:
             if key in self._examples_cache:
                 return self._examples_cache[key]
@@ -37,7 +37,9 @@ class DishExamples(SignatureRecipes):
                 allowed = [i for i, item in enumerate(self._representatives)
                            if item not in self.prepared_ids or self.predictor.ingredients[item]['prefab_id'] in required]
                 allowed_mask = sum(1 << i for i in allowed)
-                higher = [node for other, _, node in self._recipes if other['priority'] > recipe['priority']
+                competitors = [node for other, _, node in self._recipes
+                          if other['dish_id'] != dish_id and (other['priority'] > recipe['priority']
+                              or guaranteed_only and other['priority'] == recipe['priority'])
                           and self.predictor.available_in(other, cooker)]
                 costs, vectors = self._costs, self._vectors
                 for position, first in enumerate(allowed):
@@ -56,7 +58,7 @@ class DishExamples(SignatureRecipes):
                             wins = self._mask(expression, totals) & allowed_mask & (self._all ^ ((1 << third) - 1))
                             if not wins:
                                 continue
-                            for node in higher:
+                            for node in competitors:
                                 wins &= ~self._mask(node, totals)
                                 if not wins:
                                     break
@@ -81,9 +83,12 @@ class DishExamples(SignatureRecipes):
                 outcome = next((row for row in checked['outcomes'] if row['dish_id'] == dish_id), None)
                 if outcome is None:
                     raise PredictionDataError('料理示例未通过四格预测复核。')
+                if guaranteed_only and len(checked['outcomes']) != 1:
+                    raise PredictionDataError('确定料理示例未通过唯一结果复核。')
                 examples.append(dict(ingredients=pot, total_rarity=cost, probability=outcome['probability']))
             result = dict(dish_id=dish_id, cooker=cooker, examples=examples, complete=True,
-                          available=available, requested_count=3, fewer_than_requested=len(examples) < 3,
+                          available=available, guaranteed_only=guaranteed_only,
+                          requested_count=3, fewer_than_requested=len(examples) < 3,
                           mode=self.predictor.policy['mode'], source_revision=self.predictor.metadata['source_revision'],
                           eligibility_verified=self.predictor.policy['eligibility_verified'])
             self._examples_cache[key] = result
@@ -114,6 +119,6 @@ class RecipePlanner:
         signature, _ = self._planners(rarities)
         return dict(signature.recommend(ingredient_id, cooker), rarity_version=rarity_version)
 
-    def examples(self, dish_id, cooker, rarities=None, rarity_version=0):
+    def examples(self, dish_id, cooker, rarities=None, rarity_version=0, guaranteed_only=False):
         _, examples = self._planners(rarities)
-        return dict(examples.examples(dish_id, cooker), rarity_version=rarity_version)
+        return dict(examples.examples(dish_id, cooker, guaranteed_only), rarity_version=rarity_version)
