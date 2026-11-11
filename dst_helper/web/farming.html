@@ -49,11 +49,9 @@
             <div id="ratio-results" class="ratio-grid"></div><button id="more-ratios" type="button" class="secondary" hidden>显示更多组合</button>
           </section>
           <section class="farm-panel" id="layout-panel" aria-labelledby="layout-title">
-            <div class="section-heading"><h2 id="layout-title">04 / 摆一摆田地</h2><span class="eyebrow">LAYOUT ASSIST</span></div>
-            <p class="small muted">每块田宽 4 游戏单位；九宫格中心为 2/3、2、10/3。各田紧邻，不留游戏距离间隔；家族半径 ≤4，含自己至少 4 株即通过（计入恰好位于半径边界的同类）。此图仅作放置指引。</p>
-            <div class="farm-actions"><label>田地 <select id="tile-count"><option value="1">一块田</option><option value="2">两块田</option><option value="4">四块田</option></select></label><label>种植画笔 <select id="crop-brush" aria-label="种植画笔"></select></label><button id="clear-layout" type="button" class="secondary">清空布局</button></div>
-            <p class="small muted">四块田按左上 1、右上 2、左下 3、右下 4 排列。用画笔点击格子；键盘 Tab 移动、空格或 Enter 放置。选择「擦除」清空单格。减少田地前请先清空将被移除的田。</p>
-            <div id="layout-examples" class="farm-actions"></div><p class="small muted">载入示例会替换布局、倍数、配比与季节，保留可用种子和库存。</p>
+            <div class="section-heading"><div class="layout-heading"><h2 id="layout-title">04 / 摆一摆田地</h2><button id="open-layout-help" type="button" class="layout-help-button" aria-label="查看田地布局说明与示例" aria-haspopup="dialog" aria-controls="layout-help-dialog" title="田地布局说明与示例"><span aria-hidden="true">?</span></button></div><span class="eyebrow">LAYOUT ASSIST</span></div>
+            <div class="farm-actions"><label>田地 <select id="tile-count"><option value="1">一块田</option><option value="2">两块田</option><option value="4">四块田</option></select></label><label>种植画笔 <select id="crop-brush" aria-label="种植画笔" aria-describedby="brush-ratio-note"></select></label><button id="clear-ratio" type="button" class="secondary" disabled>取消选择配比</button><button id="clear-layout" type="button" class="secondary">清空布局</button></div>
+            <p id="brush-ratio-note" class="brush-ratio-note" role="status" aria-live="polite"></p>
             <div id="tile-grids" class="tile-grids"></div>
             <div id="layout-report" aria-live="polite"></div>
             <details class="farm-details"><summary>逐株检查：家族、季节与杂草</summary><div id="plant-report" class="farm-table-scroll"></div></details>
@@ -73,6 +71,14 @@
       </main>
     </div>
   </div>
+  <dialog id="layout-help-dialog" class="layout-help-dialog" aria-labelledby="layout-help-title">
+    <div class="layout-help-heading"><h2 id="layout-help-title">田地布局说明与示例</h2><button id="close-layout-help" type="button" class="icon-button" aria-label="关闭田地布局说明" autofocus>×</button></div>
+    <p>每块田宽 4 游戏单位；九宫格中心为 2/3、2、10/3。各田紧邻，不留游戏距离间隔；家族半径 ≤4，含自己至少 4 株即通过（计入恰好位于半径边界的同类）。此图仅作放置指引。</p>
+    <p>四块田按左上 1、右上 2、左下 3、右下 4 排列。用种植画笔点击空格种植；点击已有植物的格子会清空，再点一次可种植当前画笔的植物。键盘 Tab 移动，空格或 Enter 操作。选择「擦除」清空单格。减少田地前请先清空将被移除的田。</p>
+    <h3>载入示例</h3>
+    <p class="muted">载入示例会替换布局、倍数、配比与季节，保留可用种子和库存。</p>
+    <div id="layout-examples" class="farm-actions"></div>
+  </dialog>
   <dialog id="reset-plan-dialog" class="reset-dialog" aria-labelledby="reset-plan-title" aria-describedby="reset-plan-description">
     <div class="reset-dialog-heading"><h2 id="reset-plan-title">重置全部种植数据？</h2><button id="close-reset-plan" type="button" class="icon-button" aria-label="取消重置" autofocus>×</button></div>
     <p id="reset-plan-description">季节、可用种子、库存、倍数、选中配比、田地布局，以及当前浏览器的显示偏好，都将恢复默认。仅重置当前浏览器的种植规划，不影响烹饪偏好或其他用户。</p>

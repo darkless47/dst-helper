@@ -26,13 +26,16 @@ a.nav-button { text-decoration:none; }
 .farm-panel { background:var(--white); border:1px solid var(--line); border-radius:10px; padding:24px; margin:24px 0; }
 .farm-panel h2 { font:600 22px var(--serif); }
 .farm-panel .section-heading { margin:0 0 18px; }
+.layout-heading { display:flex; align-items:center; gap:10px; }
+.layout-help-button { display:inline-grid; place-items:center; width:28px; height:28px; flex-shrink:0; padding:0; border:2px solid currentColor; border-radius:50%; background:transparent; color:var(--green); font:600 18px/1 var(--sans); }
+.layout-help-button:hover { background:var(--sage); }
 .farm-panel input[type=number], .farm-panel select { border:1px solid var(--line); border-radius:5px; background:var(--white); padding:7px; color:var(--ink); }
 .farm-panel input[type=checkbox] { width:17px; height:17px; accent-color:var(--green); }
 .farm-panel .small { margin:12px 0; }
 .season-checks { border:0; padding:14px 0 0; margin:0; }
 .season-checks label { padding:4px 14px 4px 0; }
 .farm-actions button[aria-pressed=true] { background:var(--green); color:var(--white); }
-.seed-season-note { margin:12px 0; padding:10px 14px; border-left:3px solid var(--green); border-radius:4px; background:var(--sage); color:var(--green); font-size:13px; }
+.seed-season-note,.brush-ratio-note { margin:12px 0; padding:10px 14px; border-left:3px solid var(--green); border-radius:4px; background:var(--sage); color:var(--green); font-size:13px; }
 .farm-table-scroll { overflow-x:auto; }
 .farm-table { width:100%; border-collapse:collapse; font-size:13px; white-space:nowrap; }
 .farm-table th,.farm-table td { padding:11px 9px; border-bottom:1px solid var(--line); text-align:center; }
@@ -99,9 +102,14 @@ a.nav-button { text-decoration:none; }
 #farm-error { margin-top:16px; }
 .danger-button { color:#923d2d; border-color:#bb8c7f; }
 .danger-button:hover:not(:disabled) { background:#f9e9e3; }
-.reset-dialog { inset:0; margin:auto; width:min(500px,calc(100% - 32px)); height:fit-content; max-height:calc(100% - 32px); padding:24px; border:1px solid var(--line); border-radius:12px; overflow:auto; }
-.reset-dialog-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
-.reset-dialog h2 { margin:0; font:600 24px var(--serif); }
+.reset-dialog,.layout-help-dialog { inset:0; margin:auto; width:min(500px,calc(100% - 32px)); height:fit-content; max-height:calc(100% - 32px); padding:24px; border:1px solid var(--line); border-radius:12px; overflow:auto; }
+.reset-dialog-heading,.layout-help-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+.reset-dialog h2,.layout-help-dialog h2 { margin:0; font:600 24px var(--serif); }
+.layout-help-dialog { width:min(640px,calc(100% - 32px)); }
+.layout-help-dialog p { font-size:13px; line-height:1.8; }
+.layout-help-dialog h3 { margin:22px 0 10px; font:600 18px var(--serif); }
+.layout-help-dialog .farm-actions { flex-direction:column; align-items:stretch; }
+.layout-help-dialog .farm-actions button { white-space:normal; text-align:left; }
 .reset-actions { justify-content:flex-end; margin-top:24px; }
 .reset-dialog button:disabled { opacity:.55; }
 [hidden] { display:none !important; }

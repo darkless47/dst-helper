@@ -124,13 +124,18 @@ a standalone offline wiki viewer.
    include seed totals, inventory limits, shared preferred seasons, and an area
    lower bound using nine positions per tile. The default bounded search finds
    74 primitive ratios with no filters, or four in winter.
-4. Paint crop positions on one, two, or four adjacent 3×3 tile grids, or load an included
-   example. Each tile has its own nutrient balance and deficits. Family checks use
+4. Paint crop positions on one, two, or four adjacent 3×3 tile grids. The circled
+   **?** beside **摆一摆田地** opens the layout instructions and example loaders.
+   Each tile has its own nutrient balance and deficits. Family checks use
    actual intended game coordinates, including cross-tile neighbors at distance
    **≤4** (boundary included, per the user's confirmed planning rule). Four fields
    form a **2×2** square numbered top-left 1, top-right 2, bottom-left 3, bottom-right 4.
    All fields touch without an intervening game-distance gap. Weeds can be
-   placed for hazard checks.
+   placed for hazard checks. Selecting a ratio limits the planting brush to that
+   ratio's crops, with an explanatory note beside the controls. **取消选择配比**
+   restores all 14 crops and four weeds while preserving the painted layout.
+   The eraser is always available; the selected ratio persists in browser storage.
+   Clicking an occupied slot clears it; clicking again plants the current brush.
 5. Review the four general care reminders: water, tending, starting soil nutrients,
    and nearby debris. A balanced ratio does not guarantee giant crops.
 

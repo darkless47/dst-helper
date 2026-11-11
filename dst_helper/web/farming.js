@@ -7,6 +7,7 @@
   let resetting = false, loading = false, storageRequest = 0;
   const PLAN_KEY = 'dst-helper.farming.plan.v1';
   const resetDialog = $('reset-plan-dialog');
+  const layoutHelpDialog = $('layout-help-dialog');
   const RATIO_LAYOUT_KEY = 'dst-helper.farming-ratio-layout';
   let ratioLayout = 'cards';
   try { if (localStorage.getItem(RATIO_LAYOUT_KEY) === 'table') ratioLayout = 'table'; } catch { /* The view still works without browser storage. */ }
@@ -105,7 +106,24 @@
     }
   }
 
-  function renderControls() {
+  function renderBrush(preferredValue = $('crop-brush').value) {
+    const brush = $('crop-brush');
+    const selected = plan.selected_counts;
+    const allowed = [...plants.values()].filter(p => !selected || Object.hasOwn(selected, p.plant_id));
+    brush.replaceChildren(node('option', { value: '', text: '擦除 / 空格' }));
+    for (const [kind, label] of [['crop', '作物'], ['weed', '杂草（危害检查）']]) {
+      const options = allowed.filter(p => p.kind === kind);
+      if (options.length) brush.append(node('optgroup', { label }, options.map(p =>
+        node('option', { value: p.plant_id, text: p.name_zh }))));
+    }
+    brush.value = preferredValue === '' || allowed.some(p => p.plant_id === preferredValue)
+      ? preferredValue : (selected ? Object.keys(selected)[0] : 'potato');
+    $('brush-ratio-note').textContent = selected
+      ? '当前配比：' + countsText(selected) + '。种植画笔仅显示此配比中的作物。点击「取消选择配比」可恢复全部作物与杂草。'
+      : '未选择配比：种植画笔显示全部 ' + crops.size + ' 种作物和 ' + (plants.size - crops.size) + ' 种杂草，可自由摆放。';
+    $('clear-ratio').disabled = !selected;
+  }
+  function renderControls(brushValue) {
     for (const input of $('season-checkboxes').querySelectorAll('input')) input.checked = plan.seasons.includes(input.value);
     for (const b of $('season-presets').querySelectorAll('button')) {
       const subset = b.dataset.seasons ? b.dataset.seasons.split(',') : [];
@@ -127,6 +145,7 @@
       : '未选择季节：下表显示全部 ' + crops.size + ' 种作物的种子。';
     $('ratio-scale').value = plan.scale;
     $('tile-count').value = plan.tile_count;
+    renderBrush(brushValue);
   }
   function initControls() {
     const presets = [[], ['autumn'], ['autumn', 'winter'], ['winter'], ['winter', 'spring'], ['spring'], ['spring', 'summer'], ['summer'], ['summer', 'autumn']];
@@ -162,21 +181,16 @@
     }));
     $('crop-water').replaceChildren(text('p', '维基耗水原文（每阶段百分比，不是每秒或每天）：'), text('p', [...crops.values()].map(c => c.name_zh + ' ' + c.water_source_text).join('；')));
     $('weed-notes').textContent = [...plants.values()].filter(p => p.kind === 'weed').map(p => p.name_zh).join('、') + '：布局中已知的杂草会触发附近作物的杂物提示。';
-    const brush = $('crop-brush');
-    brush.replaceChildren(node('option', { value: '', text: '擦除 / 空格' }));
-    for (const [kind, label] of [['crop', '作物'], ['weed', '杂草（危害检查）']]) {
-      brush.append(node('optgroup', { label }, [...plants.values()].filter(p => p.kind === kind).map(p => node('option', { value: p.plant_id, text: p.name_zh }))));
-    }
-    brush.value = 'potato';
     $('layout-examples').replaceChildren(...data.examples.map(ex => button('载入示例：' + ex.label_zh, () => {
       plan.placements = clone(ex.placements);
       plan.seasons = [...ex.seasons];
       plan.tile_count = ex.placements.some(p => p.tile_x === 1) ? 2 : 1;
       plan.selected_counts = clone(ex.ratio);
       plan.scale = ex.id === 'single_tile_potato_tomato' ? 4 : 6;
+      layoutHelpDialog.close();
       changed({ controls: true, layout: true });
     })));
-    renderControls();
+    renderControls('potato');
   }
   function renderResults() {
     renderRatioSwitch();
@@ -191,7 +205,7 @@
       const family = scaled.all_global_counts_at_least_four ? '全局每种 ≥4 株；家族距离仍待核对' : '全局有作物不足 4 株，家族数量不足';
       const choose = button(table ? (chosen ? '已选配比 ↓' : '选择配比 ↓') : (chosen ? '已选配比 · 查看布局 ↓' : '选择配比，检查布局 ↓'), () => {
         plan.selected_counts = clone(r.counts);
-        $('crop-brush').value = Object.keys(r.counts)[0];
+        renderBrush(Object.keys(r.counts)[0]);
         changed();
         $('layout-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
@@ -240,11 +254,11 @@
         const row = Math.floor(i / 3), col = i % 3, key = `${tile}-${row}-${col}`;
         const p = plan.placements.find(p => p.tile_x === tileX && p.tile_y === tileY && p.row === row && p.col === col);
         const b = node('button', { id: 'slot-' + key, type: 'button', class: 'plant-slot' + (p ? (plants.get(p.plant_id).kind === 'weed' ? ' weed' : ' planted') : ''),
-          'aria-label': `田${tile + 1} 第${row + 1}行 第${col + 1}列：${p ? name(p.plant_id) : '空位'}，点击使用画笔`, onclick: () => {
+          'aria-label': `田${tile + 1} 第${row + 1}行 第${col + 1}列：${p ? name(p.plant_id) : '空位'}，${p ? '点击清空' : '点击使用画笔'}`, onclick: () => {
             const brush = $('crop-brush').value;
-            if ((p?.plant_id || '') === brush) return;
+            if (!p && !brush) return;
             plan.placements = plan.placements.filter(p => !(p.tile_x === tileX && p.tile_y === tileY && p.row === row && p.col === col));
-            if (brush) plan.placements.push({ plant_id: brush, tile_x: tileX, tile_y: tileY, row, col });
+            if (!p && brush) plan.placements.push({ plant_id: brush, tile_x: tileX, tile_y: tileY, row, col });
             changed();
             renderGrid(key);
           } }, [text('span', p ? name(p.plant_id) : '＋ 空位'), text('small', `${row + 1} 行 · ${col + 1} 列`)]);
@@ -338,6 +352,8 @@
       $('reset-plan-error').hidden = false;
     } finally { resetting = false; updateResetButton(); }
   }
+  $('open-layout-help').addEventListener('click', () => layoutHelpDialog.showModal());
+  $('close-layout-help').addEventListener('click', () => layoutHelpDialog.close());
   $('reset-plan').addEventListener('click', () => {
     $('reset-plan-error').hidden = true; resetDialog.showModal();
   });
@@ -369,6 +385,11 @@
     plan.tile_count = n; changed({ layout: true });
   });
   $('clear-layout').addEventListener('click', () => { plan.placements = []; changed({ layout: true }); });
+  $('clear-ratio').addEventListener('click', () => {
+    plan.selected_counts = null;
+    renderBrush();
+    changed();
+  });
   $('more-ratios').addEventListener('click', () => { limit += 12; renderResults(); });
   document.querySelectorAll('[data-ratio-layout]').forEach(b => b.addEventListener('click', () => {
     ratioLayout = b.dataset.ratioLayout;

@@ -88,6 +88,13 @@ class DevTools:
         if not self.js("document.getElementById('farm-error').hidden"):
             raise AssertionError(self.js("document.getElementById('farm-error').textContent"))
 
+    def load_layout_example(self, index=0):
+        self.js("document.getElementById('open-layout-help').click()")
+        self.wait("document.getElementById('layout-help-dialog').open")
+        self.js("document.querySelectorAll('#layout-examples button')[" + str(index) + "].click()")
+        self.wait("!document.getElementById('layout-help-dialog').open")
+        self.settled()
+
 
 def run():
     candidates = [Path('C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'), Path('C:/Program Files/Google/Chrome/Application/chrome.exe')]
@@ -119,6 +126,8 @@ def run():
             client.settled()
             assert client.js("document.getElementById('ratio-count').textContent.startsWith('74 ')")
             assert client.js("document.querySelectorAll('#crop-rows tr:not([hidden])').length") == 14
+            assert client.js("document.querySelectorAll('#crop-brush option').length") == 19
+            assert client.js("document.getElementById('clear-ratio').disabled")
             print('PASS: home navigation, 14 crops and 74 ratios')
             assert client.js("Array.from(document.querySelectorAll('.ratio-card .ratio-crops:first-of-type')).every(d=>d.querySelectorAll('dt').length>=2 && Array.from(d.querySelectorAll('.ratio-crop-row')).every(r=>r.querySelector('dt') && r.querySelector('dd')))")
             client.js("document.querySelector('[data-ratio-layout=table]').click()")
@@ -126,8 +135,21 @@ def run():
             client.js("document.querySelectorAll('#ratio-results tbody tr button')[2].click()")
             client.settled()
             assert client.js("document.querySelectorAll('#ratio-results tbody tr.selected').length") == 1
+            selected_crops = client.js("Object.keys(JSON.parse(localStorage.getItem('dst-helper.farming.plan.v1')).value.selected_counts).sort()")
+            assert client.js("Array.from(document.querySelectorAll('#crop-brush option')).map(o=>o.value).filter(Boolean).sort()") == selected_crops
+            assert client.js("document.querySelector('#crop-brush option[value=\"\"]') !== null")
+            assert not client.js("document.getElementById('clear-ratio').disabled")
+            assert client.js("document.getElementById('brush-ratio-note').textContent.includes('仅显示此配比中的作物')")
+            client.js('window.__brushReload = true')
+            client.call('Page.reload')
+            client.wait('!window.__brushReload')
+            client.settled()
+            assert client.js("Array.from(document.querySelectorAll('#crop-brush option')).map(o=>o.value).filter(Boolean).sort()") == selected_crops
             client.js("document.querySelector('[data-ratio-layout=cards]').click()")
             assert client.js("document.querySelectorAll('#ratio-results .ratio-card.selected').length") == 1
+            client.js("Array.from(document.querySelectorAll('#ratio-results .ratio-card')).find(c=>c.querySelectorAll('.ratio-crops:first-of-type dt').length===3).querySelector('button').click()")
+            client.settled()
+            assert client.js("Array.from(document.querySelectorAll('#crop-brush option')).map(o=>o.value).filter(Boolean).sort()") == ['asparagus', 'carrot', 'eggplant']
             client.js("document.querySelector('[data-ratio-layout=table]').click()")
             print('PASS: crop counts on separate card rows; card/table selection stays consistent across all 74 ratios')
 
@@ -147,15 +169,54 @@ def run():
             assert client.js("document.getElementById('ratio-count').textContent.startsWith('0 ')")
             print('PASS: winter, empty availability, clear preserves seeds, four-season intersection')
 
-            client.js("document.querySelector('#layout-examples button').click()")
-            client.settled()
+            help_plan = client.js("localStorage.getItem('dst-helper.farming.plan.v1')")
+            assert not client.js("document.getElementById('layout-help-dialog').open")
+            assert client.js("document.getElementById('layout-examples').closest('dialog').id") == 'layout-help-dialog'
+            assert not client.js("document.getElementById('layout-panel').contains(document.getElementById('layout-examples'))")
+            client.js("document.getElementById('open-layout-help').focus();document.getElementById('open-layout-help').click()")
+            client.wait("document.getElementById('layout-help-dialog').open")
+            assert client.js("document.querySelectorAll('#layout-help-dialog #layout-examples button').length") == 2
+            for snippet in ['每块田宽 4 游戏单位', '四块田按左上 1', '载入示例会替换布局']:
+                assert client.js("document.getElementById('layout-help-dialog').textContent.includes(" + json.dumps(snippet) + ")")
+                assert not client.js("document.getElementById('layout-panel').textContent.includes(" + json.dumps(snippet) + ")")
+            client.call('Input.dispatchKeyEvent', dict(type='keyDown', key='Escape', code='Escape', windowsVirtualKeyCode=27))
+            client.call('Input.dispatchKeyEvent', dict(type='keyUp', key='Escape', code='Escape', windowsVirtualKeyCode=27))
+            client.wait("!document.getElementById('layout-help-dialog').open")
+            assert client.js('document.activeElement.id') == 'open-layout-help'
+            client.call('Input.dispatchKeyEvent', dict(type='keyDown', key='Enter', code='Enter', windowsVirtualKeyCode=13, text='\r', unmodifiedText='\r'))
+            client.call('Input.dispatchKeyEvent', dict(type='keyUp', key='Enter', code='Enter', windowsVirtualKeyCode=13))
+            client.wait("document.getElementById('layout-help-dialog').open")
+            client.js("document.getElementById('close-layout-help').click()")
+            assert not client.js("document.getElementById('layout-help-dialog').open")
+            assert client.js("localStorage.getItem('dst-helper.farming.plan.v1')") == help_plan
+            print('PASS: layout help contains instructions and examples; keyboard open, Escape, close and focus return preserve the plan')
+
+            client.load_layout_example()
             assert client.js("document.getElementById('layout-report').textContent.includes('所有作物通过')")
             assert client.js("document.querySelectorAll('.plant-slot.planted').length") == 8
+            assert client.js("Array.from(document.querySelectorAll('#crop-brush option')).map(o=>o.value).sort()") == ['', 'potato', 'tomato']
+            client.js("document.getElementById('crop-brush').value='potato';document.getElementById('slot-0-0-0').click()")
+            assert not client.js("document.getElementById('slot-0-0-0').classList.contains('planted')")
+            client.js("document.getElementById('slot-0-0-0').click()")
+            assert client.js("document.querySelector('#slot-0-0-0 span').textContent") == '土豆'
+            client.js("document.getElementById('crop-brush').value='tomato';document.getElementById('slot-0-0-0').click()")
+            assert not client.js("document.getElementById('slot-0-0-0').classList.contains('planted')")
+            client.js("document.getElementById('slot-0-0-0').click()")
+            assert client.js("document.querySelector('#slot-0-0-0 span').textContent") == '番茄'
+            client.js("document.getElementById('crop-brush').value='';document.getElementById('slot-0-0-0').click()")
+            erased = client.js("localStorage.getItem('dst-helper.farming.plan.v1')")
+            client.js("document.getElementById('slot-0-0-0').click()")
+            assert client.js("localStorage.getItem('dst-helper.farming.plan.v1')") == erased
+            client.js("document.getElementById('crop-brush').value='potato';document.getElementById('slot-0-0-0').click()")
+            client.settled()
+            assert client.js("document.querySelectorAll('.plant-slot.planted').length") == 8
+            assert client.js("document.getElementById('layout-report').textContent.includes('所有作物通过')")
+            print('PASS: occupied slots clear with the same or a different crop brush; the next click plants; eraser on empty slots leaves the plan unchanged')
             assert client.js("Array.from(document.querySelectorAll('#care-reminders h3')).map(n=>n.textContent)") == ['水分', '照料', '起始养分', '周围杂物']
             assert client.js("document.querySelectorAll('#care-panel input,#care-panel select,#care-panel textarea,#care-panel button,#care-panel details').length") == 0
-            client.js("document.querySelectorAll('#layout-examples button')[1].click()")
-            client.settled()
+            client.load_layout_example(1)
             assert client.js("document.getElementById('layout-report').textContent.includes('所有作物通过')")
+            assert client.js("Array.from(document.querySelectorAll('#crop-brush option')).map(o=>o.value).sort()") == ['', 'dragonfruit', 'tomato']
             client.js("document.getElementById('crop-brush').value=''; for(let r=0;r<3;r++)for(let c=0;c<3;c++)document.getElementById('slot-1-'+r+'-'+c).click()")
             client.settled()
             assert client.js("document.getElementById('layout-report').textContent.includes('均配平')")
@@ -169,6 +230,22 @@ def run():
             client.js("{let s=document.querySelector('#crop-tomato input[type=number]');s.value='';s.dispatchEvent(new Event('change'));}")
             client.settled()
             print('PASS: zero stock excludes tomato, blank restores unconstrained stock')
+
+            placements = client.js("JSON.stringify(JSON.parse(localStorage.getItem('dst-helper.farming.plan.v1')).value.placements)")
+            client.js("document.getElementById('clear-ratio').click()")
+            client.settled()
+            assert client.js("JSON.parse(localStorage.getItem('dst-helper.farming.plan.v1')).value.selected_counts") is None
+            assert client.js("JSON.stringify(JSON.parse(localStorage.getItem('dst-helper.farming.plan.v1')).value.placements)") == placements
+            assert client.js("document.querySelectorAll('#crop-brush option').length") == 19
+            assert client.js("document.querySelectorAll('#ratio-results .selected').length") == 0
+            assert client.js("document.getElementById('clear-ratio').disabled")
+            client.js('window.__brushReload = true')
+            client.call('Page.reload')
+            client.wait('!window.__brushReload')
+            client.settled()
+            assert client.js("document.querySelectorAll('#crop-brush option').length") == 19
+            assert client.js("document.getElementById('clear-ratio').disabled")
+            print('PASS: selected ratios and examples filter the brush; eraser stays available; deselection restores all plants and preserves the layout across reloads')
 
             assert client.js("Array.from(document.getElementById('tile-count').options).map(o=>o.text)") == ['一块田', '两块田', '四块田']
             client.js("{const s=document.getElementById('tile-count');s.value='4';s.dispatchEvent(new Event('change'));}document.getElementById('crop-brush').value='potato';['slot-2-0-0','slot-2-0-1','slot-2-0-2','slot-3-0-0'].forEach(id=>document.getElementById(id).click())")
@@ -184,6 +261,9 @@ def run():
 
             out = ROOT / '.local/qa'
             out.mkdir(parents=True, exist_ok=True)
+            client.js("document.getElementById('open-layout-help').click()")
+            (out / 'farming-layout-help-desktop.png').write_bytes(base64.b64decode(client.call('Page.captureScreenshot')['data']))
+            client.js("document.getElementById('close-layout-help').click()")
             client.js("document.getElementById('ratio-title').scrollIntoView()")
             (out / 'farming-cards.png').write_bytes(base64.b64decode(client.call('Page.captureScreenshot')['data']))
             client.js("document.querySelector('[data-ratio-layout=table]').click();document.getElementById('ratio-title').scrollIntoView()")
@@ -192,6 +272,10 @@ def run():
             assert client.js("(()=>{const b=[...document.querySelectorAll('.tile-board')].map(n=>n.getBoundingClientRect());return b[0].left===b[2].left && b[1].left===b[3].left && b[0].top===b[1].top && b[2].top===b[3].top && b[0].top<b[2].top;})()")
             (out / 'farming-desktop.png').write_bytes(base64.b64decode(client.call('Page.captureScreenshot')['data']))
             client.call('Emulation.setDeviceMetricsOverride', dict(width=390, height=844, deviceScaleFactor=1, mobile=True))
+            client.js("document.getElementById('open-layout-help').click()")
+            assert client.js("(()=>{const d=document.getElementById('layout-help-dialog'),r=d.getBoundingClientRect();return d.open && r.left>=0 && r.right<=innerWidth && r.top>=0 && r.bottom<=innerHeight && d.scrollWidth<=d.clientWidth;})()")
+            (out / 'farming-layout-help-mobile.png').write_bytes(base64.b64decode(client.call('Page.captureScreenshot')['data']))
+            client.js("document.getElementById('close-layout-help').click()")
             client.js("document.getElementById('layout-panel').scrollIntoView()")
             assert client.js("(()=>{const b=[...document.querySelectorAll('.tile-board')].map(n=>n.getBoundingClientRect());return b[0].left===b[2].left && b[1].left===b[3].left && b[0].top===b[1].top && b[2].top===b[3].top && b[0].top<b[2].top;})()")
             assert client.js('document.documentElement.scrollWidth <= window.innerWidth'), 'Mobile four-field layout overflows horizontally'
