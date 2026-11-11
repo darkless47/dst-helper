@@ -120,6 +120,11 @@
       row.querySelector('input[type=number]').value = plan.inventory[id] ?? '';
     }
     $('crop-count').textContent = visible + ' / 14 种作物适宜所选季节';
+    const selectedSeasons = plan.seasons.map(s => seasons[s] + '季').join('、');
+    $('seed-season-note').textContent = plan.seasons.length
+      ? '已选择' + selectedSeasons + '：下表仅显示' + (plan.seasons.length > 1 ? '同时适宜这些季节' : '适宜该季节')
+        + '生长的 ' + visible + ' 种作物种子。清除季节筛选可查看全部 ' + crops.size + ' 种。'
+      : '未选择季节：下表显示全部 ' + crops.size + ' 种作物的种子。';
     $('ratio-scale').value = plan.scale;
     $('tile-count').value = plan.tile_count;
   }

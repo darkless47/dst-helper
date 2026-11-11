@@ -38,6 +38,7 @@
             <div class="section-heading"><h2 id="seed-title">02 / 手头有哪些种子？</h2><span id="crop-count" class="small"></span></div>
             <div class="farm-actions"><button id="all-seeds" type="button" class="secondary">全选可用种子</button><button id="no-seeds" type="button" class="secondary">清空可用种子</button></div>
             <p class="small muted">库存留空 = 不限制；0 = 没有种子。切换季节会保留隐藏作物的勾选与库存。养分按每个生长阶段计，正数添加、负数消耗。</p>
+            <p id="seed-season-note" class="seed-season-note" role="status" aria-live="polite"></p>
             <div class="farm-table-scroll"><table class="farm-table"><caption class="sr-only">可用作物、适宜季节、每阶段养分变化与种子库存</caption><thead><tr><th scope="col">可用</th><th scope="col">作物 / 烹饪资料</th><th scope="col">秋</th><th scope="col">冬</th><th scope="col">春</th><th scope="col">夏</th><th scope="col">催长剂</th><th scope="col">堆肥</th><th scope="col">粪肥</th><th scope="col">种子库存</th></tr></thead><tbody id="crop-rows"></tbody></table></div>
             <details class="farm-details"><summary>耗水记录与杂草提示</summary><div id="crop-water" class="small"></div><p class="small">随机种子的季节出现概率不等于适宜季节。杂草只用于布局中的危害检查，不参与配比推荐。</p><div id="weed-notes" class="small"></div></details>
           </section>
