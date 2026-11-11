@@ -205,12 +205,10 @@
       ]);
       return node('article', { class: 'ratio-card' + (chosen ? ' selected' : '') }, [
         text('span', '养分配平 / Nutrient-balanced', 'tag'), text('h3', countsText(r.counts), 'sr-only'), cropCounts(r.counts, '最简配比'),
-        text('p', '每阶段净变化（催长剂 / 堆肥 / 粪肥）：' + vector(r.net_per_stage)),
         text('p', '共同适宜季节：' + matchingSeasons),
-        text('p', plan.scale + ' 倍用种：'), cropCounts(scaled.seed_counts, plan.scale + ' 倍用种'),
-        text('p', '共 ' + scaled.total_plants + ' 株 · 面积下界 ' + scaled.area_lower_bound_9_slots + ' 块田（非摆放证明）'),
+        text('p', '共 ' + scaled.total_plants + ' 株 · 需 ' + scaled.area_lower_bound_9_slots + ' 块田'),
         text('p', '库存倍数上限：' + (r.max_inventory_scale ?? '不限')), text('p', family, 'muted'),
-        text('p', layout, checked ? 'status-pass' : 'status-unknown'), choose
+        choose
       ]);
     });
     const output = $('ratio-results');
