@@ -96,6 +96,132 @@ class DevTools:
         self.settled()
 
 
+def check_cooking_navigation(client, base):
+    """Exercise real session history, including nested details and restored work."""
+    client.call('Emulation.setDeviceMetricsOverride', dict(width=1440, height=1000, deviceScaleFactor=1, mobile=False))
+    client.js("setView('evidence');setView('dishes');reset();setCatalogLayout('cards');window.__navURL=location.href;window.__navLength=history.length")
+    client.js("document.getElementById('search').value='肉';document.getElementById('sort').value='health';renderResults();window.scrollTo(0,200)")
+    assert client.js('history.length === window.__navLength'), 'Filtering should not add history entries'
+    client.js("window.__catalogScroll=scrollY;{const b=[...document.querySelectorAll('.catalog-card')].find(b=>b.querySelector('h3').textContent==='肉丸');b.focus({preventScroll:true});b.click();}")
+    client.wait("Boolean(document.querySelector('.example-ingredient')) && document.getElementById('dish-example-results').getAttribute('aria-busy') === 'false'", timeout=30)
+    client.js("document.getElementById('example-cooker').value='portable';document.getElementById('example-cooker').dispatchEvent(new Event('change'))")
+    client.wait("document.getElementById('dish-example-results').getAttribute('aria-busy') === 'false'", timeout=30)
+    client.js("document.getElementById('source-evidence').open=true;document.querySelector('.example-ingredient').focus({preventScroll:true});document.getElementById('detail-dialog').scrollTop=350;window.__dishScroll=document.getElementById('detail-dialog').scrollTop;window.__dishExamples=document.getElementById('dish-example-results').textContent;window.__dishID=state.detail.id;window.__ingredientID=document.querySelector('.example-ingredient').dataset.ingredientId;document.querySelector('.example-ingredient').click()")
+    client.wait("state.detail?.kind==='ingredient' && document.getElementById('detail-content').dataset.entityId===window.__ingredientID")
+    assert client.js("state.view==='dishes' && document.getElementById('search').value==='肉'")
+    client.js('history.back()')
+    client.wait("state.detail?.id===window.__dishID && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false' && document.getElementById('detail-dialog').scrollTop===window.__dishScroll")
+    assert client.js("document.getElementById('example-cooker').value==='portable' && document.getElementById('source-evidence').open && document.getElementById('dish-example-results').textContent===window.__dishExamples")
+    assert client.js("document.activeElement.matches('.example-ingredient')")
+    client.js('history.back()')
+    client.wait("!document.getElementById('detail-dialog').open && state.view==='dishes' && scrollY===window.__catalogScroll && document.activeElement.matches('.catalog-card')")
+    assert client.js("document.getElementById('search').value==='肉' && document.getElementById('sort').value==='health' && document.activeElement.matches('.catalog-card')")
+    client.js('history.forward()')
+    client.wait("state.detail?.id===window.__dishID && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false'")
+    client.js('history.forward()')
+    client.wait("state.detail?.kind==='ingredient' && document.getElementById('detail-content').dataset.entityId===window.__ingredientID")
+    assert client.js('location.href') == base + '/cooking'
+    client.js("document.getElementById('close-detail').click()")
+    client.wait("!document.getElementById('detail-dialog').open && state.view==='dishes'")
+    client.js('history.back()')
+    client.wait("state.view==='evidence' && !document.getElementById('detail-dialog').open")
+    client.js('history.forward()')
+    client.wait("state.view==='dishes'")
+    client.js('history.forward()')
+    client.wait("state.detail?.id===window.__dishID && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false'")
+    client.js('history.forward()')
+    client.wait("state.detail?.kind==='ingredient' && document.getElementById('detail-content').dataset.entityId===window.__ingredientID")
+    client.call('Input.dispatchKeyEvent', dict(type='keyDown', key='Escape', code='Escape', windowsVirtualKeyCode=27))
+    client.call('Input.dispatchKeyEvent', dict(type='keyUp', key='Escape', code='Escape', windowsVirtualKeyCode=27))
+    client.wait("state.view==='dishes' && !document.getElementById('detail-dialog').open")
+    client.js('history.back()')
+    client.wait("state.view==='evidence'")
+    print('PASS: Back/Forward restores nested dishes, ingredients, filters, examples, scroll and focus with unchanged URLs; close/Escape skip the detail chain')
+
+    # A new navigation after Back must discard the old forward branch.
+    client.js("setView('ingredients');reset();openDetail('ingredient','tomato')")
+    client.wait("document.getElementById('detail-content').dataset.entityId==='tomato'")
+    history_info = client.call('Page.getNavigationHistory')
+    assert history_info['currentIndex'] == len(history_info['entries']) - 1
+    client.js('window.__beforeNavReload=true')
+    client.call('Page.reload')
+    client.wait("!window.__beforeNavReload && document.getElementById('detail-dialog')?.open && document.getElementById('detail-content')?.dataset.entityId==='tomato'")
+    client.js('history.back()')
+    client.wait("state.view==='ingredients' && !document.getElementById('detail-dialog').open")
+    client.js('history.forward()')
+    client.wait("document.getElementById('detail-content').dataset.entityId==='tomato'")
+
+    # While a slow ingredient response is pending, returning must win the race.
+    client.js("window.__navFetch=window.fetch;window.__navDelayed=false;window.fetch=async(...args)=>{const response=await window.__navFetch(...args);if(String(args[0]).startsWith('/api/detail?') && String(args[0]).includes('id=berries')){window.__navDelayed=true;await new Promise(r=>setTimeout(r,700));}return response;};openDetail('ingredient','berries')")
+    client.wait('window.__navDelayed')
+    client.js('history.back()')
+    client.wait("document.getElementById('detail-content').dataset.entityId==='tomato'")
+    client.js('new Promise(r=>setTimeout(r,800))')
+    assert client.js("state.detail.id==='tomato' && document.getElementById('detail-content').dataset.entityId==='tomato'")
+    client.js('window.fetch=window.__navFetch')
+    print('PASS: branching discards forward history; detail reload and Back/Forward survive; delayed responses cannot overwrite restored details')
+
+    client.js("signatureUI.openIngredient('twigs')")
+    client.wait("document.getElementById('signature-results').getAttribute('aria-busy')==='false' && Boolean(document.querySelector('.signature-dish'))", timeout=30)
+    client.js("document.getElementById('signature-sort').value='health';document.getElementById('signature-sort').dispatchEvent(new Event('change'));document.getElementById('signature-more')?.click();window.__signatureText=document.getElementById('signature-results').textContent;document.querySelector('.signature-dish').click()")
+    client.wait("Boolean(document.querySelector('.example-ingredient')) && document.getElementById('dish-example-results').getAttribute('aria-busy')==='false'", timeout=30)
+    client.js("document.querySelector('.example-ingredient').click()")
+    client.wait("state.detail?.kind==='ingredient' && Boolean(document.getElementById('rarity-input'))")
+    client.js("document.getElementById('close-detail').click()")
+    client.wait("state.view==='signature' && !document.getElementById('detail-dialog').open && document.getElementById('signature-results').textContent===window.__signatureText")
+    assert client.js("document.getElementById('signature-sort').value==='health'")
+
+    client.js("predictionUI.loadPot(['smallmeat','berries','berries','berries'],'crock_pot')")
+    client.wait("Boolean(document.querySelector('.outcome-open')) && !document.getElementById('predict-pot').disabled", timeout=30)
+    client.js("window.__potText=document.getElementById('pot-slots').textContent;window.__predictionText=document.getElementById('prediction-output').textContent;document.querySelector('.outcome-open').click()")
+    client.wait("Boolean(document.querySelector('.example-ingredient')) && document.getElementById('dish-example-results').getAttribute('aria-busy')==='false'", timeout=30)
+    client.js("document.querySelector('.example-ingredient').click()")
+    client.wait("state.detail?.kind==='ingredient' && Boolean(document.getElementById('rarity-input'))")
+    client.js('history.back()')
+    client.wait("state.detail?.kind==='dish' && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false'")
+    client.js('history.back()')
+    client.wait("state.view==='prediction' && !document.getElementById('detail-dialog').open && document.getElementById('prediction-output').textContent===window.__predictionText")
+    assert client.js("document.getElementById('pot-slots').textContent===window.__potText")
+    client.js('history.forward()')
+    client.wait("state.detail?.kind==='dish' && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false'")
+    client.js("document.querySelector('.dish-example-row .text-button').click()")
+    client.wait("state.view==='prediction' && !document.getElementById('detail-dialog').open && Boolean(document.querySelector('.outcome-open'))", timeout=30)
+    client.js('history.back()')
+    client.wait("state.detail?.kind==='dish' && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false'")
+    print('PASS: signature selections, ordering and expanded results survive; prediction pots/results and recipe-to-prediction navigation restore correctly')
+
+    # Mobile browser Back restores a scrolled detail as well.
+    client.call('Emulation.setDeviceMetricsOverride', dict(width=390, height=844, deviceScaleFactor=1, mobile=True))
+    client.js("document.getElementById('detail-dialog').scrollTop=500;window.__mobileDetailScroll=document.getElementById('detail-dialog').scrollTop;document.querySelector('.example-ingredient').click()")
+    client.wait("state.detail?.kind==='ingredient' && Boolean(document.getElementById('rarity-input'))")
+    client.js('history.back()')
+    client.wait("state.detail?.kind==='dish' && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false' && document.getElementById('detail-dialog').scrollTop===window.__mobileDetailScroll")
+    assert client.js('location.href') == base + '/cooking'
+    print('PASS: mobile detail navigation restores reading position and keeps the URL unchanged')
+
+    # Reload resets the in-memory rarity version. Older history still must not reuse
+    # recipe calculations for different preferences that happen to have that version.
+    original_rarities = client.js('state.data.settings.rarities')
+    client.js("document.querySelector('.example-ingredient').click()")
+    client.wait("state.detail?.kind==='ingredient' && Boolean(document.getElementById('rarity-input'))")
+    edited_id = client.js('state.detail.id')
+    edited_value = original_rarities.get(edited_id, 0) + 7
+    client.js("document.getElementById('rarity-input').value=" + json.dumps(str(edited_value)) + ";document.querySelector('.rarity-editor').requestSubmit()")
+    client.wait('state.data.settings.rarities[' + json.dumps(edited_id) + ']===' + str(edited_value))
+    client.js('window.__beforeNavReload=true')
+    client.call('Page.reload')
+    client.wait("!window.__beforeNavReload && Boolean(document.getElementById('rarity-input'))")
+    client.js("window.__navFetch=window.fetch;window.__recipeRarities=null;window.fetch=(...args)=>{if(args[0]==='/api/examples')window.__recipeRarities=JSON.parse(args[1].body).rarities;return window.__navFetch(...args);};history.back()")
+    client.wait("state.detail?.kind==='dish' && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false' && window.__recipeRarities!==null", timeout=30)
+    assert client.js('window.__recipeRarities[' + json.dumps(edited_id) + ']') == edited_value
+    assert client.js('state.data.settings.rarities[' + json.dumps(edited_id) + ']') == edited_value
+    client.js("window.fetch=window.__navFetch;browserStorage.write('dst-helper.cooking.rarities.v1'," + json.dumps(original_rarities) + ");rarityUI.refresh()")
+    client.js("document.getElementById('close-detail').click()")
+    client.wait("!document.getElementById('detail-dialog').open")
+    client.js("setView('dishes');reset();window.scrollTo(0,0)")
+    print('PASS: history restoration preserves edited rarity preferences and refreshes stale recipe calculations after reload')
+
+
 def run():
     candidates = [Path('C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'), Path('C:/Program Files/Google/Chrome/Application/chrome.exe')]
     browser = next((p for p in candidates if p.exists()), None)
@@ -341,6 +467,7 @@ def run():
                 client.call('Page.navigate', dict(url=base + '/cooking'))
                 client.wait("typeof state !== 'undefined' && state.data?.settings && document.getElementById('results').getAttribute('aria-busy') === 'false'")
                 assert client.js('state.data.settings.rarities.butter') == 80
+                check_cooking_navigation(client, base)
                 client.js("openIngredientDetail('butter')")
                 client.wait("document.getElementById('rarity-input')?.value === '80'")
                 client.js("document.getElementById('rarity-input').value='-9';document.querySelector('.rarity-editor').requestSubmit()")

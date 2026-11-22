@@ -6,7 +6,7 @@ function readLayout(view) {
   try { return localStorage.getItem(LAYOUT_KEYS[view]) === 'table' ? 'table' : 'cards'; }
   catch { return 'cards'; }
 }
-const state = { data: null, view: 'dishes', request: null,
+const state = { data: null, view: 'dishes', request: null, detail: null,
   layouts: { dishes: readLayout('dishes'), ingredients: readLayout('ingredients') } };
 const copy = {
   dishes: ['THE WILDERNESS TABLE / 01', '在荒野，好好吃饭。', '查阅料理的表格数值、食材标签与原始证据。每一条资料，都有来处。', '料理索引'],
@@ -184,6 +184,13 @@ function setCatalogLayout(layout) {
   renderResults();
 }
 function setView(view) {
+  if (view === state.view && !state.detail) return;
+  return cookingNavigation.go(() => {
+    dismissDetail();
+    renderView(view);
+  });
+}
+function renderView(view) {
   state.view = view;
   const [kicker, title, description, indexTitle] = copy[view];
   $('section-kicker').textContent = kicker;
@@ -328,7 +335,7 @@ function detailStatus(dish) {
   }
   return status;
 }
-function renderDetail(kind, d) {
+function renderDetail(kind, d, examples) {
   const dish = kind === 'dish';
   const title = text('h2', d.name_zh); title.id = 'detail-title';
   const content = [detailStatus(dish),
@@ -346,7 +353,7 @@ function renderDetail(kind, d) {
         text('div', rule.description || rule.display_error || '暂无可显示条件，请查阅原文。', 'rule-description'),
         el('details', { id: 'recipe-rule-more', class: 'detail-more' }, [text('summary', '更多...'),
           values([['解析状态', rule.parse_status], ['solver_ready', String(Boolean(rule.solver_ready))]]),
-          disclosure('查看声明式 AST（仅供审阅）', text('pre', JSON.stringify(rule.conditions, null, 2)))])]), examplesUI.mount(d));
+          disclosure('查看声明式 AST（仅供审阅）', text('pre', JSON.stringify(rule.conditions, null, 2)))])]), examplesUI.mount(d, examples));
   } else {
     content.push(el('p', {}, [el('button', { type: 'button', class: 'secondary', text: '查看这件食材的优选料理 ↗',
       onclick: () => signatureUI.openIngredient(d.ingredient_id) })]), rarityUI.editor(d), section('状态标签', [tagChips(d.tags, true),
@@ -376,27 +383,47 @@ function renderDetail(kind, d) {
   content.push(sourceSection);
   $('detail-content').replaceChildren(...content);
   $('detail-content').dataset.entityId = dish ? d.dish_id : d.ingredient_id;
-  if (dish) examplesUI.fetchExamples();
+  if (dish) return examplesUI.fetchExamples();
 }
 function openIngredientDetail(id) {
-  $('search').value = id; $('tag-filter').value = 'all'; $('tag-min').value = '0';
-  setView('ingredients'); $('search').focus({ preventScroll: true });
-  openDetail('ingredient', id);
+  if (state.detail?.kind === 'ingredient' && state.detail.id === id) return showDetail('ingredient', id);
+  return cookingNavigation.go(() => {
+    if (!state.detail) {
+      $('search').value = id; $('tag-filter').value = 'all'; $('tag-min').value = '0';
+      renderView('ingredients');
+    }
+    return showDetail('ingredient', id);
+  });
 }
-async function openDetail(kind, id) {
+function openDetail(kind, id) {
+  if (state.detail?.kind === kind && state.detail.id === id) return showDetail(kind, id);
+  return cookingNavigation.go(() => showDetail(kind, id));
+}
+function dismissDetail() {
+  state.detail = null;
+  state.request?.abort(); state.request = null;
+  examplesUI.cancel();
+  if ($('detail-dialog').open) $('detail-dialog').close();
+}
+async function showDetail(kind, id, saved) {
   examplesUI.cancel();
   if (state.request) state.request.abort();
   const request = new AbortController();
   state.request = request;
+  state.detail = { kind, id, data: null };
   const title = text('h2', '正在读取条目…'); title.id = 'detail-title';
+  delete $('detail-content').dataset.entityId;
   $('detail-content').replaceChildren(title);
   const dialog = $('detail-dialog');
   if (!dialog.open) dialog.showModal();
   dialog.scrollTop = 0;
   try {
-    const d = await getJSON('/api/detail?' + new URLSearchParams({ kind, id }), request.signal);
+    const d = saved?.data || await getJSON('/api/detail?' + new URLSearchParams({ kind, id }), request.signal);
     if (kind === 'ingredient') d.rarity = state.data.settings.rarities[d.ingredient_id] ?? 0;
-    if (state.request === request) renderDetail(kind, d);
+    if (state.request === request) {
+      state.detail.data = d;
+      await renderDetail(kind, d, saved?.examples);
+    }
   } catch (error) {
     if (error.name !== 'AbortError' && state.request === request) {
       const heading = text('h2', '无法读取条目'); heading.id = 'detail-title';
@@ -418,9 +445,13 @@ async function load() {
     $('tag-filter').replaceChildren(el('option', { value: 'all', text: '全部标签' }),
       ...Object.entries(d.tag_labels).map(([key, label]) => el('option', { value: key, text: label })));
     renderEvidence();
-    setView(state.view);
+    renderView(state.view);
     const ingredient = new URLSearchParams(location.search).get('ingredient');
-    if (ingredient && d.ingredients.some(row => row.ingredient_id === ingredient)) openIngredientDetail(ingredient);
+    if (!cookingNavigation.initialize() && ingredient && d.ingredients.some(row => row.ingredient_id === ingredient)) {
+      $('search').value = ingredient;
+      renderView('ingredients');
+      openDetail('ingredient', ingredient);
+    }
   } catch (error) {
     $('error-message').textContent = error.message + '。请确认本地服务已启动，数据库可读取。';
     $('error').hidden = false;
@@ -432,16 +463,19 @@ async function load() {
 }
 
 document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => setView(button.dataset.view)));
-$('detail-dialog').addEventListener('close', () => { if (!$('detail-dialog').open) examplesUI.cancel(); });
 document.querySelectorAll('[data-layout]').forEach(button => button.addEventListener('click', () => setCatalogLayout(button.dataset.layout)));
 for (const id of ['search', 'sort', 'cooker', 'stat-filter', 'tag-filter', 'tag-min']) $(id).addEventListener(id === 'search' ? 'input' : 'change', renderResults);
 document.querySelectorAll('.reset').forEach(button => button.addEventListener('click', reset));
 $('retry').addEventListener('click', load);
-$('close-detail').addEventListener('click', () => $('detail-dialog').close());
-$('detail-dialog').addEventListener('close', () => {
-  if (!$('detail-dialog').open) { state.request?.abort(); state.request = null; }
+$('close-detail').addEventListener('click', () => cookingNavigation.closeDetail());
+$('detail-dialog').addEventListener('cancel', event => {
+  event.preventDefault();
+  cookingNavigation.closeDetail();
 });
-$('detail-dialog').addEventListener('click', event => { if (event.target === $('detail-dialog') && event.clientX < event.target.getBoundingClientRect().left) event.target.close(); });
+$('detail-dialog').addEventListener('close', () => {
+  if (!$('detail-dialog').open && state.detail) cookingNavigation.closeDetail();
+});
+$('detail-dialog').addEventListener('click', event => { if (event.target === $('detail-dialog') && event.clientX < event.target.getBoundingClientRect().left) cookingNavigation.closeDetail(); });
 document.addEventListener('keydown', event => {
   if (event.key === '/' && !event.ctrlKey && !event.metaKey && !event.altKey && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName) && !document.querySelector('dialog[open]') && state.view !== 'evidence') {
     event.preventDefault(); $({ prediction: 'prediction-search', signature: 'signature-search' }[state.view] || 'search').focus();

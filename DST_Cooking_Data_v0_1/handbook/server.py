@@ -25,7 +25,7 @@ WEB = Path(__file__).with_name('web')
 STATIC = {'/': ('index.html', 'text/html'),
           '/app.css': ('app.css', 'text/css'), '/app.js': ('app.js', 'text/javascript'),
           '/favicon.svg': ('favicon.svg', 'image/svg+xml')}
-for name in ('prediction', 'signature', 'rarity', 'examples', 'exclusions', 'browser-storage'):
+for name in ('prediction', 'signature', 'rarity', 'examples', 'exclusions', 'browser-storage', 'navigation'):
     STATIC[f'/{name}.js'] = (f'{name}.js', 'text/javascript')
 
 SECURITY_HEADERS = {

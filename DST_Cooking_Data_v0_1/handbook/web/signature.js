@@ -140,10 +140,12 @@ const signatureUI = (() => {
   }
 
   function openIngredient(id) {
-    if ($('detail-dialog').open) $('detail-dialog').close();
-    selected = id; resetResult(); $('signature-search').value = '';
-    setView('signature');
-    $('signature-section').scrollIntoView({ block: 'start' });
+    return cookingNavigation.go(() => {
+      dismissDetail();
+      selected = id; resetResult(); $('signature-search').value = '';
+      renderView('signature');
+      $('signature-section').scrollIntoView({ block: 'start' });
+    });
   }
 
   function init() {
@@ -154,5 +156,10 @@ const signatureUI = (() => {
   }
   function rarityChanged() { resetResult(); if (state.view === 'signature') render(); }
   function exclusionsChanged() { if (state.view === 'signature') renderResults(); }
-  return { init, render, openIngredient, rarityChanged, exclusionsChanged };
+  function snapshot() { return { selected, cooker, result, shown, error }; }
+  function restore(saved) {
+    resetResult();
+    ({ selected, cooker, result, shown, error } = saved);
+  }
+  return { init, render, openIngredient, rarityChanged, exclusionsChanged, snapshot, restore };
 })();

@@ -5,6 +5,7 @@ const predictionUI = (() => {
   let slots = [null, null, null, null];
   let active = 0;
   let request = null;
+  let lastResult = null;
   const ingredient = id => state.data.ingredients.find(row => row.ingredient_id === id);
   const enabled = () => Boolean(state.data?.prediction?.enabled);
   const filled = () => slots.filter(Boolean).length;
@@ -12,6 +13,7 @@ const predictionUI = (() => {
   function invalidate() {
     if (request) request.abort();
     request = null;
+    lastResult = null;
     $('prediction-output').replaceChildren(text('p', filled() === 4
       ? '四格已满，点击「开始预测」查看这锅的结果。'
       : '选满四件食材后，查看这锅的料理与概率。', 'prediction-empty'));
@@ -78,6 +80,7 @@ const predictionUI = (() => {
   }
 
   function showResult(result) {
+    lastResult = result;
     const outcomes = result.outcomes.map(outcome => {
       const dish = state.data.dishes.find(row => row.dish_id === outcome.dish_id) || outcome;
       const chance = outcome.probability;
@@ -137,11 +140,20 @@ const predictionUI = (() => {
   }
   function loadPot(ingredients, cooker) {
     if (!enabled() || ingredients.length !== 4 || ingredients.some(id => !ingredient(id))) return;
-    slots = [...ingredients]; active = null;
-    invalidate();
-    setView('prediction');
-    $('prediction-cooker').value = cooker;
-    render(); $('predict-pot').focus({ preventScroll: true }); predict();
+    return cookingNavigation.go(() => {
+      dismissDetail();
+      slots = [...ingredients]; active = null;
+      invalidate();
+      renderView('prediction');
+      $('prediction-cooker').value = cooker;
+      render(); $('predict-pot').focus({ preventScroll: true }); predict();
+    });
   }
-  return { init, render, loadPot };
+  function snapshot() { return { slots: [...slots], active, result: lastResult }; }
+  function restore(saved) {
+    slots = [...saved.slots]; active = saved.active;
+    invalidate();
+    if (saved.result) showResult(saved.result);
+  }
+  return { init, render, loadPot, snapshot, restore };
 })();

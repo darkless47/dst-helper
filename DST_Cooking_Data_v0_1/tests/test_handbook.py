@@ -133,7 +133,7 @@ class HTTPTests(unittest.TestCase):
             conn.close()
 
     def test_pages_and_unicode_api(self):
-        for path in ['/', '/app.js', '/prediction.js', '/signature.js', '/app.css', '/favicon.svg']:
+        for path in ['/', '/app.js', '/prediction.js', '/signature.js', '/navigation.js', '/app.css', '/favicon.svg']:
             with self.subTest(path=path):
                 status, headers, body = self.request(path)
                 self.assertEqual(status, 200)
