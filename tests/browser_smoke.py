@@ -113,6 +113,12 @@ def check_cooking_navigation(client, base):
     client.wait("state.detail?.id===window.__dishID && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false' && document.getElementById('detail-dialog').scrollTop===window.__dishScroll")
     assert client.js("document.getElementById('example-cooker').value==='portable' && document.getElementById('source-evidence').open && document.getElementById('dish-example-results').textContent===window.__dishExamples")
     assert client.js("document.activeElement.matches('.example-ingredient')")
+    # User activation gives the popover its own close-watcher group, as a real tap does.
+    client.call('Runtime.evaluate', dict(expression="document.querySelector('.detail-warning-button').focus({preventScroll:true});document.querySelector('.detail-warning-button').click()", userGesture=True))
+    assert client.js("document.getElementById('dish-stat-warning').matches(':popover-open')")
+    client.call('Input.dispatchKeyEvent', dict(type='keyDown', key='Escape', code='Escape', windowsVirtualKeyCode=27))
+    client.call('Input.dispatchKeyEvent', dict(type='keyUp', key='Escape', code='Escape', windowsVirtualKeyCode=27))
+    client.wait("!document.getElementById('dish-stat-warning').matches(':popover-open') && document.getElementById('detail-dialog').open && state.detail.id===window.__dishID")
     client.js('history.back()')
     client.wait("!document.getElementById('detail-dialog').open && state.view==='dishes' && scrollY===window.__catalogScroll && document.activeElement.matches('.catalog-card')")
     assert client.js("document.getElementById('search').value==='肉' && document.getElementById('sort').value==='health' && document.activeElement.matches('.catalog-card')")
@@ -190,14 +196,34 @@ def check_cooking_navigation(client, base):
     client.wait("state.detail?.kind==='dish' && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false'")
     print('PASS: signature selections, ordering and expanded results survive; prediction pots/results and recipe-to-prediction navigation restore correctly')
 
-    # Mobile browser Back restores a scrolled detail as well.
+    # Android Back can request dialog dismissal instead of firing popstate.
+    # requestClose() exercises that native cancel pipeline, unlike history.back().
     client.call('Emulation.setDeviceMetricsOverride', dict(width=390, height=844, deviceScaleFactor=1, mobile=True))
-    client.js("document.getElementById('detail-dialog').scrollTop=500;window.__mobileDetailScroll=document.getElementById('detail-dialog').scrollTop;document.querySelector('.example-ingredient').click()")
+    client.js("document.getElementById('detail-dialog').scrollTop=500;window.__mobileDetailScroll=document.getElementById('detail-dialog').scrollTop;window.__mobileDishID=state.detail.id;document.querySelector('.example-ingredient').click()")
     client.wait("state.detail?.kind==='ingredient' && Boolean(document.getElementById('rarity-input'))")
-    client.js('history.back()')
+    client.js("window.__mobileIngredientID=state.detail.id;document.getElementById('detail-dialog').requestClose()")
     client.wait("state.detail?.kind==='dish' && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false' && document.getElementById('detail-dialog').scrollTop===window.__mobileDetailScroll")
+    client.js("document.getElementById('detail-dialog').requestClose()")
+    client.wait("!document.getElementById('detail-dialog').open && !state.detail")
+    client.js('history.forward()')
+    client.wait("state.detail?.id===window.__mobileDishID && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false'")
+    client.js('history.forward()')
+    client.wait("state.detail?.id===window.__mobileIngredientID && Boolean(document.getElementById('rarity-input'))")
+
+    # Repeated platform requests may be non-cancelable and close the native dialog.
+    # Its subsequent close event must not skip another history entry.
+    client.js("{const d=document.getElementById('detail-dialog');d.dispatchEvent(new Event('cancel',{cancelable:false}));d.close();}")
+    client.wait("state.detail?.id===window.__mobileDishID && document.getElementById('detail-dialog').open && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false' && document.getElementById('detail-dialog').scrollTop===window.__mobileDetailScroll")
+    client.js("document.querySelector('.example-ingredient').click()")
+    client.wait("state.detail?.id===window.__mobileIngredientID && Boolean(document.getElementById('rarity-input'))")
+    client.js("openDetail('ingredient',state.detail.id==='tomato'?'berries':'tomato')")
+    client.wait("state.detail?.kind==='ingredient' && state.detail.id!==window.__mobileIngredientID && Boolean(document.getElementById('rarity-input'))")
+    client.js("document.getElementById('detail-dialog').requestClose()")
+    client.wait("state.detail?.id===window.__mobileIngredientID && Boolean(document.getElementById('rarity-input'))")
+    client.js("document.getElementById('detail-dialog').requestClose()")
+    client.wait("state.detail?.id===window.__mobileDishID && document.getElementById('detail-dialog').open && document.getElementById('dish-example-results')?.getAttribute('aria-busy')==='false' && document.getElementById('detail-dialog').scrollTop===window.__mobileDetailScroll")
     assert client.js('location.href') == base + '/cooking'
-    print('PASS: mobile detail navigation restores reading position and keeps the URL unchanged')
+    print('PASS: Android-style dialog close requests go ingredient -> dish -> catalog; Forward and non-cancelable requests preserve history and reading position')
 
     # Reload resets the in-memory rarity version. Older history still must not reuse
     # recipe calculations for different preferences that happen to have that version.

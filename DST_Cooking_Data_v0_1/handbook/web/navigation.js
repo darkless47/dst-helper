@@ -108,15 +108,17 @@ const cookingNavigation = (() => {
     remember();
     return false;
   }
-  function closeDetail() {
+  function leaveDetail(toSection) {
     if (!state.detail || traveling) return;
     if (current && current.base < current.index) {
       traveling = true;
-      history.go(current.base - current.index);
+      history.go(toSection ? current.base - current.index : -1);
     } else {
       dismissDetail(); remember();
     }
   }
+  function closeDetail() { leaveDetail(true); }
+  function backDetail() { leaveDetail(false); }
   window.addEventListener('popstate', async event => {
     const target = event.state?.[KEY];
     if (!current || target?.version !== 1) return;
@@ -133,5 +135,5 @@ const cookingNavigation = (() => {
     }
   });
   window.addEventListener('pagehide', () => { if (!traveling) remember(); });
-  return { initialize, go, closeDetail };
+  return { initialize, go, closeDetail, backDetail };
 })();

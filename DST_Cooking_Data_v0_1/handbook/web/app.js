@@ -468,9 +468,17 @@ for (const id of ['search', 'sort', 'cooker', 'stat-filter', 'tag-filter', 'tag-
 document.querySelectorAll('.reset').forEach(button => button.addEventListener('click', reset));
 $('retry').addEventListener('click', load);
 $('close-detail').addEventListener('click', () => cookingNavigation.closeDetail());
+$('detail-dialog').addEventListener('keydown', event => {
+  // Escape explicitly closes the detail chain; let an open popover dismiss first.
+  if (event.key === 'Escape' && !event.defaultPrevented && !$('detail-dialog').querySelector(':popover-open')) {
+    event.preventDefault();
+    cookingNavigation.closeDetail();
+  }
+});
 $('detail-dialog').addEventListener('cancel', event => {
+  // Android Back is a dialog close request, not necessarily a popstate event.
   event.preventDefault();
-  cookingNavigation.closeDetail();
+  cookingNavigation.backDetail();
 });
 $('detail-dialog').addEventListener('close', () => {
   if (!$('detail-dialog').open && state.detail) cookingNavigation.closeDetail();

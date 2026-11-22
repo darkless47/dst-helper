@@ -13,7 +13,9 @@ four function entries stay in its sidebar; **数据与边界** opens from the bu
 
 Cooking supports browser Back/Forward between sections and dish/ingredient details
 without changing the URL. Returning restores filters, recipe examples and reading
-position. Closing a detail with × or Escape returns to the section where it opened.
+position. Android Back also returns one detail at a time, even when the browser
+handles it as a dialog close request. Closing a detail with × or Escape returns to
+the section where it opened.
 The unchanged URL does not identify an individual detail for sharing or bookmarking.
 
 Run these commands from this workspace directory (`C:\Users\oyblu\Dev\dst-helper`).
