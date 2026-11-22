@@ -68,7 +68,13 @@
         <section id="signature-section" hidden aria-label="食材优选料理">
           <div class="signature-exclusion-toolbar"><p id="signature-exclusion-summary" class="small muted">不考虑名单仅影响优选料理推荐。</p><button type="button" class="secondary" id="manage-signature-exclusions">管理不考虑名单</button></div>
           <div class="signature-controls">
-            <div class="signature-choose"><h2>发现一件食材，从这里开始。</h2><label class="search-field"><span aria-hidden="true">⌕</span><input id="signature-search" type="search" placeholder="搜索中文名称、英文提示或 ID" aria-label="搜索优选料理的食材" autocomplete="off"></label><div id="signature-picker" class="signature-picker" role="group" aria-label="选择优选料理食材"></div></div>
+            <div class="signature-choose">
+              <h2>发现一件食材，从这里开始。</h2>
+              <div class="signature-picker-frame">
+                <label class="search-field"><span aria-hidden="true">⌕</span><input id="signature-search" type="search" placeholder="搜索中文名称、英文提示或 ID" aria-label="搜索优选料理的食材" autocomplete="off"></label>
+                <div id="signature-picker" class="signature-picker" role="group" aria-label="选择优选料理食材"></div>
+              </div>
+            </div>
             <div class="signature-settings"><div id="signature-selected"><p class="muted">选择食材，看看它的拿手料理。</p></div><div class="signature-options"><label>使用锅具<select id="signature-cooker" aria-label="优选料理锅具"></select></label><label>排序方式<select id="signature-ranking"><option value="accessible">易获取优先</option><option value="nutrition">营养优先</option></select></label><label>两组统一营养指标<select id="signature-sort"><option value="hunger">饥饿值 · 从高到低</option><option value="health">生命值 · 从高到低</option><option value="sanity">理智值 · 从高到低</option></select></label></div><p class="small muted">配方点名的料理优先展示。易获取优先按其余三格的最低总稀有度排序，同分再按营养值；营养优先则先看营养值，同分再看稀有度。可在食材探索中编辑稀有度，未设置为 0。</p></div>
           </div>
           <p class="catalog-note">基于当前维基预测规则，不限制库存、允许重复食材。概率仅对应示例组合；营养排序使用基础表值，不代表角色实际食用收益。复合值待拆解，排在数值末尾。</p>

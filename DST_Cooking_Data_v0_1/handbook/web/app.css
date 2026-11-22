@@ -1777,14 +1777,24 @@ pre {
   font:600 21px var(--serif);
   margin-bottom:18px;
 }
+.signature-picker-frame {
+  min-width:0;
+  border:1px solid var(--line);
+  border-radius:6px;
+}
+.signature-picker-frame>.search-field {
+  border:0;
+  border-bottom:1px solid var(--line);
+  border-radius:5px 5px 0 0;
+}
 .signature-picker {
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:6px;
   max-height:192px;
   overflow:auto;
-  padding:4px;
-  margin:12px -4px 0;
+  padding:8px;
+  margin:0;
 }
 .signature-ingredient {
   min-width:0;
